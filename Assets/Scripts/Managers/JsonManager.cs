@@ -28,7 +28,7 @@ public class JsonManager : MonoBehaviour {
 		DontDestroyOnLoad(this);
 		Instance.PATH = Application.dataPath + "/../json/";
 		manager = Manager.SharedInstance;
-		db = manager.GetDatabase("main");
+		db = manager.GetDatabase("cockfighting");
 		db.Changed += (sender, e) => {
 			var changes = e.Changes.ToList();
 			foreach (DocumentChange change in changes) {
@@ -72,6 +72,8 @@ public class JsonManager : MonoBehaviour {
 		Document d = db.GetDocument("account_" + dic["username"]);
 		var properties = dic;
 		var rev = d.PutProperties(properties);
+
+
 	}
 
 	public bool LoginAccount(string username, string password) {
