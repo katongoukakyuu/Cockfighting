@@ -6,7 +6,6 @@ using System.Collections.Generic;
 [RequireComponent (typeof(TileMapMouse))]
 public class TileMapManager : MonoBehaviour {
 
-	private TileMap tileMap;
 	private TileMapMouse tileMapMouse;
 	private static TileMapManager instance;
 
@@ -22,15 +21,14 @@ public class TileMapManager : MonoBehaviour {
 	}
 
 	void Awake () {
-		tileMap = GetComponent<TileMap> ();
 		tileMapMouse = GetComponent<TileMapMouse> ();
 	}
 
 	public GameObject[,] GetTiles() {
-		return Instance.tileMap.tiles;
+		return TileMap.Instance.tiles;
 	}
 
 	public Vector3 GetPosition() {
-		return Instance.tileMapMouse.position;
+		return tileMapMouse.position;
 	}
 }

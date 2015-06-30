@@ -2964,6 +2964,7 @@ GameObject:
   - 4: {fileID: 1768759164}
   - 114: {fileID: 1768759165}
   - 114: {fileID: 1768759166}
+  - 114: {fileID: 1768759163}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -2971,6 +2972,17 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1768759163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1768759162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb3a1c3a8d544d646aaee9a86861beca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1768759164
 Transform:
   m_ObjectHideFlags: 0

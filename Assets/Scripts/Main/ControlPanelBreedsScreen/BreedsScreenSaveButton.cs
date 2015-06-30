@@ -10,7 +10,7 @@ public class BreedsScreenSaveButton : MonoBehaviour {
 	public void ButtonPressed() {
 		for(int i = 0; i < fieldsToVerify.Length; i++) {
 			if(fieldsToVerify[i].text == "") {
-				ControlPanelBreedsManager.Instance.SetMessage(Constants.BREEDS_SCREEN_ERROR_FIELDS);
+				ControlPanelBreedsManager.Instance.SetMessage(Constants.GENERIC_ERROR_FIELDS);
 				return;
 			}
 		}

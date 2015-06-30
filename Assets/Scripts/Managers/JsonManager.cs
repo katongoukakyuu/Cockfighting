@@ -37,10 +37,18 @@ public class JsonManager : MonoBehaviour {
 		};
 
 		// initialize views
-		View view = db.GetView(Constants.DB_TYPE_ACCOUNT);
-		view.SetMap ((doc, emit) => {
+		// account username-password
+		View viewAccount = db.GetView(Constants.DB_TYPE_ACCOUNT);
+		viewAccount.SetMap ((doc, emit) => {
 			if(doc["type"].ToString () == Constants.DB_TYPE_ACCOUNT)
 				emit(doc["username"], doc["password"]);
+		}, "1");
+
+		// chicken name-owner
+		View viewChicken = db.GetView(Constants.DB_TYPE_CHICKEN);
+		viewChicken.SetMap ((doc, emit) => {
+			if(doc["type"].ToString () == Constants.DB_TYPE_CHICKEN)
+				emit(doc["name"], doc["owner"]);
 		}, "1");
 	}
 
@@ -59,13 +67,25 @@ public class JsonManager : MonoBehaviour {
 		streamWriter.Close ();
 	}
 
-	public Buildings LoadBuildings() {
-		var streamReader = new StreamReader(Instance.PATH + "buildings.txt");
-		string data = streamReader.ReadToEnd();
-		streamReader.Close ();
-		
-		Buildings b = JsonReader.Deserialize<Buildings>(data);
-		return b;
+	public List<IDictionary<string,object>> LoadBuildingss() {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_BUILDING).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			l.Add (db.GetDocument ("building_" + row.Key).Properties);
+		}
+		return l;
+	}
+
+	public IDictionary<string,object> LoadBuilding(string name) {
+		var query = db.GetView (Constants.DB_TYPE_BUILDING).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.Key.ToString() == name) {
+				return db.GetDocument ("building_" + row.Key).Properties;
+			}
+		}
+		return null;
 	}
 
 	public void RegisterAccount(Dictionary<string, object> dic) {
@@ -73,7 +93,23 @@ public class JsonManager : MonoBehaviour {
 		var properties = dic;
 		var rev = d.PutProperties(properties);
 
-
+		GenerateChicken(GameManager.Instance.GenerateChicken ("Larry", 
+		                                      dic ["username"].ToString(), 
+		                                      Constants.GENDER_MALE, 
+		                                      "Kelso", 
+		                                      Constants.LIFE_STAGE_COCK));
+		GenerateChicken(GameManager.Instance.GenerateChicken ("Gary", 
+		                                      dic ["username"].ToString(), 
+		                                      Constants.GENDER_MALE, 
+		                                      "Kelso", 
+		                                      Constants.LIFE_STAGE_COCK));
+		GenerateChicken(GameManager.Instance.GenerateChicken ("Mary", 
+		                                      dic ["username"].ToString(), 
+		                                      Constants.GENDER_FEMALE, 
+		                                      "Kelso", 
+		                                      Constants.LIFE_STAGE_HEN));
+		if (rev != null)
+			print ("Account registry complete!");
 	}
 
 	public bool LoginAccount(string username, string password) {
@@ -91,9 +127,37 @@ public class JsonManager : MonoBehaviour {
 	}
 
 	public void UpdatePlayer(string username) {
-		GameManager.Instance.player = db.GetDocument ("account_" + username).Properties;
-		foreach (KeyValuePair<string, object> item in GameManager.Instance.player)
+		PlayerManager.Instance.player = db.GetDocument ("account_" + username).Properties;
+		PlayerManager.Instance.playerChickens = LoadChickens (username);
+		print ("Account details:");
+		foreach (KeyValuePair<string, object> item in PlayerManager.Instance.player)
 			print(item.Key + ": " + item.Value);
+		print ("Account's chicken details:");
+		foreach (IDictionary<string,object> i in PlayerManager.Instance.playerChickens) {
+			foreach (KeyValuePair<string, object> item in i)
+				print(item.Key + ": " + item.Value);
+		}
+	}
+
+	public void GenerateChicken(Dictionary<string, object> dic) {
+		Document d = db.GetDocument("chicken_" + dic["owner"] + "_" + dic["name"]);
+		var properties = dic;
+		var rev = d.PutProperties(properties);
+		if (rev != null)
+			print ("Chicken generation complete!");
+	}
+
+	public List<IDictionary<string,object>> LoadChickens(string username) {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_CHICKEN).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			print (row.Key + " " + row.Value);
+			if(row.Value.ToString() == username) {
+				l.Add (db.GetDocument ("chicken_" + row.Value + "_" + row.Key).Properties);
+			}
+		}
+		return l;
 	}
 
 }
