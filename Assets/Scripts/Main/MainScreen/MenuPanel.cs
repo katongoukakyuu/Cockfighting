@@ -7,7 +7,7 @@ public class MenuPanel : MonoBehaviour {
 		MouseHandler.Instance.OnMouseClick += OnMouseClick;
 	}
 
-	void OnMouseClick() {
+	void OnMouseClick(GameObject g) {
 		gameObject.SetActive (false);
 	}
 }
