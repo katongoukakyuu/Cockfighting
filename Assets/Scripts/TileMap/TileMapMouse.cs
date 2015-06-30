@@ -5,6 +5,18 @@ public class TileMapMouse : MonoBehaviour {
 
 	public Vector3 position = Vector3.zero;
 
+	private static TileMapMouse instance;
+	private TileMapMouse() {}
+	
+	public static TileMapMouse Instance {
+		get {
+			if(instance == null) {
+				instance = (TileMapMouse)GameObject.FindObjectOfType(typeof(TileMapMouse));
+			}
+			return instance;
+		}
+	}
+
 	void Update() {
 		Ray screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 		

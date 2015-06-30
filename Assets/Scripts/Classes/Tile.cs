@@ -2,32 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class Tile {
+public class Tile : MonoBehaviour {
 
-	public int x;
-	public int z;
-	public bool isFilled;
+	public IDictionary<string,object> tile;
 
-}
+	void Start() {
+		MouseHandler.Instance.OnMouseClick += OnClick;
+	}
 
-[System.Serializable]
-public class TileGroup {
-
-	public Tile[,] tiles;
-	public int xStart;
-	public int zStart;
-	public int xEnd;
-	public int zEnd;
-
-}
-
-[System.Serializable]
-public class PlayerTiles {
-
-	public Tile[,] tiles;
-	public List<TileGroup> tileGroups = new List<TileGroup>();
-	public int xSize;
-	public int zSize;
+	private void OnClick(GameObject g) {
+		if (g == this.gameObject) {
+			FarmManager.Instance.UpdateSelectedObject(this.gameObject);
+		}
+	}
 
 }

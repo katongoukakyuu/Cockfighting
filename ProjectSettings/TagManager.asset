@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Map
   - Building
+  - Chicken
   layers:
   - Default
   - TransparentFX

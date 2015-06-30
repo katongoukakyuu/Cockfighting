@@ -5,8 +5,6 @@ using System.IO;
 
 public class GameManager : MonoBehaviour {
 
-	public IDictionary<string,object> player;
-
 	private static GameManager instance;
 	private GameManager() {}
 
@@ -39,28 +37,28 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
-	public Dictionary<string, object> GenerateChicken(string username, string gender) {
+	public Dictionary<string, object> GenerateChicken(string name, string owner, string gender, string breed, string lifeStage) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
-			{"type", Constants.DB_TYPE_CHICKEN},
-			{"owner", username},
-			{"created at", System.DateTime.UtcNow.ToString()},
-			{"breed", "Kelso"},
-			{"gender", gender},
-			{"notes", ""},
-			{"attack", Constants.CHICKEN_ATTACK_DEFAULT_START},
-			{"defense", Constants.CHICKEN_DEFENSE_DEFAULT_START},
-			{"hp", Constants.CHICKEN_HP_DEFAULT_START},
-			{"agility", Constants.CHICKEN_AGILITY_DEFAULT_START},
-			{"gameness", Constants.CHICKEN_GAMENESS_DEFAULT_START},
-			{"aggression", Constants.CHICKEN_AGGRESSION_DEFAULT_START},
-			{"attack max", Constants.CHICKEN_ATTACK_DEFAULT_MAX},
-			{"defense max", Constants.CHICKEN_DEFENSE_DEFAULT_MAX},
-			{"hp max", Constants.CHICKEN_HP_DEFAULT_MAX},
-			{"agility max", Constants.CHICKEN_AGILITY_DEFAULT_MAX},
-			{"gameness max", Constants.CHICKEN_GAMENESS_DEFAULT_MAX},
-			{"aggression max", Constants.CHICKEN_AGGRESSION_DEFAULT_MAX},
-			{"genetic id", "00000000F1"},
-			{"life stage", Constants.LIFE_STAGE_STAG}
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_CHICKEN},
+			{Constants.DB_KEYWORD_NAME, name},
+			{Constants.DB_KEYWORD_OWNER, owner},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()},
+			{Constants.DB_TYPE_BREED, breed},
+			{Constants.DB_KEYWORD_GENDER, gender},
+			{Constants.DB_KEYWORD_NOTES, ""},
+			{Constants.DB_KEYWORD_ATTACK, Constants.CHICKEN_ATTACK_DEFAULT_START},
+			{Constants.DB_KEYWORD_DEFENSE, Constants.CHICKEN_DEFENSE_DEFAULT_START},
+			{Constants.DB_KEYWORD_HP, Constants.CHICKEN_HP_DEFAULT_START},
+			{Constants.DB_KEYWORD_AGILITY, Constants.CHICKEN_AGILITY_DEFAULT_START},
+			{Constants.DB_KEYWORD_GAMENESS, Constants.CHICKEN_GAMENESS_DEFAULT_START},
+			{Constants.DB_KEYWORD_AGGRESSION, Constants.CHICKEN_AGGRESSION_DEFAULT_START},
+			{Constants.DB_KEYWORD_ATTACK_MAX, Constants.CHICKEN_ATTACK_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_DEFENSE_MAX, Constants.CHICKEN_DEFENSE_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_HP_MAX, Constants.CHICKEN_HP_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_AGILITY_MAX, Constants.CHICKEN_AGILITY_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_GAMENESS_MAX, Constants.CHICKEN_GAMENESS_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_AGGRESSION_MAX, Constants.CHICKEN_AGGRESSION_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_LIFE_STAGE, lifeStage}
 		};
 		return d;
 	}

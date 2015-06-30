@@ -6,8 +6,45 @@ public class CameraControls: MonoBehaviour {
 	public float dragSpeed = 0.1f;
 	public float perspectiveZoomSpeed = 0.5f;
 	public float orthoZoomSpeed = 0.5f;
+	public float keyboardMoveSpeed = 5f;
+
+	public bool freeCamera = true;
+
+	private static CameraControls instance;
+	private CameraControls() {}
+	
+	public static CameraControls Instance {
+		get {
+			if (instance == null) {
+				instance = (CameraControls)GameObject.FindObjectOfType (typeof(CameraControls));
+			}
+			return instance;
+		}
+	}
 
 	void Update() {
+		if (!freeCamera)
+			return;
+		if(Input.GetKey(KeyCode.W)) {
+			Camera.main.transform.position += new Vector3(0,
+			                                              0,
+			                                              keyboardMoveSpeed) * dragSpeed;
+		}
+		if(Input.GetKey(KeyCode.S)) {
+			Camera.main.transform.position += new Vector3(0,
+			                                              0,
+			                                              -keyboardMoveSpeed) * dragSpeed;
+		}
+		if(Input.GetKey(KeyCode.A)) {
+			Camera.main.transform.position += new Vector3(-keyboardMoveSpeed,
+			                                              0,
+			                                              0) * dragSpeed;
+		}
+		if(Input.GetKey(KeyCode.D)) {
+			Camera.main.transform.position += new Vector3(keyboardMoveSpeed,
+			                                              0,
+			                                              0) * dragSpeed;
+		}
 		if(Input.touchCount == 1) {
 			Touch touch = Input.GetTouch (0);
 

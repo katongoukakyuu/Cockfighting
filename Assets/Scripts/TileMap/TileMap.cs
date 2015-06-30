@@ -11,6 +11,17 @@ public class TileMap : MonoBehaviour {
 
 	public GameObject[,] tiles;
 
+	private static TileMap instance;
+	private TileMap() {}
+	
+	public static TileMap Instance {
+		get {
+			if(instance == null) {
+				instance = (TileMap)GameObject.FindObjectOfType(typeof(TileMap));
+			}
+			return instance;
+		}
+	}
 
 	void Start() {
 		tiles = new GameObject[xSize,zSize];
@@ -21,6 +32,7 @@ public class TileMap : MonoBehaviour {
 				GameObject g = (GameObject)Instantiate (tile, new Vector3(x*tileSize, 0, z*tileSize), Quaternion.identity);
 				g.name = "Tile " + x + " " + z;
 				g.transform.parent = board.transform;
+				g.AddComponent<Tile>();
 				tiles[x,z] = g;
 			}
 		}

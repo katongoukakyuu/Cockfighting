@@ -15,12 +15,19 @@ public class MouseHandler : MonoBehaviour {
 		}
 	}
 	
-	public delegate void OnMouseClickEvent();
+	public delegate void OnMouseClickEvent(GameObject g);
 	public event OnMouseClickEvent OnMouseClick;
 
 	void Update() {
-		if(Input.GetMouseButton(0)) {
-			Instance.OnMouseClick();
+		if(Input.GetMouseButtonDown(0)) {
+			Ray screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+			
+			RaycastHit hit;
+			if (Physics.Raycast(screenRay, out hit))
+			{
+				OnMouseClick(hit.collider.transform.root.gameObject);
+				OnMouseClick(hit.collider.transform.gameObject);
+			}
 		}
 	}
 
