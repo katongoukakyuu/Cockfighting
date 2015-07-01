@@ -20,7 +20,7 @@ public class BuildingsScreenSaveButton : MonoBehaviour {
 				int.Parse (fieldsToSave[2].text), int.Parse (fieldsToSave[3].text),
 				int.Parse (fieldsToSave[4].text), int.Parse (fieldsToSave[5].text),
 				int.Parse (fieldsToSave[6].text), int.Parse (fieldsToSave[7].text),
-				fieldsToSave[7].text, fieldsToSave[9].text
+				fieldsToSave[8].text, fieldsToSave[9].text
 			);
 		}
 		else {

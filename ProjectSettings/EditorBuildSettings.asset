@@ -13,3 +13,5 @@ EditorBuildSettings:
     path: Assets/Scenes/Control Panel.unity
   - enabled: 1
     path: Assets/Scenes/Control Panel - Breeds.unity
+  - enabled: 1
+    path: Assets/Scenes/Control Panel - Buildings.unity

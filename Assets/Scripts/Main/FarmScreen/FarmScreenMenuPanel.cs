@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MenuPanel : MonoBehaviour {
+public class FarmScreenMenuPanel : MonoBehaviour {
 
 	void Awake() {
 		MouseHandler.Instance.OnMouseClick += OnMouseClick;
 	}
 
-	void OnMouseClick() {
+	void OnMouseClick(GameObject g) {
 		gameObject.SetActive (false);
 	}
 }

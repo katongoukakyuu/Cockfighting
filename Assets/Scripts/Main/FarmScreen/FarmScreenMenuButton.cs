@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class MenuButton : MonoBehaviour {
+public class FarmScreenMenuButton : MonoBehaviour {
 
 	public GameObject panel;
 

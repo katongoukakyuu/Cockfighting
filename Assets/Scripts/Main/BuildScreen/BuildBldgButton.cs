@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BuildBldgButton : MonoBehaviour {
 
@@ -10,7 +11,7 @@ public class BuildBldgButton : MonoBehaviour {
 	public ImagePanel imagePanel;
 	public BuildingPlacementManager buildingPlacementManager;
 
-	private Building building;
+	private IDictionary<string,object> building;
 
 	public void ButtonPressed() {
 		building = imagePanel.GetSelectedBuilding ();

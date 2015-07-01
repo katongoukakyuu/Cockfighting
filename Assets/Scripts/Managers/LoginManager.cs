@@ -44,7 +44,7 @@ public class LoginManager : MonoBehaviour {
 			DisplayError(Constants.LOGIN_ERROR_PASSWORD_LENGTH);
 			return;
 		}
-		if(JsonManager.Instance.LoginAccount(loginPanelUsernameInput.text,loginPanelPasswordInput.text)) {
+		if(DatabaseManager.Instance.LoginAccount(loginPanelUsernameInput.text,loginPanelPasswordInput.text)) {
 			Application.LoadLevel(Constants.SCENE_FARM);
 		}
 		else
@@ -58,7 +58,7 @@ public class LoginManager : MonoBehaviour {
 			return;
 		}
 		Dictionary<string, object> d = GameManager.Instance.RegisterAccount(registerPanelUsernameInput.text,registerPanelEmailInput.text);
-		JsonManager.Instance.RegisterAccount(d);
+		DatabaseManager.Instance.RegisterAccount(d);
 	}
 
 	private void DisplayError(string msg) {

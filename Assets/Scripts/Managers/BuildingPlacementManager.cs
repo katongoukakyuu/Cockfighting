@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent (typeof(TileMap))]
 [RequireComponent (typeof(TileMapMouse))]
@@ -8,7 +9,7 @@ public class BuildingPlacementManager : MonoBehaviour {
 	public Canvas mainCanvas;
 	public Canvas buildingPlacementCanvas;
 
-	private Building building;
+	private IDictionary<string,object> building;
 	private GameObject bldgObject;
 
 	private static BuildingPlacementManager instance;
@@ -23,10 +24,10 @@ public class BuildingPlacementManager : MonoBehaviour {
 		}
 	}
 
-	public void Initialize(Building building) {
+	public void Initialize(IDictionary<string,object> building) {
 		this.building = building;
 		TileMapMouse.Instance.enabled = true;
-		bldgObject = Instantiate (Resources.Load ("Prefabs/"+building.prefabName,typeof(GameObject))) as GameObject;
+		bldgObject = Instantiate (Resources.Load ("Prefabs/"+building[Constants.DB_KEYWORD_PREFAB_NAME],typeof(GameObject))) as GameObject;
 	}
 
 	void Update() {

@@ -19,6 +19,11 @@ public class GameManager : MonoBehaviour {
 
 	void Start() {
 		DontDestroyOnLoad(this);
+		if (FindObjectsOfType(GetType()).Length > 1)
+		{
+			Destroy(gameObject);
+			return;
+		}
 	}
 
 	public Dictionary<string, object> RegisterAccount(string username, string email) {

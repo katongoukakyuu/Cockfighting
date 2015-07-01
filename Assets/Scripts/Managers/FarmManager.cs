@@ -38,20 +38,20 @@ public class FarmManager : MonoBehaviour {
 			var changes = e.Changes.ToList();
 			foreach (DocumentChange change in changes) {
 				if(change.DocumentId.Contains(PlayerManager.Instance.player["username"].ToString ())) {
-					JsonManager.Instance.UpdatePlayer((string)PlayerManager.Instance.player["username"]);
+					DatabaseManager.Instance.UpdatePlayer((string)PlayerManager.Instance.player["username"]);
 					UpdateScreen();
 					return;
 				}
 			}
 		};
 
-		JsonManager.Instance.GetDatabase().Changed += eventHandler;
+		DatabaseManager.Instance.GetDatabase().Changed += eventHandler;
 		UpdateScreen();
 		UpdateChickens ();
 	}
 
 	void OnDestroy() {
-		JsonManager.Instance.GetDatabase().Changed -= eventHandler;
+		DatabaseManager.Instance.GetDatabase().Changed -= eventHandler;
 	}
 
 	private void UpdateScreen() {

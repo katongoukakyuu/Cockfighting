@@ -4,7 +4,7 @@ using System.Collections;
 using Pathfinding.Serialization.JsonFx;
 using System.IO;
 
-public class BuildButton : MonoBehaviour {
+public class FarmScreenBuildButton : MonoBehaviour {
 	
 	public Canvas mainCanvas;
 	public Canvas buildStructuresCanvas;
@@ -19,13 +19,7 @@ public class BuildButton : MonoBehaviour {
 	}
 
 	public void ButtonPressed() {
-		var streamReader = new StreamReader(PATH + "/buildings.txt");
-		string data = streamReader.ReadToEnd();
-		streamReader.Close ();
-		
-		buildings = JsonReader.Deserialize<Buildings>(data);
-
-		imagePanel.SetBuildings (buildings.b);
+		imagePanel.SetBuildings (DatabaseManager.Instance.LoadBuildings());
 
 		mainCanvas.gameObject.SetActive (false);
 		buildStructuresCanvas.gameObject.SetActive (true);

@@ -6,19 +6,19 @@ using System.IO;
 using System.Linq;
 using Couchbase.Lite;
 
-public class JsonManager : MonoBehaviour {
+public class DatabaseManager : MonoBehaviour {
 
 	private string PATH;
 	private Manager manager;
 	private Database db;
 
-	private static JsonManager instance;
-	private JsonManager() {}
+	private static DatabaseManager instance;
+	private DatabaseManager() {}
 
-	public static JsonManager Instance {
+	public static DatabaseManager Instance {
 		get {
 			if(instance == null) {
-				instance = (JsonManager)GameObject.FindObjectOfType(typeof(JsonManager));
+				instance = (DatabaseManager)GameObject.FindObjectOfType(typeof(DatabaseManager));
 			}
 			return instance;
 		}
@@ -26,7 +26,11 @@ public class JsonManager : MonoBehaviour {
 
 	void Start () {
 		DontDestroyOnLoad(this);
-		Instance.PATH = Application.dataPath + "/../json/";
+		if (FindObjectsOfType(GetType()).Length > 1)
+		{
+			Destroy(gameObject);
+			return;
+		}
 		manager = Manager.SharedInstance;
 		db = manager.GetDatabase("cockfighting");
 		db.Changed += (sender, e) => {
@@ -50,6 +54,12 @@ public class JsonManager : MonoBehaviour {
 			if(doc["type"].ToString () == Constants.DB_TYPE_CHICKEN)
 				emit(doc["name"], doc["owner"]);
 		}, "1");
+
+		View viewBuilding = db.GetView(Constants.DB_TYPE_BUILDING);
+		viewBuilding.SetMap ((doc, emit) => {
+			if(doc["type"].ToString () == Constants.DB_TYPE_BUILDING)
+				emit(doc["name"], null);
+		}, "1");
 	}
 
 	public Database GetDatabase() {
@@ -67,7 +77,7 @@ public class JsonManager : MonoBehaviour {
 		streamWriter.Close ();
 	}
 
-	public List<IDictionary<string,object>> LoadBuildingss() {
+	public List<IDictionary<string,object>> LoadBuildings() {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
 		var query = db.GetView (Constants.DB_TYPE_BUILDING).CreateQuery();
 		var rows = query.Run ();
