@@ -28,16 +28,16 @@ public class GameManager : MonoBehaviour {
 
 	public Dictionary<string, object> RegisterAccount(string username, string email) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
-			{"type", Constants.DB_TYPE_ACCOUNT},
-			{"username", username},
-			{"password", "test"},
-			{"email", email},
-			{"created at", System.DateTime.UtcNow.ToString()},
-			{"matches won", 0},
-			{"matches lost", 0},
-			{"matches tied", 0},
-			{"coin", Constants.COIN_START},
-			{"cash", Constants.CASH_START}
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_ACCOUNT},
+			{Constants.DB_KEYWORD_USERNAME, username},
+			{Constants.DB_KEYWORD_PASSWORD, "test"},
+			{Constants.DB_KEYWORD_EMAIL, email},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()},
+			{Constants.DB_KEYWORD_MATCHES_WON, 0},
+			{Constants.DB_KEYWORD_MATCHES_LOST, 0},
+			{Constants.DB_KEYWORD_MATCHES_TIED, 0},
+			{Constants.DB_KEYWORD_COIN, Constants.COIN_START},
+			{Constants.DB_KEYWORD_CASH, Constants.CASH_START}
 		};
 		return d;
 	}
@@ -64,6 +64,20 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_GAMENESS_MAX, Constants.CHICKEN_GAMENESS_DEFAULT_MAX},
 			{Constants.DB_KEYWORD_AGGRESSION_MAX, Constants.CHICKEN_AGGRESSION_DEFAULT_MAX},
 			{Constants.DB_KEYWORD_LIFE_STAGE, lifeStage}
+		};
+		return d;
+	}
+
+	public Dictionary<string, object> GenerateBuildingOwnedByPlayer(string name, string owner, string mapName, int xPos, int yPos, string orientation) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_BUILDING_OWNED},
+			{Constants.DB_KEYWORD_NAME, name},
+			{Constants.DB_KEYWORD_OWNER, owner},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()},
+			{Constants.DB_KEYWORD_MAP_NAME, mapName},
+			{Constants.DB_KEYWORD_X_POSITION, xPos},
+			{Constants.DB_KEYWORD_Y_POSITION, yPos},
+			{Constants.DB_KEYWORD_ORIENTATION, orientation},
 		};
 		return d;
 	}

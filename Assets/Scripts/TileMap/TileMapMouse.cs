@@ -5,6 +5,9 @@ public class TileMapMouse : MonoBehaviour {
 
 	public Vector3 position = Vector3.zero;
 
+	public delegate void OnTileHoverChangeEvent();
+	public event OnTileHoverChangeEvent OnTileHoverChange;
+
 	private static TileMapMouse instance;
 	private TileMapMouse() {}
 	
@@ -25,10 +28,14 @@ public class TileMapMouse : MonoBehaviour {
 		{
 			if(hit.collider.gameObject.tag == "Map") {
 				Vector3 pos = hit.collider.gameObject.transform.position;
-				position = new Vector3(Mathf.FloorToInt(pos.x),
+				Vector3 newPos = new Vector3(Mathf.FloorToInt(pos.x),
 				                       Mathf.FloorToInt(pos.y),
 				                       Mathf.FloorToInt(pos.z));
-				Debug.Log ("map tile is " + position);
+				if(position != newPos) {
+					position = newPos;
+					OnTileHoverChange();
+					Debug.Log ("map tile is " + position);
+				}
 			}
 		}
 

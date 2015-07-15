@@ -11,13 +11,6 @@ public class FarmScreenBuildButton : MonoBehaviour {
 
 	public ImagePanel imagePanel;
 
-	private string PATH;
-	private Buildings buildings;
-
-	void Start () {
-		PATH = Application.dataPath + "/../json/";
-	}
-
 	public void ButtonPressed() {
 		imagePanel.SetBuildings (DatabaseManager.Instance.LoadBuildings());
 

@@ -12,14 +12,20 @@ public class FarmManager : MonoBehaviour {
 	public Text cashText;
 	public GameObject chicken;
 
+	public Canvas messageCanvas;
+
 	public GameObject chickenStatsCanvas;
 	public Text[] chickenStatsFields;
 	
 	private System.EventHandler<DatabaseChangeEventArgs> eventHandler;
 
+	private string state = Constants.FARM_MANAGER_STATE_FREE_SELECT;
 	private bool isAnimating = false;
 	private GameObject selectedObject;
 	private GameObject mainCameraDummy;
+
+	private List<GameObject> listChickens = new List<GameObject> ();
+	private List<GameObject> listBuildings = new List<GameObject> ();
 
 	private static FarmManager instance;
 	private FarmManager() {}
@@ -46,20 +52,39 @@ public class FarmManager : MonoBehaviour {
 		};
 
 		DatabaseManager.Instance.GetDatabase().Changed += eventHandler;
-		UpdateScreen();
-		UpdateChickens ();
+		UpdatePlayer ();
 	}
 
 	void OnDestroy() {
-		DatabaseManager.Instance.GetDatabase().Changed -= eventHandler;
+		if (DatabaseManager.Instance != null) {
+			DatabaseManager.Instance.GetDatabase().Changed -= eventHandler;
+		}
 	}
 
-	private void UpdateScreen() {
+	public string State() {
+		return state;
+	}
+
+	public void SwitchState(string s) {
+		state = s;
+	}
+
+	public void UpdatePlayer() {
+		UpdateScreen();
+		UpdateChickens ();
+		UpdateBuildingsOwned ();
+	}
+
+	public void UpdateScreen() {
 		coinText.text = PlayerManager.Instance.player["coin"].ToString();
 		cashText.text = PlayerManager.Instance.player["cash"].ToString();
 	}
 
-	private void UpdateChickens() {
+	public void UpdateChickens() {
+		foreach(GameObject g in listChickens) {
+			Destroy (g);
+		}
+
 		int xMax = TileMap.Instance.tiles.GetLength (0);
 		int yMax = TileMap.Instance.tiles.GetLength (1);
 
@@ -70,28 +95,58 @@ public class FarmManager : MonoBehaviour {
 			g.transform.position = new Vector3(Random.Range (0,xMax),
 			                                   0,
 			                                   Random.Range (0,yMax));
+			listChickens.Add (g);
+		}
+	}
+
+	public void UpdateBuildingsOwned() {
+		foreach(GameObject g in listBuildings) {
+			Destroy (g);
+		}
+
+		foreach(IDictionary<string,object> i in PlayerManager.Instance.playerBuildings) {
+			IDictionary<string,object> bldg = DatabaseManager.Instance.LoadBuilding(i[Constants.DB_KEYWORD_NAME].ToString());
+			GameObject g = Instantiate (Resources.Load ("Prefabs/" + bldg[Constants.DB_KEYWORD_PREFAB_NAME])) as GameObject;
+			g.transform.position = new Vector3(int.Parse(i[Constants.DB_KEYWORD_X_POSITION].ToString()),
+			                                   0,
+			                                   int.Parse(i[Constants.DB_KEYWORD_Y_POSITION].ToString()));
+			switch(i[Constants.DB_KEYWORD_ORIENTATION].ToString()) {
+			case Constants.ORIENTATION_NORTH:
+				g.transform.Rotate (new Vector3(0.0f,0.0f,0.0f));
+				break;
+			case Constants.ORIENTATION_EAST:
+				g.transform.Rotate (new Vector3(0.0f,90.0f,0.0f));
+				break;
+			case Constants.ORIENTATION_SOUTH:
+				g.transform.Rotate (new Vector3(0.0f,180.0f,0.0f));
+				break;
+			case Constants.ORIENTATION_WEST:
+				g.transform.Rotate (new Vector3(0.0f,270.0f,0.0f));
+				break;
+			default:
+				break;
+			}
+			listBuildings.Add (g);
 		}
 	}
 
 	public void UpdateSelectedObject(GameObject g) {
 		print ("tag is " + g.tag);
-		if (g.tag == "Chicken") {
-			selectedObject = g;
-			mainCameraDummy = Instantiate(Camera.main.gameObject);
-			mainCameraDummy.SetActive(false);
-			CameraControls.Instance.freeCamera = false;
-			UpdateChickenStats(selectedObject.GetComponent<Chicken>().chicken);
-			chickenStatsCanvas.SetActive(true);
-			StartCoroutine(SwitchCamera(Camera.main, Camera.main.transform, g.transform.Find("Camera Stand/Camera").transform,
-			             g.transform.FindChild("Camera Stand"), false, 0.5f, 20));
-		}
-		else {
-			selectedObject = null;
-			CameraControls.Instance.freeCamera = true;
-			chickenStatsCanvas.SetActive(false);
-			StartCoroutine(SwitchCamera(Camera.main, Camera.main.transform, mainCameraDummy.transform,
-			                            null, true, 0.5f, 20));
-
+		if (state == Constants.FARM_MANAGER_STATE_FREE_SELECT) {
+			if (g.tag == "Chicken" && state == Constants.FARM_MANAGER_STATE_FREE_SELECT) {
+				selectedObject = g;
+				mainCameraDummy = Instantiate(Camera.main.gameObject);
+				mainCameraDummy.SetActive(false);
+				CameraControls.Instance.freeCamera = false;
+				UpdateChickenStats(selectedObject.GetComponent<Chicken>().chicken);
+				chickenStatsCanvas.SetActive(true);
+				StartCoroutine(SwitchCamera(Camera.main, Camera.main.transform, g.transform.Find("Camera Stand/Camera").transform,
+				                            g.transform.FindChild("Camera Stand"), false, 0.5f, 20));
+			}
+			else {
+				selectedObject = null;
+				SwitchToFreeCamera();
+			}
 		}
 	}
 
@@ -108,6 +163,140 @@ public class FarmManager : MonoBehaviour {
 			chickenStatsFields[8].text = dic[Constants.DB_KEYWORD_AGILITY] + " / " + dic[Constants.DB_KEYWORD_AGILITY_MAX];
 			chickenStatsFields[9].text = dic[Constants.DB_KEYWORD_GAMENESS] + " / " + dic[Constants.DB_KEYWORD_GAMENESS_MAX];
 			chickenStatsFields[10].text = dic[Constants.DB_KEYWORD_AGGRESSION] + " / " + dic[Constants.DB_KEYWORD_AGGRESSION_MAX];
+		}
+	}
+
+	public bool CheckBuildable(IDictionary<string,object> building, int[] pos, string orientation) {
+		int xMax = TileMap.Instance.tiles.GetLength (0);
+		int yMax = TileMap.Instance.tiles.GetLength (1);
+		int[] bldgCenter = new int[] {
+			int.Parse(building [Constants.DB_KEYWORD_X_CENTER].ToString()),
+			int.Parse(building [Constants.DB_KEYWORD_Y_CENTER].ToString())
+		};
+		int[] bldgSize = new int[] {
+			int.Parse(building [Constants.DB_KEYWORD_X_SIZE].ToString()),
+			int.Parse(building [Constants.DB_KEYWORD_Y_SIZE].ToString()),
+		};
+		
+		List<Vector2> bldgTiles = GetBuildingTiles (pos, bldgCenter, bldgSize, orientation);
+		foreach (Vector2 v in bldgTiles) {
+			if(v.x < 0 || v.y < 0 || v.x >= xMax || v.y >= yMax) {
+				return false;
+			}
+		}
+		return true;
+		
+		// debug
+		/*print ("north orientation bldg tiles:");
+		foreach (Vector2 v in GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_NORTH)) {
+			print(v.x + " " + v.y);
+		}
+
+		print ("east orientation bldg tiles:");
+		foreach (Vector2 v in GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_EAST)) {
+			print(v.x + " " + v.y);
+		}
+
+		print ("south orientation bldg tiles:");
+		foreach (Vector2 v in GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_SOUTH)) {
+			print(v.x + " " + v.y);
+		}
+
+		print ("west orientation bldg tiles:");
+		foreach (Vector2 v in GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_WEST)) {
+			print(v.x + " " + v.y);
+		}
+		*/
+	}
+
+	public void BuildStructure(IDictionary<string,object> building, int[] pos, string orientation) {
+		Dictionary<string, object> dic = GameManager.Instance.GenerateBuildingOwnedByPlayer (
+			building[Constants.DB_KEYWORD_NAME].ToString(),
+			PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString(),
+			"default",
+			pos[0],
+			pos[1],
+			orientation
+		);
+		DatabaseManager.Instance.SaveBuildingOwnedByPlayer (dic);
+	}
+
+	private List<Vector2> GetBuildingTiles(int[] pos, int[] center, int[] size, string orientation) {
+		List<Vector2> bldgTiles = new List<Vector2> ();
+		int[] posZero = new int[] {
+			pos [0] - center [0],
+			pos [1] - center [1]
+		};
+		switch (orientation) {
+		case Constants.ORIENTATION_NORTH:
+			for(int x = center[0]; x >= 0; x--) {
+				for(int y = 0; y < size[1]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			for(int x = center[0]+1; x < size[0]; x++) {
+				for(int y = 0; y < size[1]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			break;
+		case Constants.ORIENTATION_EAST:
+			for(int x = center[1], x2 = center[1]; x2 >= 0; x++, x2--) {
+				for(int y = 0, y2 = 0; y2 < size[0]; y--, y2++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			for(int x = center[1]-1, x2 = center[1]+1; x2 < size[1]; x--, x2++) {
+				for(int y = 0, y2 = 0; y2 < size[0]; y--, y2++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			break;
+		case Constants.ORIENTATION_SOUTH:
+			for(int x = center[0], x2 = center[0]; x2 >= 0; x++, x2--) {
+				for(int y = 0; y < size[1]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			for(int x = center[0]-1, x2 = center[0]+1; x2 < size[0]; x--, x2++) {
+				for(int y = 0; y < size[1]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			break;
+		case Constants.ORIENTATION_WEST:
+			for(int x = center[1]; x >= 0; x--) {
+				for(int y = 0; y < size[0]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			for(int x = center[1]+1; x < size[1]; x++) {
+				for(int y = 0; y < size[0]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			break;
+		default:
+			break;
+		}
+		bldgTiles = bldgTiles.Distinct ().ToList ();
+		return bldgTiles;
+	}
+
+	private void SwitchToFreeCamera() {
+		if(!CameraControls.Instance.freeCamera) {
+			CameraControls.Instance.freeCamera = true;
+			chickenStatsCanvas.SetActive(false);
+			StartCoroutine(SwitchCamera(Camera.main, Camera.main.transform, mainCameraDummy.transform,
+			                            null, true, 0.5f, 20));
 		}
 	}
 

@@ -7,6 +7,7 @@ public class PlayerManager : MonoBehaviour {
 
 	public IDictionary<string,object> player;
 	public List<IDictionary<string,object>> playerChickens;
+	public List<IDictionary<string,object>> playerBuildings;
 
 	private static PlayerManager instance;
 	private PlayerManager() {}

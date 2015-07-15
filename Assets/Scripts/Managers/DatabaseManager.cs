@@ -55,26 +55,30 @@ public class DatabaseManager : MonoBehaviour {
 				emit(doc["name"], doc["owner"]);
 		}, "1");
 
+		// building name
 		View viewBuilding = db.GetView(Constants.DB_TYPE_BUILDING);
 		viewBuilding.SetMap ((doc, emit) => {
 			if(doc["type"].ToString () == Constants.DB_TYPE_BUILDING)
 				emit(doc["name"], null);
 		}, "1");
+
+		// building name
+		View viewBuildingOwned = db.GetView(Constants.DB_TYPE_BUILDING_OWNED);
+		viewBuildingOwned.SetMap ((doc, emit) => {
+			if(doc["type"].ToString () == Constants.DB_TYPE_BUILDING_OWNED)
+				emit(doc["name"], doc["owner"]);
+		}, "1");
+
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_BUILDING_OWNED).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			db.DeleteLocalDocument(row.DocumentId);
+		}
 	}
 
 	public Database GetDatabase() {
 		return db;
-	}
-
-	public void SaveBuildings(Buildings b) {
-		Instance.PATH = Application.dataPath + "/../json/";
-		string data = JsonWriter.Serialize (b);
-		if(!Directory.Exists (Instance.PATH)) {
-			Directory.CreateDirectory(Instance.PATH);
-		}
-		var streamWriter = new StreamWriter(Instance.PATH + "buildings.txt");
-		streamWriter.Write (data);
-		streamWriter.Close ();
 	}
 
 	public List<IDictionary<string,object>> LoadBuildings() {
@@ -139,6 +143,7 @@ public class DatabaseManager : MonoBehaviour {
 	public void UpdatePlayer(string username) {
 		PlayerManager.Instance.player = db.GetDocument ("account_" + username).Properties;
 		PlayerManager.Instance.playerChickens = LoadChickens (username);
+		PlayerManager.Instance.playerBuildings = LoadBuildingsOwnedByPlayer (username);
 		print ("Account details:");
 		foreach (KeyValuePair<string, object> item in PlayerManager.Instance.player)
 			print(item.Key + ": " + item.Value);
@@ -165,6 +170,27 @@ public class DatabaseManager : MonoBehaviour {
 			print (row.Key + " " + row.Value);
 			if(row.Value.ToString() == username) {
 				l.Add (db.GetDocument ("chicken_" + row.Value + "_" + row.Key).Properties);
+			}
+		}
+		return l;
+	}
+
+	public void SaveBuildingOwnedByPlayer(Dictionary<string, object> dic) {
+		Document d = db.CreateDocument();
+		var properties = dic;
+		var rev = d.PutProperties(properties);
+		if (rev != null)
+			print ("Building owned is saved!");
+	}
+
+	public List<IDictionary<string,object>> LoadBuildingsOwnedByPlayer(string username) {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_BUILDING_OWNED).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			print (row.Key + " " + row.Value);
+			if(row.Value.ToString() == username) {
+				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
 		}
 		return l;

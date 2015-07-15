@@ -11,10 +11,13 @@ public class Constants : MonoBehaviour {
 	public const string SCENE_CONTROL_PANEL_BREEDS = "Control Panel - Breeds";
 	public const string SCENE_CONTROL_PANEL_BUILDINGS = "Control Panel - Buildings";
 
-	public const int ORIENTATION_NORTH = 0;
-	public const int ORIENTATION_SOUTH = 1;
-	public const int ORIENTATION_EAST = 2;
-	public const int ORIENTATION_WEST = 3;
+	public const string FARM_MANAGER_STATE_FREE_SELECT = "Free Select";
+	public const string FARM_MANAGER_STATE_BUILD_STRUCTURE = "Build Structure";
+
+	public const string ORIENTATION_NORTH = "north";
+	public const string ORIENTATION_SOUTH = "south";
+	public const string ORIENTATION_EAST = "east";
+	public const string ORIENTATION_WEST = "west";
 
 	public const int USERNAME_MIN_LENGTH = 3;
 	public const int USERNAME_MAX_LENGTH = 16;
@@ -50,9 +53,21 @@ public class Constants : MonoBehaviour {
 	public const string DB_TYPE_CHICKEN = "chicken";
 	public const string DB_TYPE_BREED = "breed";
 	public const string DB_TYPE_BUILDING = "building";
+	public const string DB_TYPE_BUILDING_OWNED = "building owned";
 	public const string DB_KEYWORD_NAME = "name";
 	public const string DB_KEYWORD_DESCRIPTION = "description";
 	public const string DB_KEYWORD_CREATED_AT = "created at";
+
+	// player document keywords
+	public const string DB_KEYWORD_USERNAME = "username";
+	public const string DB_KEYWORD_PASSWORD = "password";
+	public const string DB_KEYWORD_EMAIL = "email";
+	public const string DB_KEYWORD_MATCHES_WON = "matches won";
+	public const string DB_KEYWORD_MATCHES_LOST = "matches lost";
+	public const string DB_KEYWORD_MATCHES_TIED = "matches tied";
+	public const string DB_KEYWORD_COIN = "coin";
+	public const string DB_KEYWORD_CASH = "cash";
+	// end player document keywords
 
 	// breed document keywords
 	public const string DB_KEYWORD_HEAD_COLOR_1 = "head color 1";
@@ -107,6 +122,13 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_PREFAB_NAME = "prefab name";
 	public const string DB_KEYWORD_IMAGE_NAME = "image name";
 	// end building document keywords
+
+	// building-owned-by-player keywords
+	public const string DB_KEYWORD_MAP_NAME = "map name";
+	public const string DB_KEYWORD_X_POSITION = "x position";
+	public const string DB_KEYWORD_Y_POSITION = "y position";
+	public const string DB_KEYWORD_ORIENTATION = "orientation";
+	// end building-owned-by-player keywords
 
 	public const string GENDER_MALE = "male";
 	public const string GENDER_FEMALE = "female";
