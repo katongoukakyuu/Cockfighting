@@ -20,7 +20,7 @@ public class MouseHandler : MonoBehaviour {
 	public event OnMouseClickEvent OnMouseClick;
 
 	void Update() {
-		if(Input.GetMouseButtonDown(0)) {
+		if(Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) {
 			Ray screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 			
 			RaycastHit hit;

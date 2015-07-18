@@ -8,6 +8,7 @@ public class PlayerManager : MonoBehaviour {
 	public IDictionary<string,object> player;
 	public List<IDictionary<string,object>> playerChickens;
 	public List<IDictionary<string,object>> playerBuildings;
+	public List<Vector2> playerOccupiedTiles;
 
 	private static PlayerManager instance;
 	private PlayerManager() {}

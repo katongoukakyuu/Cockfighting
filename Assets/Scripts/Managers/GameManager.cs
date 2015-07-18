@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public class GameManager : MonoBehaviour {
 
@@ -80,5 +81,86 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_ORIENTATION, orientation},
 		};
 		return d;
+	}
+
+	public Dictionary<string, object> GenerateFeedsSchedule(string chickenId, string feedsId, int order) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_FEEDS_SCHEDULE},
+			{Constants.DB_KEYWORD_CHICKEN_ID, chickenId},
+			{Constants.DB_KEYWORD_FEEDS_ID, feedsId},
+			{Constants.DB_KEYWORD_ORDER, order},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()}
+		};
+		return d;
+	}
+
+	public List<Vector2> GetBuildingTiles(int[] pos, int[] center, int[] size, string orientation) {
+		List<Vector2> bldgTiles = new List<Vector2> ();
+		int[] posZero = new int[] {
+			pos [0] - center [0],
+			pos [1] - center [1]
+		};
+		switch (orientation) {
+		case Constants.ORIENTATION_NORTH:
+			for(int x = center[0]; x >= 0; x--) {
+				for(int y = 0; y < size[1]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			for(int x = center[0]+1; x < size[0]; x++) {
+				for(int y = 0; y < size[1]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			break;
+		case Constants.ORIENTATION_EAST:
+			for(int x = center[1], x2 = center[1]; x2 >= 0; x++, x2--) {
+				for(int y = 0, y2 = 0; y2 < size[0]; y--, y2++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			for(int x = center[1]-1, x2 = center[1]+1; x2 < size[1]; x--, x2++) {
+				for(int y = 0, y2 = 0; y2 < size[0]; y--, y2++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			break;
+		case Constants.ORIENTATION_SOUTH:
+			for(int x = center[0], x2 = center[0]; x2 >= 0; x++, x2--) {
+				for(int y = 0; y < size[1]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			for(int x = center[0]-1, x2 = center[0]+1; x2 < size[0]; x--, x2++) {
+				for(int y = 0; y < size[1]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			break;
+		case Constants.ORIENTATION_WEST:
+			for(int x = center[1]; x >= 0; x--) {
+				for(int y = 0; y < size[0]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			for(int x = center[1]+1; x < size[1]; x++) {
+				for(int y = 0; y < size[0]; y++) {
+					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
+					bldgTiles.Add (v);
+				}
+			}
+			break;
+		default:
+			break;
+		}
+		bldgTiles = bldgTiles.Distinct ().ToList ();
+		return bldgTiles;
 	}
 }

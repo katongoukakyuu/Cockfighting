@@ -177,10 +177,11 @@ public class FarmManager : MonoBehaviour {
 			int.Parse(building [Constants.DB_KEYWORD_X_SIZE].ToString()),
 			int.Parse(building [Constants.DB_KEYWORD_Y_SIZE].ToString()),
 		};
-		
-		List<Vector2> bldgTiles = GetBuildingTiles (pos, bldgCenter, bldgSize, orientation);
+
+		List<Vector2> bldgTiles = GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, orientation);
 		foreach (Vector2 v in bldgTiles) {
-			if(v.x < 0 || v.y < 0 || v.x >= xMax || v.y >= yMax) {
+			if(v.x < 0 || v.y < 0 || v.x >= xMax || v.y >= yMax ||
+			   PlayerManager.Instance.playerOccupiedTiles.Contains(v)) {
 				return false;
 			}
 		}
@@ -188,22 +189,22 @@ public class FarmManager : MonoBehaviour {
 		
 		// debug
 		/*print ("north orientation bldg tiles:");
-		foreach (Vector2 v in GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_NORTH)) {
+		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_NORTH)) {
 			print(v.x + " " + v.y);
 		}
 
 		print ("east orientation bldg tiles:");
-		foreach (Vector2 v in GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_EAST)) {
+		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_EAST)) {
 			print(v.x + " " + v.y);
 		}
 
 		print ("south orientation bldg tiles:");
-		foreach (Vector2 v in GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_SOUTH)) {
+		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_SOUTH)) {
 			print(v.x + " " + v.y);
 		}
 
 		print ("west orientation bldg tiles:");
-		foreach (Vector2 v in GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_WEST)) {
+		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_WEST)) {
 			print(v.x + " " + v.y);
 		}
 		*/
@@ -219,76 +220,6 @@ public class FarmManager : MonoBehaviour {
 			orientation
 		);
 		DatabaseManager.Instance.SaveBuildingOwnedByPlayer (dic);
-	}
-
-	private List<Vector2> GetBuildingTiles(int[] pos, int[] center, int[] size, string orientation) {
-		List<Vector2> bldgTiles = new List<Vector2> ();
-		int[] posZero = new int[] {
-			pos [0] - center [0],
-			pos [1] - center [1]
-		};
-		switch (orientation) {
-		case Constants.ORIENTATION_NORTH:
-			for(int x = center[0]; x >= 0; x--) {
-				for(int y = 0; y < size[1]; y++) {
-					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
-					bldgTiles.Add (v);
-				}
-			}
-			for(int x = center[0]+1; x < size[0]; x++) {
-				for(int y = 0; y < size[1]; y++) {
-					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
-					bldgTiles.Add (v);
-				}
-			}
-			break;
-		case Constants.ORIENTATION_EAST:
-			for(int x = center[1], x2 = center[1]; x2 >= 0; x++, x2--) {
-				for(int y = 0, y2 = 0; y2 < size[0]; y--, y2++) {
-					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
-					bldgTiles.Add (v);
-				}
-			}
-			for(int x = center[1]-1, x2 = center[1]+1; x2 < size[1]; x--, x2++) {
-				for(int y = 0, y2 = 0; y2 < size[0]; y--, y2++) {
-					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
-					bldgTiles.Add (v);
-				}
-			}
-			break;
-		case Constants.ORIENTATION_SOUTH:
-			for(int x = center[0], x2 = center[0]; x2 >= 0; x++, x2--) {
-				for(int y = 0; y < size[1]; y++) {
-					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
-					bldgTiles.Add (v);
-				}
-			}
-			for(int x = center[0]-1, x2 = center[0]+1; x2 < size[0]; x--, x2++) {
-				for(int y = 0; y < size[1]; y++) {
-					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
-					bldgTiles.Add (v);
-				}
-			}
-			break;
-		case Constants.ORIENTATION_WEST:
-			for(int x = center[1]; x >= 0; x--) {
-				for(int y = 0; y < size[0]; y++) {
-					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
-					bldgTiles.Add (v);
-				}
-			}
-			for(int x = center[1]+1; x < size[1]; x++) {
-				for(int y = 0; y < size[0]; y++) {
-					Vector2 v = new Vector2(posZero[0] + x, posZero[1] + y);
-					bldgTiles.Add (v);
-				}
-			}
-			break;
-		default:
-			break;
-		}
-		bldgTiles = bldgTiles.Distinct ().ToList ();
-		return bldgTiles;
 	}
 
 	private void SwitchToFreeCamera() {

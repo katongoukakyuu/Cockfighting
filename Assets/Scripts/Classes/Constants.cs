@@ -10,9 +10,15 @@ public class Constants : MonoBehaviour {
 	public const string SCENE_CONTROL_PANEL = "Control Panel";
 	public const string SCENE_CONTROL_PANEL_BREEDS = "Control Panel - Breeds";
 	public const string SCENE_CONTROL_PANEL_BUILDINGS = "Control Panel - Buildings";
+	public const string SCENE_CONTROL_PANEL_FEEDS = "Control Panel - Feeds";
+
+	public const string PATH_SPRITES = "Sprites/";
 
 	public const string FARM_MANAGER_STATE_FREE_SELECT = "Free Select";
 	public const string FARM_MANAGER_STATE_BUILD_STRUCTURE = "Build Structure";
+
+	public const string FEEDS_MANAGER_STATE_FREE_SELECT = "Free Select";
+	public const string FEEDS_MANAGER_STATE_ASSIGN_ITEM = "Assign Item";
 
 	public const string ORIENTATION_NORTH = "north";
 	public const string ORIENTATION_SOUTH = "south";
@@ -24,12 +30,18 @@ public class Constants : MonoBehaviour {
 	public const int PASSWORD_MIN_LENGTH = 4;
 	public const int PASSWORD_MAX_LENGTH = 16;
 
+	public const string TIMER_DEFAULT = "0:00:00:00";
+
 	public const string LOGIN_ERROR_USERNAME_LENGTH = "Username must be 3-16 characters long.";
 	public const string LOGIN_ERROR_PASSWORD_LENGTH = "Password must be 4-16 characters long.";
 	public const string LOGIN_SUCCESS = "Login success!";
 	public const string LOGIN_FAIL = "Login fail.";
 
 	public const string GENERIC_ERROR_FIELDS = "Please fill up all the fields.";
+
+	// schedule panel messages
+	public const string MESSAGE_SCHEDULE_PANEL_1 = "Click the icon to assign an item!";
+	// end schedule panel messages
 
 	public const int COIN_START = 10000;
 	public const int CASH_START = 200;
@@ -54,9 +66,15 @@ public class Constants : MonoBehaviour {
 	public const string DB_TYPE_BREED = "breed";
 	public const string DB_TYPE_BUILDING = "building";
 	public const string DB_TYPE_BUILDING_OWNED = "building owned";
+	public const string DB_TYPE_FEEDS = "feeds";
+	public const string DB_TYPE_FEEDS_SCHEDULE = "feeds schedule";
+
+	public const string DB_KEYWORD_ID = "_id";
 	public const string DB_KEYWORD_NAME = "name";
 	public const string DB_KEYWORD_DESCRIPTION = "description";
 	public const string DB_KEYWORD_CREATED_AT = "created at";
+	public const string DB_KEYWORD_CHICKEN_ID = "chicken id";
+	public const string DB_KEYWORD_FEEDS_ID = "feeds id";
 
 	// player document keywords
 	public const string DB_KEYWORD_USERNAME = "username";
@@ -130,6 +148,17 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_ORIENTATION = "orientation";
 	// end building-owned-by-player keywords
 
+	// feeds document keywords
+	public const string DB_KEYWORD_DURATION_DAYS = "days";
+	public const string DB_KEYWORD_DURATION_HOURS = "hours";
+	public const string DB_KEYWORD_DURATION_MINUTES = "minutes";
+	public const string DB_KEYWORD_DURATION_SECONDS = "seconds";
+	// end feeds document keywords
+
+	// feeds schedule document keywords
+	public const string DB_KEYWORD_ORDER = "order";
+	// end feeds schedule document keywords
+
 	public const string GENDER_MALE = "male";
 	public const string GENDER_FEMALE = "female";
 
@@ -138,4 +167,15 @@ public class Constants : MonoBehaviour {
 	public const string LIFE_STAGE_STAG = "stag";
 	public const string LIFE_STAGE_COCK = "cock";
 	public const string LIFE_STAGE_HEN = "hen";
+
+	// schedule panel children
+	public const string SCHEDULE_PANEL_ICON = "Inventory Icon";
+	public const string SCHEDULE_PANEL_ICON_COUNT = "Inventory Icon/Panel/Inventory Count";
+	public const string SCHEDULE_PANEL_NAME = "Info/Name/Name Text";
+	public const string SCHEDULE_PANEL_STATS = "Info/Stats/Stats Text";
+	public const string SCHEDULE_PANEL_TIMER = "Timer/Timer/Timer Text";
+	public const string SCHEDULE_PANEL_HURRY_BUTTON = "Timer/Buttons/Hurry";
+	public const string SCHEDULE_PANEL_CHANGE_BUTTON = "Timer/Buttons/Change";
+	public const string SCHEDULE_PANEL_CANCEL_BUTTON = "Timer/Buttons/Cancel";
+	// end schedule panel children
 }

@@ -9,7 +9,7 @@ public class FarmScreenBuildButton : MonoBehaviour {
 	public Canvas mainCanvas;
 	public Canvas buildStructuresCanvas;
 
-	public ImagePanel imagePanel;
+	public BuildScreenImagePanel imagePanel;
 
 	public void ButtonPressed() {
 		imagePanel.SetBuildings (DatabaseManager.Instance.LoadBuildings());
