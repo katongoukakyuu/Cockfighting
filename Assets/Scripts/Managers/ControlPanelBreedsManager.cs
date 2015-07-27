@@ -30,7 +30,7 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 		}
 	}
 
-	void Start () {
+	void Awake () {
 		// initialize fields
 		breedList = new List<string> ();
 
@@ -47,8 +47,8 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 		// initialize views
 		View view = db.GetView(Constants.DB_TYPE_BREED);
 		view.SetMap ((doc, emit) => {
-			if(doc["type"].ToString () == Constants.DB_TYPE_BREED)
-				emit(doc["name"], null);
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_BREED)
+				emit(doc[Constants.DB_KEYWORD_NAME], null);
 		}, "1");
 	}
 
@@ -65,7 +65,8 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 	                      string bodyColor1, int bodyColor1Chance, string bodyColor2,
 	                      string wingColor1, int wingColor1Chance, string wingColor2,
 	                      string tailColor1, int tailColor1Chance, string tailColor2) {
-		Document d = db.GetDocument("breed_" + name);
+		print (db);
+		Document d = db.CreateDocument ();
 		if (selectedBreed == "") {
 			var properties = new Dictionary<string, object> () {
 				{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_BREED},
@@ -91,6 +92,7 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 			d.PutProperties (properties);
 			SetMessage("Entry created.");
 		} else {
+			d = db.GetDocument(LoadBreedId(selectedBreed));
 			d.Update((UnsavedRevision newRevision) => {
 				var properties = newRevision.Properties;
 				properties[Constants.DB_KEYWORD_HEAD_COLOR_1] = headColor1;
@@ -126,6 +128,19 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 		breedList = l;
 	}
 
+	public string LoadBreedId(string name) {
+		var query = db.GetView (Constants.DB_TYPE_BREED).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			print (row.Key);
+			if(row.Key.ToString() == name) {
+				print ("breed found!");
+				return row.DocumentId;
+			}
+		}
+		return null;
+	}
+
 	public IDictionary<string, object> LoadBreed(string name) {
 		var query = db.GetView (Constants.DB_TYPE_BREED).CreateQuery();
 		var rows = query.Run ();
@@ -133,7 +148,7 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 			print (row.Key);
 			if(row.Key.ToString() == name) {
 				print ("breed found!");
-				return db.GetDocument ("breed_" + name).Properties;
+				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
 		return null;
@@ -200,9 +215,11 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 	}
 
 	private IEnumerator CoroutineSetMessage(string s) {
-		messageText.text = s;
-		yield return new WaitForSeconds(messageDuration);
-		messageText.text = "";
+		if (messageText != null) {
+			messageText.text = s;
+			yield return new WaitForSeconds(messageDuration);
+			messageText.text = "";
+		}
 	}
 
 }

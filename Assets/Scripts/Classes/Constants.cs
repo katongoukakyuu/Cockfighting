@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Constants : MonoBehaviour {
 
@@ -60,6 +61,8 @@ public class Constants : MonoBehaviour {
 	public const int CHICKEN_GAMENESS_DEFAULT_MAX = 2500;
 	public const int CHICKEN_AGGRESSION_DEFAULT_MAX = 2500;
 
+	public const string DB_COUCHBASE_ID = "_id";
+
 	public const string DB_KEYWORD_TYPE = "type";
 	public const string DB_TYPE_ACCOUNT = "account";
 	public const string DB_TYPE_CHICKEN = "chicken";
@@ -68,6 +71,8 @@ public class Constants : MonoBehaviour {
 	public const string DB_TYPE_BUILDING_OWNED = "building owned";
 	public const string DB_TYPE_FEEDS = "feeds";
 	public const string DB_TYPE_FEEDS_SCHEDULE = "feeds schedule";
+	public const string DB_TYPE_FIGHTING_MOVE = "fighting move";
+	public const string DB_TYPE_FIGHTING_MOVE_OWNED = "fighting move owned";
 
 	public const string DB_KEYWORD_ID = "_id";
 	public const string DB_KEYWORD_NAME = "name";
@@ -75,6 +80,7 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_CREATED_AT = "created at";
 	public const string DB_KEYWORD_CHICKEN_ID = "chicken id";
 	public const string DB_KEYWORD_FEEDS_ID = "feeds id";
+	public const string DB_KEYWORD_FIGHTING_MOVE_ID = "fighting move id";
 
 	// player document keywords
 	public const string DB_KEYWORD_USERNAME = "username";
@@ -178,4 +184,18 @@ public class Constants : MonoBehaviour {
 	public const string SCHEDULE_PANEL_CHANGE_BUTTON = "Timer/Buttons/Change";
 	public const string SCHEDULE_PANEL_CANCEL_BUTTON = "Timer/Buttons/Cancel";
 	// end schedule panel children
+
+	// fight move list
+	public const string FIGHT_MOVE_DASH = "Dash";
+	public const string FIGHT_MOVE_FLYING_TALON = "Flying Talon";
+	public const string FIGHT_MOVE_SIDESTEP = "Sidestep";
+	public const string FIGHT_MOVE_PECK = "Peck";
+
+	public static List<string> FIGHT_MOVES = new List<string>() {
+		FIGHT_MOVE_DASH,
+		FIGHT_MOVE_FLYING_TALON,
+		FIGHT_MOVE_SIDESTEP,
+		FIGHT_MOVE_PECK
+	};
+	// end fight move list
 }

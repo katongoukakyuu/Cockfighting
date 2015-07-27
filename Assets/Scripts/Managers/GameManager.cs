@@ -6,6 +6,8 @@ using System.Linq;
 
 public class GameManager : MonoBehaviour {
 
+	public bool initializeDatabase = false;
+
 	private static GameManager instance;
 	private GameManager() {}
 
@@ -89,6 +91,25 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_CHICKEN_ID, chickenId},
 			{Constants.DB_KEYWORD_FEEDS_ID, feedsId},
 			{Constants.DB_KEYWORD_ORDER, order},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()}
+		};
+		return d;
+	}
+
+	public Dictionary<string, object> GenerateFightingMove(string name) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_FIGHTING_MOVE},
+			{Constants.DB_KEYWORD_NAME, name},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()}
+		};
+		return d;
+	}
+
+	public Dictionary<string, object> GenerateFightingMoveOwnedByChicken(string chickenId, string moveId) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_FIGHTING_MOVE_OWNED},
+			{Constants.DB_KEYWORD_CHICKEN_ID, chickenId},
+			{Constants.DB_KEYWORD_FIGHTING_MOVE_ID, moveId},
 			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()}
 		};
 		return d;

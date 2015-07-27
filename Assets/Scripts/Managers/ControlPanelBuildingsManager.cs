@@ -30,7 +30,7 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 		}
 	}
 
-	void Start () {
+	void Awake () {
 		// initialize fields
 		buildingList = new List<string> ();
 
@@ -47,8 +47,8 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 		// initialize views
 		View view = db.GetView(Constants.DB_TYPE_BUILDING);
 		view.SetMap ((doc, emit) => {
-			if(doc["type"].ToString () == Constants.DB_TYPE_BUILDING)
-				emit(doc["name"], null);
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_BUILDING)
+				emit(doc[Constants.DB_KEYWORD_NAME], null);
 		}, "1");
 	}
 
@@ -65,7 +65,7 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 	                         int xSize, int ySize,
 	                         int xCenter, int yCenter,
 	                         string prefabName, string imageName) {
-		Document d = db.GetDocument("building_" + name);
+		Document d = db.CreateDocument();
 		if (selectedBuilding == "") {
 			var properties = new Dictionary<string, object> () {
 				{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_BUILDING},
@@ -84,6 +84,7 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 			d.PutProperties (properties);
 			SetMessage("Entry created.");
 		} else {
+			d = db.GetDocument(LoadBuildingId(selectedBuilding));
 			d.Update((UnsavedRevision newRevision) => {
 				var properties = newRevision.Properties;
 				properties[Constants.DB_KEYWORD_DESCRIPTION] = description;
@@ -119,7 +120,20 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 			print (row.Key);
 			if(row.Key.ToString() == name) {
 				print ("building found!");
-				return db.GetDocument ("building_" + name).Properties;
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
+	}
+
+	public string LoadBuildingId(string name) {
+		var query = db.GetView (Constants.DB_TYPE_BUILDING).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			print (row.Key);
+			if(row.Key.ToString() == name) {
+				print ("building found!");
+				return row.DocumentId;
 			}
 		}
 		return null;
@@ -170,9 +184,11 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 	}
 
 	private IEnumerator CoroutineSetMessage(string s) {
-		messageText.text = s;
-		yield return new WaitForSeconds(messageDuration);
-		messageText.text = "";
+		if (messageText != null) {
+			messageText.text = s;
+			yield return new WaitForSeconds(messageDuration);
+			messageText.text = "";
+		}
 	}
 
 }

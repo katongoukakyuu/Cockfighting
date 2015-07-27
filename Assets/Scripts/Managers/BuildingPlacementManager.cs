@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -40,7 +40,8 @@ public class BuildingPlacementManager : MonoBehaviour {
 			if(FarmManager.Instance.CheckBuildable(building, pos, orientation)) {
 				FarmManager.Instance.BuildStructure(building, pos, orientation);
 				ButtonCancel();
-				DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString ());
+				DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString (),
+				                                      PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
 				FarmManager.Instance.UpdateBuildingsOwned();
 			}
 		}

@@ -384,7 +384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f447529748bb9fb4c9b82566bac0d8ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imagePanel: {fileID: 0}
+  imagePanel: {fileID: 473624258}
 --- !u!114 &63823669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2240,11 +2240,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1de42c4116e6524c9bf61a014ff2dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCanvas: {fileID: 0}
-  buildStructuresCanvas: {fileID: 0}
-  buildingPlacementCanvas: {fileID: 0}
-  imagePanel: {fileID: 0}
-  buildingPlacementManager: {fileID: 0}
+  mainCanvas: {fileID: 332044023}
+  buildStructuresCanvas: {fileID: 910138500}
+  buildingPlacementCanvas: {fileID: 724358032}
+  imagePanel: {fileID: 473624258}
+  buildingPlacementManager: {fileID: 1269580372}
 --- !u!1 &454851100
 GameObject:
   m_ObjectHideFlags: 0
@@ -2408,7 +2408,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33f02d487655d2c41bcb06a0677a701e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  images: []
+  images:
+  - {fileID: 1841735993}
+  - {fileID: 1018106901}
+  - {fileID: 556811084}
+  - {fileID: 1081515714}
+  - {fileID: 1468051800}
   animDuration: .100000001
   animSteps: 10
 --- !u!1 &480470544
@@ -9739,8 +9744,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fcc29ffab3340a4fa947c6b97d78ec2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCanvas: {fileID: 0}
-  buildStructuresCanvas: {fileID: 0}
+  mainCanvas: {fileID: 332044023}
+  buildStructuresCanvas: {fileID: 910138500}
 --- !u!1 &1602461935
 GameObject:
   m_ObjectHideFlags: 0
@@ -12703,7 +12708,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7850c123b41c704b92844260a4a7292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imagePanel: {fileID: 0}
+  imagePanel: {fileID: 473624258}
 --- !u!114 &2129410674
 MonoBehaviour:
   m_ObjectHideFlags: 0

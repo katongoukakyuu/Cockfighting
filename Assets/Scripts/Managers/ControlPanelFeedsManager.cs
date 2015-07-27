@@ -30,7 +30,7 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 		}
 	}
 
-	void Start () {
+	void Awake () {
 		// initialize fields
 		feedsList = new List<string> ();
 
@@ -47,8 +47,8 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 		// initialize views
 		View view = db.GetView(Constants.DB_TYPE_FEEDS);
 		view.SetMap ((doc, emit) => {
-			if(doc["type"].ToString () == Constants.DB_TYPE_FEEDS)
-				emit(doc["name"], null);
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_FEEDS)
+				emit(doc[Constants.DB_KEYWORD_NAME], null);
 		}, "1");
 	}
 
@@ -204,9 +204,11 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 	}
 
 	private IEnumerator CoroutineSetMessage(string s) {
-		messageText.text = s;
-		yield return new WaitForSeconds(messageDuration);
-		messageText.text = "";
+		if (messageText != null) {
+			messageText.text = s;
+			yield return new WaitForSeconds(messageDuration);
+			messageText.text = "";
+		}
 	}
 
 }

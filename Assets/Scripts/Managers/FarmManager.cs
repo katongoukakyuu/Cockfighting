@@ -43,8 +43,9 @@ public class FarmManager : MonoBehaviour {
 		eventHandler = (sender, e) => {
 			var changes = e.Changes.ToList();
 			foreach (DocumentChange change in changes) {
-				if(change.DocumentId.Contains(PlayerManager.Instance.player["username"].ToString ())) {
-					DatabaseManager.Instance.UpdatePlayer((string)PlayerManager.Instance.player["username"]);
+				if(change.DocumentId.Contains(PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString ())) {
+					DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString (),
+					                                      PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
 					UpdateScreen();
 					return;
 				}
@@ -76,8 +77,8 @@ public class FarmManager : MonoBehaviour {
 	}
 
 	public void UpdateScreen() {
-		coinText.text = PlayerManager.Instance.player["coin"].ToString();
-		cashText.text = PlayerManager.Instance.player["cash"].ToString();
+		coinText.text = PlayerManager.Instance.player[Constants.DB_KEYWORD_COIN].ToString();
+		cashText.text = PlayerManager.Instance.player[Constants.DB_KEYWORD_CASH].ToString();
 	}
 
 	public void UpdateChickens() {
