@@ -12,6 +12,6 @@ public class ControlPanelBreedsScreenListButton : MonoBehaviour {
 		entry.callback.AddListener ((eventData) => {
 			LoadBreedsScreenManager.Instance.SetSelected (this.GetComponentInChildren<Text>().text);
 		});
-		trigger.delegates.Add (entry);
+		trigger.triggers.Add (entry);
 	}
 }
