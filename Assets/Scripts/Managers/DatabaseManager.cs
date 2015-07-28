@@ -110,8 +110,7 @@ public class DatabaseManager : MonoBehaviour {
 			LoadChicken("Gary", "test"),
 			LoadChicken("Larry", "test"),
 			LoadFightingMovesOwned (LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
-			LoadFightingMovesOwned (LoadChicken("Larry", "test") [Constants.DB_COUCHBASE_ID].ToString()),
-			new Vector2 (-50, 0), new Vector2 (50, 0)
+			LoadFightingMovesOwned (LoadChicken("Larry", "test") [Constants.DB_COUCHBASE_ID].ToString())
 		);
 	}
 

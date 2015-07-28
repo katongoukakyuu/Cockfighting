@@ -6,6 +6,14 @@ using System.Linq;
 
 public class FightManager : MonoBehaviour {
 
+	public Transform chicken1;
+	public Transform chicken2;
+
+	private List<string> name = new List<string>();
+	private int[] atk = new int[2], def = new int[2], hp = new int[2], agi = new int[2], gam = new int[2], agg = new int[2];
+	private Vector3[] pos = new Vector3[2];
+	private float dist;
+
 	private static FightManager instance;
 	private FightManager() {}
 
@@ -30,26 +38,29 @@ public class FightManager : MonoBehaviour {
 	public void AutomateFight(IDictionary<string,object> c1,
 	                            IDictionary<string,object> c2,
 	                            List<IDictionary<string, object>> c1Moves,
-	                            List<IDictionary<string, object>> c2Moves,
-	                            Vector2 c1Pos, Vector2 c2Pos) {
-		int atk1 = int.Parse (c1[Constants.DB_KEYWORD_ATTACK].ToString());
-		int def1 = int.Parse (c1[Constants.DB_KEYWORD_DEFENSE].ToString());
-		int hp1 = int.Parse (c1[Constants.DB_KEYWORD_HP].ToString());
-		int agi1 = int.Parse (c1[Constants.DB_KEYWORD_AGILITY].ToString());
-		int gam1 = int.Parse (c1[Constants.DB_KEYWORD_GAMENESS].ToString());
-		int agg1 = int.Parse (c1[Constants.DB_KEYWORD_AGGRESSION].ToString());
+	                            List<IDictionary<string, object>> c2Moves) {
+		atk[0] = int.Parse (c1[Constants.DB_KEYWORD_ATTACK].ToString());
+		def[0] = int.Parse (c1[Constants.DB_KEYWORD_DEFENSE].ToString());
+		hp[0] = int.Parse (c1[Constants.DB_KEYWORD_HP].ToString());
+		agi[0] = int.Parse (c1[Constants.DB_KEYWORD_AGILITY].ToString());
+		gam[0] = int.Parse (c1[Constants.DB_KEYWORD_GAMENESS].ToString());
+		agg[0] = int.Parse (c1[Constants.DB_KEYWORD_AGGRESSION].ToString());
 
-		int atk2 = int.Parse (c2[Constants.DB_KEYWORD_ATTACK].ToString());
-		int def2 = int.Parse (c2[Constants.DB_KEYWORD_DEFENSE].ToString());
-		int hp2 = int.Parse (c2[Constants.DB_KEYWORD_HP].ToString());
-		int agi2 = int.Parse (c2[Constants.DB_KEYWORD_AGILITY].ToString());
-		int gam2 = int.Parse (c2[Constants.DB_KEYWORD_GAMENESS].ToString());
-		int agg2 = int.Parse (c2[Constants.DB_KEYWORD_AGGRESSION].ToString());
+		atk[1] = int.Parse (c2[Constants.DB_KEYWORD_ATTACK].ToString());
+		def[1] = int.Parse (c2[Constants.DB_KEYWORD_DEFENSE].ToString());
+		hp[1] = int.Parse (c2[Constants.DB_KEYWORD_HP].ToString());
+		agi[1] = int.Parse (c2[Constants.DB_KEYWORD_AGILITY].ToString());
+		gam[1] = int.Parse (c2[Constants.DB_KEYWORD_GAMENESS].ToString());
+		agg[1] = int.Parse (c2[Constants.DB_KEYWORD_AGGRESSION].ToString());
 
-		print ("automatic fight started");
-		print ("c1 moves count is " + c1Moves.Count ());
-		print ("c2 moves count is " + c2Moves.Count ());
-		AssignNextMove (c1, c2, c1Moves, c1Pos, c2Pos);
+		pos[0] = chicken1.position;
+		pos[1] = chicken2.position;
+		UpdateDistance();
+		print (pos[0]);
+		print (pos[1]);
+		
+		string move = AssignNextMove (c1Moves, 0);
+		ProcessMove(move, 0);
 		/*
 		while(hp1 > 0 && hp2 > 0) {
 
@@ -57,66 +68,95 @@ public class FightManager : MonoBehaviour {
 		*/
 	}
 
-	private void AssignNextMove(IDictionary<string,object> c1,
-	                            IDictionary<string,object> c2,
-	                            List<IDictionary<string, object>> c1Moves,
-	                            Vector2 c1Pos, Vector2 c2Pos) {
+	private string AssignNextMove(List<IDictionary<string, object>> moves, int playerNum) {
 		float[] movePercent = new float[] {0f, 0f, 0f, 0f};
-		int[] moveStrength = new int[] {0, 0, 0, 0};
-		int moveStrengthTotal = 0;
-
-		print ("assigning next move");
-		foreach (IDictionary<string,object> id in c1Moves) {
-			string name = DatabaseManager.Instance.LoadFightingMove (
+		float[] moveStrength = new float[] {0f, 0f, 0f, 0f};
+		float moveStrengthTotal = 0;
+		
+		foreach (IDictionary<string,object> id in moves) {
+			name.Add (DatabaseManager.Instance.LoadFightingMove (
 				id[Constants.DB_KEYWORD_FIGHTING_MOVE_ID].ToString()
-			) [Constants.DB_KEYWORD_NAME].ToString ();
-			moveStrength[c1Moves.IndexOf(id)] = AnalyzeMoveStrength(name, c1, c2, c1Pos, c2Pos);
-			moveStrengthTotal += moveStrength[c1Moves.IndexOf(id)];
-			print ("move strength of " + name + " is " + 
-			       moveStrength[c1Moves.IndexOf(id)]);
+			) [Constants.DB_KEYWORD_NAME].ToString ());
+			moveStrength[moves.IndexOf(id)] = AnalyzeMoveStrength(name[moves.IndexOf(id)], 1);
+			moveStrengthTotal += moveStrength[moves.IndexOf(id)];
+			print ("move strength of " + name[moves.IndexOf(id)] + " is " + 
+			       moveStrength[moves.IndexOf(id)]);
 		}
-		print ("assigning next move 2");
+
+		if(moveStrengthTotal == 0) return null;
+		float r = Random.Range(0.0f, 1.0f);
+		print ("randomizer is " + r);
 		for(int x = 0; x < movePercent.Length; x++) {
 			movePercent[x] = moveStrength[x] / moveStrengthTotal;
-			print ("move percent of: " + name + " is " + movePercent[x]);
+			print ("move percent of " + name[x] + " is " + movePercent[x]);
+			if(r > (1.0f - movePercent[x])) {
+				return name[x];
+			}
 		}
+		return null;
 	}
 
-	private int AnalyzeMoveStrength(string name,
-	                                IDictionary<string,object> c1,
-	                                IDictionary<string,object> c2,
-	                                Vector2 c1Pos, Vector2 c2Pos) {
-		print ("analyzing move strength of " + name);
-		int strength = 0;
-		float dist = Mathf.Pow((c2Pos.x - c1Pos.x),2f) + Mathf.Pow((c2Pos.y - c1Pos.y),2f);
+	private float AnalyzeMoveStrength(string name, int playerNum) {
+		float strength = 0f;
 		float prefDist = 0f;
 		switch (name) {
 		case Constants.FIGHT_MOVE_DASH:
-			prefDist = 1000;
+			prefDist = Mathf.Pow (5f,2);
 			if(dist > prefDist) {
-				strength += (int)(dist - prefDist);
+				strength += (dist);
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_FLYING_TALON:
-			prefDist = 500;
+			prefDist = Mathf.Pow (3f,2);
 			if(dist < prefDist) {
-				strength += 200;
+				strength += 5f;
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_SIDESTEP:
-			prefDist = 500;
+			prefDist = Mathf.Pow (5f,2);
 			if(dist < prefDist) {
-				strength += 100;
+				strength += 2.5f;
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_PECK:
-			prefDist = 200;
+			prefDist = Mathf.Pow (1.5f,2);
 			if(dist < prefDist) {
-				strength += 400;
+				strength += 10f;
 			}
 			return strength;
 		default:
 			return strength;
 		}
+	}
+
+	private void ProcessMove(string name, int pN) {
+		print ("move used is " + name);
+		int eN = Mathf.Abs(pN-1);
+		switch (name) {
+		case Constants.FIGHT_MOVE_DASH:
+			pos[pN] = Vector3.MoveTowards(pos[pN],pos[eN],5.0f);
+			UpdateDistance ();
+			break;
+		case Constants.FIGHT_MOVE_FLYING_TALON:
+			pos[pN] = Vector3.MoveTowards(pos[pN],pos[eN],2.0f);
+			UpdateDistance ();
+			hp[eN] -= (int)(atk[pN] * 1.1f);
+			print ("updated hp is " + hp[eN]);
+			break;
+		case Constants.FIGHT_MOVE_SIDESTEP:
+			print ("Sidestep!");
+			break;
+		case Constants.FIGHT_MOVE_PECK:
+			hp[eN] -= (int)(atk[pN] * 0.4f);
+			print ("updated hp is " + hp[eN]);
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void UpdateDistance() {
+		dist = Vector3.Distance(pos[0], pos[1]);
+		print ("Distance of 2 chickens between each other is " + dist);
 	}
 }
