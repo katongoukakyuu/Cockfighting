@@ -12,6 +12,6 @@ public class FeedsScreenListButton : MonoBehaviour {
 		entry.callback.AddListener ((eventData) => {
 			LoadFeedsScreenManager.Instance.SetSelected (this.GetComponentInChildren<Text>().text);
 		});
-		trigger.triggers.Add (entry);
+		trigger.delegates.Add (entry);
 	}
 }
