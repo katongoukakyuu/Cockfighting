@@ -58,14 +58,18 @@ public class FightManager : MonoBehaviour {
 		UpdateDistance();
 		print (pos[0]);
 		print (pos[1]);
-		
-		string move = AssignNextMove (c1Moves, 0);
-		ProcessMove(move, 0);
-		/*
-		while(hp1 > 0 && hp2 > 0) {
 
+		while(hp[0] > 0 && hp[1] > 0) {
+			int pN, eN;
+			string move;
+			if (agi[0] > agi[1]) pN = 0;
+			else pN = 1;
+			eN = Mathf.Abs(pN - 1);
+			move = AssignNextMove (c1Moves, pN);
+			ProcessMove(move, pN);
+			move = AssignNextMove (c1Moves, eN);
+			ProcessMove(move, eN);
 		}
-		*/
 	}
 
 	private string AssignNextMove(List<IDictionary<string, object>> moves, int playerNum) {
@@ -85,12 +89,17 @@ public class FightManager : MonoBehaviour {
 
 		if(moveStrengthTotal == 0) return null;
 		float r = Random.Range(0.0f, 1.0f);
+		float lowLim;
+		float hiLim = 0.0f;
 		print ("randomizer is " + r);
-		for(int x = 0; x < movePercent.Length; x++) {
-			movePercent[x] = moveStrength[x] / moveStrengthTotal;
-			print ("move percent of " + name[x] + " is " + movePercent[x]);
-			if(r > (1.0f - movePercent[x])) {
-				return name[x];
+		for (int i = 0; i < movePercent.Length; i++)
+		{
+			movePercent[i] = moveStrength[i] / moveStrengthTotal;
+			print ("move percent of " + name[i] + " is " + movePercent[i]);
+			lowLim = hiLim;
+			hiLim += movePercent[i];
+			if (r >= lowLim && r < hiLim) {
+				return name[i];
 			}
 		}
 		return null;
@@ -107,19 +116,19 @@ public class FightManager : MonoBehaviour {
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_FLYING_TALON:
-			prefDist = Mathf.Pow (3f,2);
+			prefDist = Mathf.Pow (5f,2);
 			if(dist < prefDist) {
 				strength += 5f;
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_SIDESTEP:
-			prefDist = Mathf.Pow (5f,2);
+			prefDist = Mathf.Pow (7f,2);
 			if(dist < prefDist) {
 				strength += 2.5f;
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_PECK:
-			prefDist = Mathf.Pow (1.5f,2);
+			prefDist = Mathf.Pow (3f,2);
 			if(dist < prefDist) {
 				strength += 10f;
 			}

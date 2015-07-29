@@ -105,13 +105,15 @@ public class DatabaseManager : MonoBehaviour {
 		Destroy (ControlPanelBreedsManager.Instance);
 		Destroy (ControlPanelBuildingsManager.Instance);
 		Destroy (ControlPanelFeedsManager.Instance);
-		
-		FightManager.Instance.AutomateFight (
-			LoadChicken("Gary", "test"),
-			LoadChicken("Larry", "test"),
-			LoadFightingMovesOwned (LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
-			LoadFightingMovesOwned (LoadChicken("Larry", "test") [Constants.DB_COUCHBASE_ID].ToString())
-		);
+
+		if(FightManager.Instance != null) {
+			FightManager.Instance.AutomateFight (
+				LoadChicken("Gary", "test"),
+				LoadChicken("Larry", "test"),
+				LoadFightingMovesOwned (LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
+				LoadFightingMovesOwned (LoadChicken("Larry", "test") [Constants.DB_COUCHBASE_ID].ToString())
+				);
+		}
 	}
 
 	private void InitializeDatabase() {
@@ -396,7 +398,7 @@ public class DatabaseManager : MonoBehaviour {
 		foreach(var row in rows) {
 			//print (row.Key);
 			if(row.Key.ToString() == name || row.DocumentId == name) {
-				print ("move found!");
+				//print ("move found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
