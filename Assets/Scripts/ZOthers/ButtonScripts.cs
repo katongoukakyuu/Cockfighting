@@ -22,4 +22,9 @@ public class ButtonScripts : MonoBehaviour {
 	{
 		Application.LoadLevel("untextured assets");
 	}
+
+	public void toControlPanel()
+	{
+		Application.LoadLevel("Control Panel");
+	}
 }

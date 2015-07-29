@@ -12,6 +12,6 @@ public class ControlPanelBuildingsScreenListButton : MonoBehaviour {
 		entry.callback.AddListener ((eventData) => {
 			LoadBuildingsScreenManager.Instance.SetSelected (this.GetComponentInChildren<Text>().text);
 		});
-		trigger.delegates.Add (entry);
+		trigger.triggers.Add (entry);
 	}
 }
