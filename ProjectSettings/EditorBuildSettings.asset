@@ -25,3 +25,5 @@ EditorBuildSettings:
     path: Assets/Scenes/fight.unity
   - enabled: 1
     path: Assets/Scenes/untextured assets.unity
+  - enabled: 1
+    path: Assets/Scenes/Fight Ring.unity

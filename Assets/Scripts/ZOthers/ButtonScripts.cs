@@ -27,4 +27,9 @@ public class ButtonScripts : MonoBehaviour {
 	{
 		Application.LoadLevel("Control Panel");
 	}
+
+	public void toFight()
+	{
+		Application.LoadLevel("Fight Ring");
+	}
 }
