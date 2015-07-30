@@ -59,23 +59,50 @@ public class FightManager : MonoBehaviour {
 		print (pos[0]);
 		print (pos[1]);
 
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>> ();
+		string[] move = new string[2];
+		move[0] = AssignNextMove (null, 0);
+		move[1] = AssignNextMove (null, 1);
+		l.Add (RecordTurn(move));
+
 		while(hp[0] > 0 && hp[1] > 0) {
 			int pN, eN;
-			string move;
 			if (agi[0] > agi[1]) pN = 0;
 			else pN = 1;
 			eN = Mathf.Abs(pN - 1);
-			move = AssignNextMove (c1Moves, pN);
-			ProcessMove(move, pN);
-			move = AssignNextMove (c1Moves, eN);
-			ProcessMove(move, eN);
+			move[pN] = AssignNextMove (c1Moves, pN);
+			ProcessMove(move[pN], pN);
+			move[eN] = AssignNextMove (c1Moves, eN);
+			ProcessMove(move[eN], eN);
+			l.Add (RecordTurn(move));
 		}
+
+		Dictionary<string, object> d = GameManager.Instance.GenerateReplay (
+			new string[] {c1[Constants.DB_COUCHBASE_ID].ToString(), c2[Constants.DB_COUCHBASE_ID].ToString()},
+			l
+		);
+		var savedReplay = DatabaseManager.Instance.SaveReplay (d);
+
+		var loadedReplay = DatabaseManager.Instance.LoadReplay (savedReplay [Constants.DB_COUCHBASE_ID].ToString ());
+		foreach(KeyValuePair<string,object> kv in loadedReplay) {
+			print (kv.Key + ": " + kv.Value);
+		}
+		/*foreach (IDictionary<string,object> id in l) {
+			foreach(KeyValuePair<string,object> kv in id) {
+				print (kv.Key + ": " + kv.Value);
+			}
+		}
+		print ("replay list has " + l.Count () + " elements.");*/
 	}
 
 	private string AssignNextMove(List<IDictionary<string, object>> moves, int playerNum) {
 		float[] movePercent = new float[] {0f, 0f, 0f, 0f};
 		float[] moveStrength = new float[] {0f, 0f, 0f, 0f};
 		float moveStrengthTotal = 0;
+
+		if (hp [playerNum] <= 0 || moves == null) {
+			return Constants.FIGHT_MOVE_NONE;
+		}
 		
 		foreach (IDictionary<string,object> id in moves) {
 			name.Add (DatabaseManager.Instance.LoadFightingMove (
@@ -110,7 +137,7 @@ public class FightManager : MonoBehaviour {
 		float prefDist = 0f;
 		switch (name) {
 		case Constants.FIGHT_MOVE_DASH:
-			prefDist = Mathf.Pow (5f,2);
+			prefDist = Mathf.Pow (3f,2);
 			if(dist > prefDist) {
 				strength += (dist);
 			}
@@ -139,7 +166,7 @@ public class FightManager : MonoBehaviour {
 	}
 
 	private void ProcessMove(string name, int pN) {
-		print ("move used is " + name);
+		print ("move used by chicken " + pN + " is " + name);
 		int eN = Mathf.Abs(pN-1);
 		switch (name) {
 		case Constants.FIGHT_MOVE_DASH:
@@ -150,14 +177,14 @@ public class FightManager : MonoBehaviour {
 			pos[pN] = Vector3.MoveTowards(pos[pN],pos[eN],2.0f);
 			UpdateDistance ();
 			hp[eN] -= (int)(atk[pN] * 1.1f);
-			print ("updated hp is " + hp[eN]);
+			print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		case Constants.FIGHT_MOVE_SIDESTEP:
 			print ("Sidestep!");
 			break;
 		case Constants.FIGHT_MOVE_PECK:
 			hp[eN] -= (int)(atk[pN] * 0.4f);
-			print ("updated hp is " + hp[eN]);
+			print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		default:
 			break;
@@ -167,5 +194,30 @@ public class FightManager : MonoBehaviour {
 	private void UpdateDistance() {
 		dist = Vector3.Distance(pos[0], pos[1]);
 		print ("Distance of 2 chickens between each other is " + dist);
+	}
+
+	private Dictionary<string, object> RecordTurn(string[] move) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_REPLAY_TURN},
+			{Constants.REPLAY_ATK1, atk[0]},
+			{Constants.REPLAY_DEF1, def[0]},
+			{Constants.REPLAY_HP1, hp[0]},
+			{Constants.REPLAY_AGI1, agi[0]},
+			{Constants.REPLAY_GAM1, gam[0]},
+			{Constants.REPLAY_AGG1, agg[0]},
+			{Constants.REPLAY_X1, pos[0].x},
+			{Constants.REPLAY_Y1, pos[0].y},
+			{Constants.REPLAY_MOVE1, move[0]},
+			{Constants.REPLAY_ATK2, atk[1]},
+			{Constants.REPLAY_DEF2, def[1]},
+			{Constants.REPLAY_HP2, hp[1]},
+			{Constants.REPLAY_AGI2, agi[1]},
+			{Constants.REPLAY_GAM2, gam[1]},
+			{Constants.REPLAY_AGG2, agg[1]},
+			{Constants.REPLAY_X2, pos[1].x},
+			{Constants.REPLAY_Y2, pos[1].y},
+			{Constants.REPLAY_MOVE2, move[1]}
+		};
+		return d;
 	}
 }

@@ -95,6 +95,13 @@ public class DatabaseManager : MonoBehaviour {
 				emit(doc[Constants.DB_KEYWORD_CHICKEN_ID], doc[Constants.DB_KEYWORD_FIGHTING_MOVE_ID]);
 		}, "1");
 
+		// replay
+		View viewReplay = db.GetView(Constants.DB_KEYWORD_REPLAY);
+		viewReplay.SetMap ((doc, emit) => {
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_KEYWORD_REPLAY)
+				emit(doc[Constants.DB_KEYWORD_CHICKEN_ID_1], doc[Constants.DB_KEYWORD_CHICKEN_ID_2]);
+		}, "1");
+
 		// delete functions, use caution
 		//DeleteBuildingsOwnedByPlayer (null);
 
@@ -427,6 +434,45 @@ public class DatabaseManager : MonoBehaviour {
 			}
 		}
 		return l;
+	}
+
+	public IDictionary<string,object> SaveReplay(Dictionary<string, object> dic) {
+		Document d = db.CreateDocument();
+		var properties = dic;
+		var rev = d.PutProperties(properties);
+		if (rev != null) {
+			print ("Replay is saved!");
+			return rev.Properties;
+		}
+		return null;
+	}
+
+	public List<IDictionary<string, object>> LoadReplayList(string chickenId1, string chickenId2) {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_REPLAY).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			//print (row.Key);
+			if((chickenId2 != null && (row.Key.ToString() == chickenId1 && row.Value.ToString() == chickenId2)) ||
+			   (chickenId2 != null && (row.Key.ToString() == chickenId2 && row.Value.ToString() == chickenId1)) ||
+			   (chickenId2 == null && (row.Key.ToString() == chickenId1 || row.Value.ToString() == chickenId1))) {
+				l.Add (db.GetDocument (row.DocumentId).Properties);
+			}
+		}
+		return l;
+	}
+
+	public IDictionary<string, object> LoadReplay(string replayId) {
+		var query = db.GetView (Constants.DB_TYPE_REPLAY).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			//print (row.Key);
+			if(row.DocumentId.ToString() == replayId) {
+				//print ("move found!");
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
 	}
 
 	// delete functions, use sparingly!

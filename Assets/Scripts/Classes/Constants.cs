@@ -73,6 +73,8 @@ public class Constants : MonoBehaviour {
 	public const string DB_TYPE_FEEDS_SCHEDULE = "feeds schedule";
 	public const string DB_TYPE_FIGHTING_MOVE = "fighting move";
 	public const string DB_TYPE_FIGHTING_MOVE_OWNED = "fighting move owned";
+	public const string DB_TYPE_REPLAY = "replay";
+	public const string DB_TYPE_REPLAY_TURN = "replay turn";
 
 	public const string DB_KEYWORD_ID = "_id";
 	public const string DB_KEYWORD_NAME = "name";
@@ -165,6 +167,12 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_ORDER = "order";
 	// end feeds schedule document keywords
 
+	// replay document keywords
+	public const string DB_KEYWORD_CHICKEN_ID_1 = "chicken id 1";
+	public const string DB_KEYWORD_CHICKEN_ID_2 = "chicken id 2";
+	public const string DB_KEYWORD_REPLAY = "replay";
+	// end replay document keywords
+
 	public const string GENDER_MALE = "male";
 	public const string GENDER_FEMALE = "female";
 
@@ -186,6 +194,7 @@ public class Constants : MonoBehaviour {
 	// end schedule panel children
 
 	// fight move list
+	public const string FIGHT_MOVE_NONE = "None";
 	public const string FIGHT_MOVE_DASH = "Dash";
 	public const string FIGHT_MOVE_FLYING_TALON = "Flying Talon";
 	public const string FIGHT_MOVE_SIDESTEP = "Sidestep";
@@ -198,4 +207,23 @@ public class Constants : MonoBehaviour {
 		FIGHT_MOVE_PECK
 	};
 	// end fight move list
+
+	public const string REPLAY_ATK1 = "atk1";
+	public const string REPLAY_DEF1 = "def1";
+	public const string REPLAY_HP1 = "hp1";
+	public const string REPLAY_AGI1 = "agi1";
+	public const string REPLAY_GAM1 = "gam1";
+	public const string REPLAY_AGG1 = "agg1";
+	public const string REPLAY_X1 = "x1";
+	public const string REPLAY_Y1 = "y1";
+	public const string REPLAY_MOVE1 = "move1";
+	public const string REPLAY_ATK2 = "atk2";
+	public const string REPLAY_DEF2 = "def2";
+	public const string REPLAY_HP2 = "hp2";
+	public const string REPLAY_AGI2 = "agi2";
+	public const string REPLAY_GAM2 = "gam2";
+	public const string REPLAY_AGG2 = "agg2";
+	public const string REPLAY_X2 = "x2";
+	public const string REPLAY_Y2 = "y2";
+	public const string REPLAY_MOVE2 = "move2";
 }

@@ -115,6 +115,18 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
+	public Dictionary<string, object> GenerateReplay(string[] chickenId,
+	                                                 List<IDictionary<string,object>> replay) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_KEYWORD_REPLAY},
+			{Constants.DB_KEYWORD_CHICKEN_ID_1, chickenId[0]},
+			{Constants.DB_KEYWORD_CHICKEN_ID_2, chickenId[1]},
+			{Constants.DB_KEYWORD_REPLAY, replay},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()}
+		};
+		return d;
+	}
+
 	public List<Vector2> GetBuildingTiles(int[] pos, int[] center, int[] size, string orientation) {
 		List<Vector2> bldgTiles = new List<Vector2> ();
 		int[] posZero = new int[] {
