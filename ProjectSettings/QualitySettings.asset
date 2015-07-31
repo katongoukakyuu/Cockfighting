@@ -149,7 +149,7 @@ QualitySettings:
     particleRaycastBudget: 4096
     excludedTargetPlatforms: []
   m_PerPlatformDefaultQuality:
-    Android: 5
+    Android: 0
     BlackBerry: 0
     Samsung TV: 0
     Standalone: 0
