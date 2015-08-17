@@ -10,7 +10,7 @@ public class FeedsScreenListButton : MonoBehaviour {
 		EventTrigger.Entry entry = new EventTrigger.Entry ();
 		entry.eventID = EventTriggerType.Select;
 		entry.callback.AddListener ((eventData) => {
-			LoadFeedsScreenManager.Instance.SetSelected (this.GetComponentInChildren<Text>().text);
+			FeedsManager.Instance.SetSelected (this.GetComponentInChildren<Text>().text);
 		});
 		trigger.triggers.Add (entry);
 	}

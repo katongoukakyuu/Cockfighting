@@ -127,6 +127,17 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
+	public Dictionary<string, object> GenerateItemOwnedByPlayer(string playerId, string itemId, string quantity) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_ITEM_OWNED},
+			{Constants.DB_KEYWORD_PLAYER_ID, playerId},
+			{Constants.DB_KEYWORD_ITEM_ID, itemId},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()},
+			{Constants.DB_KEYWORD_QUANTITY, quantity}
+		};
+		return d;
+	}
+
 	public List<Vector2> GetBuildingTiles(int[] pos, int[] center, int[] size, string orientation) {
 		List<Vector2> bldgTiles = new List<Vector2> ();
 		int[] posZero = new int[] {

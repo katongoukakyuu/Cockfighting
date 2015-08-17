@@ -47,7 +47,7 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 		// initialize views
 		View view = db.GetView(Constants.DB_TYPE_FEEDS);
 		view.SetMap ((doc, emit) => {
-			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_FEEDS)
+			if(doc.ContainsKey(Constants.DB_KEYWORD_SUBTYPE) && doc[Constants.DB_KEYWORD_SUBTYPE].ToString () == Constants.DB_TYPE_FEEDS)
 				emit(doc[Constants.DB_KEYWORD_NAME], null);
 		}, "1");
 	}
@@ -68,7 +68,8 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 		Document d = db.CreateDocument();
 		if (selectedFeeds == "") {
 			var properties = new Dictionary<string, object> () {
-				{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_FEEDS},
+				{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_ITEM},
+				{Constants.DB_KEYWORD_SUBTYPE, Constants.DB_TYPE_FEEDS},
 				{Constants.DB_KEYWORD_NAME, name},
 				{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()},
 				{Constants.DB_KEYWORD_DESCRIPTION, description},

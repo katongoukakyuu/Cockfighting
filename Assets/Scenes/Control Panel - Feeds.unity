@@ -9878,11 +9878,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 22438714, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22438714, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22444328, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_LocalPosition.x
@@ -9966,11 +9966,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22404062, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22404062, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22491836, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_SizeDelta.y
@@ -9978,23 +9978,23 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22404062, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 630
       objectReference: {fileID: 0}
     - target: {fileID: 22404062, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -220.122345
       objectReference: {fileID: 0}
     - target: {fileID: 22404062, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 1260
       objectReference: {fileID: 0}
     - target: {fileID: 22404062, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 440.24469
       objectReference: {fileID: 0}
     - target: {fileID: 22438714, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: .260754585
       objectReference: {fileID: 0}
     - target: {fileID: 100924, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_Name
@@ -11556,7 +11556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   listPanel: {fileID: 56007982}
-  listButton: {fileID: 11491374, guid: 83a3e4e27d8a7744c808acecd05a4e19, type: 2}
+  listButton: {fileID: 11491374, guid: 11fc43dc3ec196242bb61c53972d25ec, type: 2}
   infoText: {fileID: 1505483982}
   loadButton: {fileID: 1752531412}
 --- !u!1 &2135841650

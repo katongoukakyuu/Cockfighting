@@ -70,7 +70,7 @@ public class DatabaseManager : MonoBehaviour {
 		// feeds
 		View viewFeeds = db.GetView(Constants.DB_TYPE_FEEDS);
 		viewFeeds.SetMap ((doc, emit) => {
-			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_FEEDS)
+			if(doc.ContainsKey(Constants.DB_KEYWORD_SUBTYPE) && doc[Constants.DB_KEYWORD_SUBTYPE].ToString () == Constants.DB_TYPE_FEEDS)
 				emit(doc[Constants.DB_KEYWORD_NAME], null);
 		}, "1");
 
@@ -100,6 +100,20 @@ public class DatabaseManager : MonoBehaviour {
 		viewReplay.SetMap ((doc, emit) => {
 			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_KEYWORD_REPLAY)
 				emit(doc[Constants.DB_KEYWORD_CHICKEN_ID_1], doc[Constants.DB_KEYWORD_CHICKEN_ID_2]);
+		}, "1");
+
+		// items
+		View viewItems = db.GetView(Constants.DB_TYPE_ITEM);
+		viewItems.SetMap ((doc, emit) => {
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_ITEM)
+				emit(doc[Constants.DB_KEYWORD_NAME], null);
+		}, "1");
+
+		// items owned by player
+		View viewItemsOwned = db.GetView(Constants.DB_TYPE_ITEM_OWNED);
+		viewItemsOwned.SetMap ((doc, emit) => {
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_ITEM_OWNED)
+				emit(doc[Constants.DB_KEYWORD_PLAYER_ID], doc[Constants.DB_KEYWORD_ITEM_ID]);
 		}, "1");
 
 		// delete functions, use caution
@@ -159,6 +173,11 @@ public class DatabaseManager : MonoBehaviour {
 			10, -20, 10, -10, 10, 10,
 			"Hen Coop"
 		);
+		SaveItemOwnedByPlayer(GameManager.Instance.GenerateItemOwnedByPlayer(
+			LoadPlayer("test")[Constants.DB_COUCHBASE_ID].ToString (),
+			LoadFeeds("Uber Feeds")[Constants.DB_COUCHBASE_ID].ToString (),
+			"50"
+		));
 	}
 
 	public Database GetDatabase() {
@@ -238,11 +257,22 @@ public class DatabaseManager : MonoBehaviour {
 		return null;
 	}
 
+	public IDictionary<string, object> LoadPlayer(string name) {
+		var query = db.GetView (Constants.DB_TYPE_ACCOUNT).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.Key.ToString() == name || row.DocumentId == name) {
+				print ("player found!");
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
+	}
+
 	public bool LoginAccount(string username, string password) {
 		var query = db.GetView (Constants.DB_TYPE_ACCOUNT).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			//print (row.Key + " " + row.Value);
 			if(row.Key.ToString() == username && row.Value.ToString() == password) {
 				print ("account found!");
 				UpdatePlayer (username, row.DocumentId);
@@ -289,7 +319,6 @@ public class DatabaseManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_CHICKEN).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			//print (row.Key + " " + row.Value);
 			if(row.Value.ToString() == username) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
@@ -301,7 +330,6 @@ public class DatabaseManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_CHICKEN).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			//print (row.Key);
 			if(row.Key.ToString() == name && row.Value.ToString() == owner) {
 				print ("chicken found!");
 				return db.GetDocument (row.DocumentId).Properties;
@@ -326,7 +354,6 @@ public class DatabaseManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_BUILDING_OWNED).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			//print (row.Key + " " + row.Value);
 			if(row.Value.ToString() == username) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
@@ -355,7 +382,6 @@ public class DatabaseManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_FEEDS).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			//print (row.Key);
 			if(row.Key.ToString() == name || row.DocumentId == name) {
 				print ("feeds found!");
 				return db.GetDocument (row.DocumentId).Properties;
@@ -380,7 +406,6 @@ public class DatabaseManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_FEEDS_SCHEDULE).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			//print (row.Key);
 			if(row.Key.ToString() == chickenId) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
@@ -403,9 +428,7 @@ public class DatabaseManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_FIGHTING_MOVE).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			//print (row.Key);
 			if(row.Key.ToString() == name || row.DocumentId == name) {
-				//print ("move found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
@@ -428,7 +451,6 @@ public class DatabaseManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_FIGHTING_MOVE_OWNED).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			//print (row.Key);
 			if(row.Key.ToString() == chickenId) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
@@ -452,7 +474,6 @@ public class DatabaseManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_REPLAY).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			//print (row.Key);
 			if((chickenId2 != null && (row.Key.ToString() == chickenId1 && row.Value.ToString() == chickenId2)) ||
 			   (chickenId2 != null && (row.Key.ToString() == chickenId2 && row.Value.ToString() == chickenId1)) ||
 			   (chickenId2 == null && (row.Key.ToString() == chickenId1 || row.Value.ToString() == chickenId1))) {
@@ -466,13 +487,46 @@ public class DatabaseManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_REPLAY).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			//print (row.Key);
 			if(row.DocumentId.ToString() == replayId) {
-				//print ("move found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
 		return null;
+	}
+
+	public IDictionary<string, object> LoadItem(string name) {
+		var query = db.GetView (Constants.DB_TYPE_ITEM).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.Key.ToString() == name || row.DocumentId == name) {
+				print ("item found!");
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
+	}
+
+	public IDictionary<string,object> SaveItemOwnedByPlayer(Dictionary<string, object> dic) {
+		Document d = db.CreateDocument();
+		var properties = dic;
+		var rev = d.PutProperties(properties);
+		if (rev != null) {
+			print ("Item owned is saved!");
+			return rev.Properties;
+		}
+		return null;
+	}
+	
+	public List<IDictionary<string,object>> LoadItemsOwnedByPlayer(string playerId) {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_ITEM_OWNED).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.Key.ToString() == playerId) {
+				l.Add (db.GetDocument (row.DocumentId).Properties);
+			}
+		}
+		return l;
 	}
 
 	// delete functions, use sparingly!

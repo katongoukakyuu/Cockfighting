@@ -10,10 +10,9 @@ public class FarmScreenFeedButton : MonoBehaviour {
 	public Canvas feedCanvas;
 	
 	public void ButtonPressed() {
-		FeedsManager.Instance.Initialize ();
-
 		mainCanvas.gameObject.SetActive (false);
 		feedCanvas.gameObject.SetActive (true);
+		FeedsManager.Instance.Initialize ();
 	}
 	
 }

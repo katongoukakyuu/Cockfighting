@@ -64,15 +64,18 @@ public class Constants : MonoBehaviour {
 	public const string DB_COUCHBASE_ID = "_id";
 
 	public const string DB_KEYWORD_TYPE = "type";
+	public const string DB_KEYWORD_SUBTYPE = "subtype";
 	public const string DB_TYPE_ACCOUNT = "account";
-	public const string DB_TYPE_CHICKEN = "chicken";
 	public const string DB_TYPE_BREED = "breed";
 	public const string DB_TYPE_BUILDING = "building";
 	public const string DB_TYPE_BUILDING_OWNED = "building owned";
+	public const string DB_TYPE_CHICKEN = "chicken";
 	public const string DB_TYPE_FEEDS = "feeds";
 	public const string DB_TYPE_FEEDS_SCHEDULE = "feeds schedule";
 	public const string DB_TYPE_FIGHTING_MOVE = "fighting move";
 	public const string DB_TYPE_FIGHTING_MOVE_OWNED = "fighting move owned";
+	public const string DB_TYPE_ITEM = "item";
+	public const string DB_TYPE_ITEM_OWNED = "item owned";
 	public const string DB_TYPE_REPLAY = "replay";
 	public const string DB_TYPE_REPLAY_TURN = "replay turn";
 
@@ -192,6 +195,12 @@ public class Constants : MonoBehaviour {
 	public const string SCHEDULE_PANEL_CHANGE_BUTTON = "Timer/Buttons/Change";
 	public const string SCHEDULE_PANEL_CANCEL_BUTTON = "Timer/Buttons/Cancel";
 	// end schedule panel children
+
+	// item owned document keywords
+	public const string DB_KEYWORD_PLAYER_ID = "player id";
+	public const string DB_KEYWORD_ITEM_ID = "item id";
+	public const string DB_KEYWORD_QUANTITY = "quantity";
+	// end item owned document keywords
 
 	// fight move list
 	public const string FIGHT_MOVE_NONE = "None";

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,6 +8,9 @@ public class FeedsManager : MonoBehaviour {
 
 	public Canvas mainCanvas;
 	public Canvas feedsCanvas;
+	public Canvas messageCanvas;
+
+	public Button addScheduleButton;
 
 	public GameObject schedulePanel;
 	public GameObject inventoryPanel;
@@ -20,13 +24,20 @@ public class FeedsManager : MonoBehaviour {
 	public GameObject scheduleListPanel;
 	public GameObject scheduleListItem;
 
+	public GameObject inventoryScreenPanel;
+	public GameObject inventoryIcon;
+
 	private string state = Constants.FEEDS_MANAGER_STATE_FREE_SELECT;
 
 	private List<Button> listButtons = new List<Button>();
-	private string selectedItem;
+	private string selectedChicken;
 
 	private List<GameObject> scheduleListItems = new List<GameObject>();
 	private List<IDictionary<string,object>> selectedSchedules;
+
+	private List<IDictionary<string,object>> inventory;
+	private List<GameObject> listInventory = new List<GameObject>();
+	private IDictionary<string,object> selectedItem;
 
 	private static FeedsManager instance;
 	private FeedsManager() {}
@@ -45,12 +56,28 @@ public class FeedsManager : MonoBehaviour {
 			Destroy (b.gameObject);
 		}
 		listButtons.Clear ();
+		listInventory.Clear ();
 		
 		foreach (IDictionary<string, object> i in PlayerManager.Instance.playerChickens) {
 			Button b = Instantiate(listButton);
 			listButtons.Add (b);
 			b.GetComponentInChildren<Text> ().text = i[Constants.DB_KEYWORD_NAME].ToString();
 			b.transform.SetParent(listPanel.transform,false);
+		}
+
+		inventory = DatabaseManager.Instance.LoadItemsOwnedByPlayer(PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
+		foreach (IDictionary<string, object> i in inventory) {
+			GameObject g = Instantiate (inventoryIcon);
+			listInventory.Add (g);
+			g.name = i[Constants.DB_KEYWORD_ITEM_ID].ToString();
+			g.GetComponent<Image>().sprite = 
+				Resources.Load (
+					"Sprites/"+DatabaseManager.Instance.LoadItem(i[Constants.DB_KEYWORD_ITEM_ID].ToString())[Constants.DB_KEYWORD_IMAGE_NAME].ToString(),
+					typeof(Sprite)
+				) as Sprite;
+			g.SetActive(true);
+			g.GetComponentInChildren<Text> ().text = i[Constants.DB_KEYWORD_QUANTITY].ToString();
+			g.transform.SetParent (inventoryScreenPanel.transform,false);
 		}
 	}
 
@@ -68,7 +95,8 @@ public class FeedsManager : MonoBehaviour {
 	}
 
 	public void SetSelected(string s) {
-		selectedItem = s;
+		selectedChicken = s;
+		addScheduleButton.interactable = true;
 		foreach(IDictionary<string,object> i in PlayerManager.Instance.playerChickens) {
 			if(i[Constants.DB_KEYWORD_NAME].ToString() == s) {
 				selectedSchedules = DatabaseManager.Instance.LoadFeedsSchedule(i[Constants.DB_KEYWORD_ID].ToString());
@@ -76,6 +104,25 @@ public class FeedsManager : MonoBehaviour {
 			}
 		}
 		InitializeSchedules ();
+	}
+
+	public void SetSelectedItem(string s) {
+		selectedItem = DatabaseManager.Instance.LoadItem(s);
+		DisplayMessage(selectedItem[Constants.DB_KEYWORD_NAME].ToString(), 
+		               selectedItem[Constants.DB_KEYWORD_DESCRIPTION].ToString() + 
+		               "\n\n Do you want to feed your chicken with this?");
+	}
+
+	private void FinalizeSelectedItem() {
+		print ("finalizing selected item!");
+		print("Now: " + System.DateTime.Now);
+		System.DateTime dt = System.DateTime.Now;
+		print (System.Convert.ToDouble(selectedItem[Constants.DB_KEYWORD_DURATION_DAYS].ToString()));
+		dt = dt.AddDays (System.Convert.ToDouble(selectedItem[Constants.DB_KEYWORD_DURATION_DAYS].ToString()));
+		dt = dt.AddHours (System.Convert.ToDouble(selectedItem[Constants.DB_KEYWORD_DURATION_HOURS].ToString()));
+		dt = dt.AddMinutes (System.Convert.ToDouble(selectedItem[Constants.DB_KEYWORD_DURATION_MINUTES].ToString()));
+		dt = dt.AddSeconds (System.Convert.ToDouble(selectedItem[Constants.DB_KEYWORD_DURATION_SECONDS].ToString()));
+		print("Now + feed duration: " + dt);
 	}
 
 	public void AddScheduleToList(GameObject g, IDictionary<string, object> schedule) {
@@ -95,10 +142,13 @@ public class FeedsManager : MonoBehaviour {
 		if (g.transform.GetSiblingIndex() != 0) {
 			g.transform.SetSiblingIndex (g.transform.GetSiblingIndex() - 1);
 		}
+		g.SetActive(true);
 	}
 
 	public void SwitchToSchedule(Toggle t) {
 		if (t.isOn) {
+			RestrictChoice(null);
+
 			state = Constants.FEEDS_MANAGER_STATE_FREE_SELECT;
 			schedulePanel.SetActive (true);
 			inventoryPanel.SetActive (false);
@@ -112,13 +162,72 @@ public class FeedsManager : MonoBehaviour {
 		}
 	}
 
-	public void SwitchToAssignItemMode() {
+	public void SwitchToAssignItemMode(string itemType) {
 		state = Constants.FEEDS_MANAGER_STATE_ASSIGN_ITEM;
 		inventoryTab.isOn = true;
+
+		if(itemType != null) {
+			RestrictChoice(itemType);
+		}
 	}
 
 	public void ButtonBack() {
 		mainCanvas.gameObject.SetActive (true);
 		feedsCanvas.gameObject.SetActive (false);
+	}
+
+	private void RestrictChoice(string type) {
+		if(type == null) {
+			foreach(GameObject g in listInventory) {
+				g.GetComponent<Button>().interactable = true;
+			}
+			return;
+		}
+
+		foreach(IDictionary<string, object> i in inventory) {
+			string subtype = DatabaseManager.Instance.LoadItem(i[Constants.DB_KEYWORD_ITEM_ID].ToString())[Constants.DB_KEYWORD_SUBTYPE].ToString();
+			if(subtype != type) {
+				listInventory[inventory.IndexOf(i)].GetComponent<Button>().interactable = false;
+			}
+		}
+	}
+
+	private void DisplayMessage(string title, string message) {
+		messageCanvas.gameObject.SetActive(true);
+		GameObject.Find("Title Text").GetComponent<Text>().text = title;
+		GameObject.Find("Message Text").GetComponent<Text>().text = message;
+
+		GameObject okButton = GameObject.Find("Msg OK Button").gameObject;
+		EventTrigger trigger = okButton.GetComponentInParent<EventTrigger> ();
+		EventTrigger.Entry entry = new EventTrigger.Entry ();
+		entry.eventID = EventTriggerType.Select;
+		entry.callback.AddListener ((eventData) => {
+			FeedsManager.Instance.FinalizeSelectedItem ();
+			ClearMessage();
+		});
+		trigger.triggers.Add (entry);
+
+		GameObject cancelButton = GameObject.Find("Msg Cancel Button").gameObject;
+		trigger = cancelButton.GetComponentInParent<EventTrigger> ();
+		entry = new EventTrigger.Entry ();
+		entry.eventID = EventTriggerType.Select;
+		entry.callback.AddListener ((eventData) => {
+			ClearMessage();
+		});
+		trigger.triggers.Add (entry);
+
+	}
+
+	private void ClearMessage() {
+		GameObject okButton = GameObject.Find("Msg OK Button").gameObject;
+		EventTrigger trigger = okButton.GetComponentInParent<EventTrigger> ();
+		GameObject cancelButton = GameObject.Find("Msg Cancel Button").gameObject;
+		EventTrigger trigger2 = cancelButton.GetComponentInParent<EventTrigger> ();
+
+		GameObject.Find("Title Text").GetComponent<Text>().text = "";
+		GameObject.Find("Message Text").GetComponent<Text>().text = "";
+		trigger.triggers.Clear();
+		trigger2.triggers.Clear();
+		messageCanvas.gameObject.SetActive(false);
 	}
 }
