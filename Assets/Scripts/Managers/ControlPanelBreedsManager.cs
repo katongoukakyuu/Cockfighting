@@ -71,7 +71,7 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 			var properties = new Dictionary<string, object> () {
 				{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_BREED},
 				{Constants.DB_KEYWORD_NAME, name},
-				{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()},
+				{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
 				{Constants.DB_KEYWORD_HEAD_COLOR_1, headColor1},
 				{Constants.DB_KEYWORD_HEAD_COLOR_1_CHANCE, headColor1Chance},
 				{Constants.DB_KEYWORD_HEAD_COLOR_2, headColor2},

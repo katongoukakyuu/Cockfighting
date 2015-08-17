@@ -167,6 +167,7 @@ public class Constants : MonoBehaviour {
 	// end feeds document keywords
 
 	// feeds schedule document keywords
+	public const string DB_KEYWORD_END_TIME = "end time";
 	public const string DB_KEYWORD_ORDER = "order";
 	// end feeds schedule document keywords
 

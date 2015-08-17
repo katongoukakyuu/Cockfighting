@@ -70,7 +70,7 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 			var properties = new Dictionary<string, object> () {
 				{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_BUILDING},
 				{Constants.DB_KEYWORD_NAME, name},
-				{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()},
+				{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
 				{Constants.DB_KEYWORD_DESCRIPTION, description},
 				{Constants.DB_KEYWORD_COIN_COST, coinCost},
 				{Constants.DB_KEYWORD_CASH_COST, cashCost},

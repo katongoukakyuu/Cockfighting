@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_USERNAME, username},
 			{Constants.DB_KEYWORD_PASSWORD, "test"},
 			{Constants.DB_KEYWORD_EMAIL, email},
-			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
 			{Constants.DB_KEYWORD_MATCHES_WON, 0},
 			{Constants.DB_KEYWORD_MATCHES_LOST, 0},
 			{Constants.DB_KEYWORD_MATCHES_TIED, 0},
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_CHICKEN},
 			{Constants.DB_KEYWORD_NAME, name},
 			{Constants.DB_KEYWORD_OWNER, owner},
-			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
 			{Constants.DB_TYPE_BREED, breed},
 			{Constants.DB_KEYWORD_GENDER, gender},
 			{Constants.DB_KEYWORD_NOTES, ""},
@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_BUILDING_OWNED},
 			{Constants.DB_KEYWORD_NAME, name},
 			{Constants.DB_KEYWORD_OWNER, owner},
-			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
 			{Constants.DB_KEYWORD_MAP_NAME, mapName},
 			{Constants.DB_KEYWORD_X_POSITION, xPos},
 			{Constants.DB_KEYWORD_Y_POSITION, yPos},
@@ -85,13 +85,14 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
-	public Dictionary<string, object> GenerateFeedsSchedule(string chickenId, string feedsId, int order) {
+	public Dictionary<string, object> GenerateFeedsSchedule(string chickenId, string feedsId, string endTime, int order) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_FEEDS_SCHEDULE},
 			{Constants.DB_KEYWORD_CHICKEN_ID, chickenId},
 			{Constants.DB_KEYWORD_FEEDS_ID, feedsId},
+			{Constants.DB_KEYWORD_END_TIME, endTime},
 			{Constants.DB_KEYWORD_ORDER, order},
-			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()}
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
 		};
 		return d;
 	}
@@ -100,7 +101,7 @@ public class GameManager : MonoBehaviour {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_FIGHTING_MOVE},
 			{Constants.DB_KEYWORD_NAME, name},
-			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()}
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
 		};
 		return d;
 	}
@@ -110,7 +111,7 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_FIGHTING_MOVE_OWNED},
 			{Constants.DB_KEYWORD_CHICKEN_ID, chickenId},
 			{Constants.DB_KEYWORD_FIGHTING_MOVE_ID, moveId},
-			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()}
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
 		};
 		return d;
 	}
@@ -122,7 +123,7 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_CHICKEN_ID_1, chickenId[0]},
 			{Constants.DB_KEYWORD_CHICKEN_ID_2, chickenId[1]},
 			{Constants.DB_KEYWORD_REPLAY, replay},
-			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()}
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
 		};
 		return d;
 	}
@@ -132,7 +133,7 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_ITEM_OWNED},
 			{Constants.DB_KEYWORD_PLAYER_ID, playerId},
 			{Constants.DB_KEYWORD_ITEM_ID, itemId},
-			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.UtcNow.ToString()},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
 			{Constants.DB_KEYWORD_QUANTITY, quantity}
 		};
 		return d;
