@@ -92,6 +92,7 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_FEEDS_ID, feedsId},
 			{Constants.DB_KEYWORD_END_TIME, endTime},
 			{Constants.DB_KEYWORD_ORDER, order},
+			{Constants.DB_KEYWORD_IS_COMPLETED, Constants.GENERIC_FALSE},
 			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
 		};
 		return d;

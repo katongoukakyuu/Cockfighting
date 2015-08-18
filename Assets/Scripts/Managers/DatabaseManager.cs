@@ -169,7 +169,14 @@ public class DatabaseManager : MonoBehaviour {
 		ControlPanelFeedsManager.Instance.SaveFeeds (
 			"Uber Feeds", "Feeds for uber chickens.",
 			10, 10,
-			1, 1, 1, 1,
+			0, 0, 0, 10,
+			10, -20, 10, -10, 10, 10,
+			"Hen Coop"
+		);
+		ControlPanelFeedsManager.Instance.SaveFeeds (
+			"Mini Feeds", "Feeds for mini chickens.",
+			10, 10,
+			0, 0, 0, 5,
 			10, -20, 10, -10, 10, 10,
 			"Hen Coop"
 		);
@@ -229,7 +236,6 @@ public class DatabaseManager : MonoBehaviour {
 		                                      Constants.LIFE_STAGE_HEN)));
 
 		foreach(IDictionary<string,object> id in chicken) {
-			IDictionary<string,object> move;
 			if(id[Constants.DB_KEYWORD_LIFE_STAGE].ToString() != Constants.LIFE_STAGE_HEN) {
 				SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
 					id[Constants.DB_COUCHBASE_ID].ToString(),
@@ -314,6 +320,30 @@ public class DatabaseManager : MonoBehaviour {
 		return null;
 	}
 
+	public void EditChicken(IDictionary<string, object> dic) {
+		Document d = db.GetDocument(dic[Constants.DB_COUCHBASE_ID].ToString());
+		d.Update((UnsavedRevision newRevision) => {
+			var properties = newRevision.Properties;
+			properties[Constants.DB_KEYWORD_NAME] = dic[Constants.DB_KEYWORD_NAME].ToString();
+			properties[Constants.DB_KEYWORD_OWNER] = dic[Constants.DB_KEYWORD_OWNER].ToString();
+			properties[Constants.DB_KEYWORD_NOTES] = dic[Constants.DB_KEYWORD_NOTES].ToString();
+			properties[Constants.DB_KEYWORD_ATTACK] = dic[Constants.DB_KEYWORD_ATTACK].ToString();
+			properties[Constants.DB_KEYWORD_DEFENSE] = dic[Constants.DB_KEYWORD_DEFENSE].ToString();
+			properties[Constants.DB_KEYWORD_HP] = dic[Constants.DB_KEYWORD_HP].ToString();
+			properties[Constants.DB_KEYWORD_AGILITY] = dic[Constants.DB_KEYWORD_AGILITY].ToString();
+			properties[Constants.DB_KEYWORD_GAMENESS] = dic[Constants.DB_KEYWORD_GAMENESS].ToString();
+			properties[Constants.DB_KEYWORD_AGGRESSION] = dic[Constants.DB_KEYWORD_AGGRESSION].ToString();
+			properties[Constants.DB_KEYWORD_ATTACK_MAX] = dic[Constants.DB_KEYWORD_ATTACK_MAX].ToString();
+			properties[Constants.DB_KEYWORD_DEFENSE_MAX] = dic[Constants.DB_KEYWORD_DEFENSE_MAX].ToString();
+			properties[Constants.DB_KEYWORD_HP_MAX] = dic[Constants.DB_KEYWORD_HP_MAX].ToString();
+			properties[Constants.DB_KEYWORD_AGILITY_MAX] = dic[Constants.DB_KEYWORD_AGILITY_MAX].ToString();
+			properties[Constants.DB_KEYWORD_GAMENESS_MAX] = dic[Constants.DB_KEYWORD_GAMENESS_MAX].ToString();
+			properties[Constants.DB_KEYWORD_AGGRESSION_MAX] = dic[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString();
+			properties[Constants.DB_KEYWORD_LIFE_STAGE] = dic[Constants.DB_KEYWORD_LIFE_STAGE].ToString();
+			return true;
+		});
+	}
+
 	public List<IDictionary<string,object>> LoadChickens(string username) {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
 		var query = db.GetView (Constants.DB_TYPE_CHICKEN).CreateQuery();
@@ -331,6 +361,18 @@ public class DatabaseManager : MonoBehaviour {
 		var rows = query.Run ();
 		foreach(var row in rows) {
 			if(row.Key.ToString() == name && row.Value.ToString() == owner) {
+				print ("chicken found!");
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
+	}
+
+	public IDictionary<string, object> LoadChicken(string chickenId) {
+		var query = db.GetView (Constants.DB_TYPE_CHICKEN).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.DocumentId == chickenId) {
 				print ("chicken found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
@@ -401,12 +443,23 @@ public class DatabaseManager : MonoBehaviour {
 		return null;
 	}
 
+	public void EditFeedsSchedule(IDictionary<string, object> dic) {
+		Document d = db.GetDocument(dic[Constants.DB_COUCHBASE_ID].ToString());
+		d.Update((UnsavedRevision newRevision) => {
+			var properties = newRevision.Properties;
+			properties[Constants.DB_KEYWORD_END_TIME] = dic[Constants.DB_KEYWORD_END_TIME].ToString();
+			properties[Constants.DB_KEYWORD_ORDER] = dic[Constants.DB_KEYWORD_ORDER].ToString();
+			properties[Constants.DB_KEYWORD_IS_COMPLETED] = dic[Constants.DB_KEYWORD_IS_COMPLETED].ToString();
+			return true;
+		});
+	}
+
 	public List<IDictionary<string, object>> LoadFeedsSchedule(string chickenId) {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
 		var query = db.GetView (Constants.DB_TYPE_FEEDS_SCHEDULE).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			if(row.Key.ToString() == chickenId) {
+			if(chickenId == null || row.Key.ToString() == chickenId) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
 		}

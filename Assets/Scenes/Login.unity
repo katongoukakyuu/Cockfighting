@@ -10217,6 +10217,7 @@ GameObject:
   - 114: {fileID: 1768759169}
   - 114: {fileID: 1768759168}
   - 114: {fileID: 1768759167}
+  - 114: {fileID: 1768759170}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -10313,6 +10314,17 @@ MonoBehaviour:
   inputFields: []
   messageText: {fileID: 0}
   messageDuration: 5
+--- !u!114 &1768759170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1768759162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7e64ccd5ce649044ba25be36980a1d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1780477529
 GameObject:
   m_ObjectHideFlags: 0

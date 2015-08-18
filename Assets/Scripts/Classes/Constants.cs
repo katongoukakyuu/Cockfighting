@@ -38,6 +38,9 @@ public class Constants : MonoBehaviour {
 	public const string LOGIN_SUCCESS = "Login success!";
 	public const string LOGIN_FAIL = "Login fail.";
 
+	public const string GENERIC_TRUE = "true";
+	public const string GENERIC_FALSE = "false";
+	public const string GENERIC_CANCELED = "canceled";
 	public const string GENERIC_ERROR_FIELDS = "Please fill up all the fields.";
 
 	// schedule panel messages
@@ -169,6 +172,7 @@ public class Constants : MonoBehaviour {
 	// feeds schedule document keywords
 	public const string DB_KEYWORD_END_TIME = "end time";
 	public const string DB_KEYWORD_ORDER = "order";
+	public const string DB_KEYWORD_IS_COMPLETED = "is completed";
 	// end feeds schedule document keywords
 
 	// replay document keywords

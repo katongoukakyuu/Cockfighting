@@ -9,7 +9,7 @@ public class FightManager : MonoBehaviour {
 	public Transform chicken1;
 	public Transform chicken2;
 
-	private List<string> name = new List<string>();
+	private List<string> moveName = new List<string>();
 	private int[] atk = new int[2], def = new int[2], hp = new int[2], agi = new int[2], gam = new int[2], agg = new int[2];
 	private Vector3[] pos = new Vector3[2];
 	private float dist;
@@ -105,12 +105,12 @@ public class FightManager : MonoBehaviour {
 		}
 		
 		foreach (IDictionary<string,object> id in moves) {
-			name.Add (DatabaseManager.Instance.LoadFightingMove (
+			moveName.Add (DatabaseManager.Instance.LoadFightingMove (
 				id[Constants.DB_KEYWORD_FIGHTING_MOVE_ID].ToString()
 			) [Constants.DB_KEYWORD_NAME].ToString ());
-			moveStrength[moves.IndexOf(id)] = AnalyzeMoveStrength(name[moves.IndexOf(id)], 1);
+			moveStrength[moves.IndexOf(id)] = AnalyzeMoveStrength(moveName[moves.IndexOf(id)], 1);
 			moveStrengthTotal += moveStrength[moves.IndexOf(id)];
-			print ("move strength of " + name[moves.IndexOf(id)] + " is " + 
+			print ("move strength of " + moveName[moves.IndexOf(id)] + " is " + 
 			       moveStrength[moves.IndexOf(id)]);
 		}
 
@@ -122,20 +122,20 @@ public class FightManager : MonoBehaviour {
 		for (int i = 0; i < movePercent.Length; i++)
 		{
 			movePercent[i] = moveStrength[i] / moveStrengthTotal;
-			print ("move percent of " + name[i] + " is " + movePercent[i]);
+			print ("move percent of " + moveName[i] + " is " + movePercent[i]);
 			lowLim = hiLim;
 			hiLim += movePercent[i];
 			if (r >= lowLim && r < hiLim) {
-				return name[i];
+				return moveName[i];
 			}
 		}
 		return null;
 	}
 
-	private float AnalyzeMoveStrength(string name, int playerNum) {
+	private float AnalyzeMoveStrength(string moveName, int playerNum) {
 		float strength = 0f;
 		float prefDist = 0f;
-		switch (name) {
+		switch (moveName) {
 		case Constants.FIGHT_MOVE_DASH:
 			prefDist = Mathf.Pow (3f,2);
 			if(dist > prefDist) {
@@ -165,10 +165,10 @@ public class FightManager : MonoBehaviour {
 		}
 	}
 
-	private void ProcessMove(string name, int pN) {
-		print ("move used by chicken " + pN + " is " + name);
+	private void ProcessMove(string moveName, int pN) {
+		print ("move used by chicken " + pN + " is " + moveName);
 		int eN = Mathf.Abs(pN-1);
-		switch (name) {
+		switch (moveName) {
 		case Constants.FIGHT_MOVE_DASH:
 			pos[pN] = Vector3.MoveTowards(pos[pN],pos[eN],5.0f);
 			UpdateDistance ();
