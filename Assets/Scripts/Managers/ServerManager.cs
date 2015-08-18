@@ -9,6 +9,9 @@ public class ServerManager : MonoBehaviour {
 
 	private List<IEnumerator> listCoroutines = new List<IEnumerator>();
 
+	private Manager manager;
+	private Database db;
+
 	private static ServerManager instance;
 	private ServerManager() {}
 
@@ -28,8 +31,11 @@ public class ServerManager : MonoBehaviour {
 			Destroy(gameObject);
 			return;
 		}
+		manager = Manager.SharedInstance;
+		db = manager.GetDatabase("cockfighting");
 
 		StartCoroutine(ProcessFeedSchedules());
+		StartCoroutine(ProcessFeedScheduleCanceling());
 	}
 
 	public void StopAllProcesses() {
@@ -69,14 +75,11 @@ public class ServerManager : MonoBehaviour {
 		foreach(IDictionary<string,object> i in listSchedules) {
 			System.DateTime dtTemp = System.DateTime.Parse (i[Constants.DB_KEYWORD_END_TIME].ToString());
 			listEndTimes.Add (dtTemp);
-			print (dtTemp);
 			if(earliestEndTime.CompareTo(System.DateTime.MinValue) == 0 || earliestEndTime.CompareTo(dtTemp) > 0) {
 				earliestEndTime = dtTemp;
 				earliestEndTimeIndex = listSchedules.IndexOf(i);
 			}
 		}
-		print ("count of schedules is " + listSchedules.Count);
-		print ("earliest end time is " + earliestEndTime);
 	}
 
 	private void ProcessFeedSchedulesApplySchedule(IDictionary<string,object> schedule) {
@@ -94,6 +97,55 @@ public class ServerManager : MonoBehaviour {
 
 		schedule[Constants.DB_KEYWORD_IS_COMPLETED] = Constants.GENERIC_TRUE;
 		DatabaseManager.Instance.EditFeedsSchedule(schedule);
+
+	}
+
+	private IEnumerator ProcessFeedScheduleCanceling() {
+		db.Changed += (sender, e) => {
+			var changes = e.Changes.ToList();
+			foreach (DocumentChange change in changes) {
+				IDictionary<string,object> properties = db.GetDocument(change.DocumentId).Properties;
+				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_FEEDS_SCHEDULE) {
+					if(properties[Constants.DB_KEYWORD_IS_COMPLETED].ToString() == Constants.GENERIC_CANCELED) {
+						print("Schedule " + change.DocumentId + " has been canceled! Details below.");
+						foreach(KeyValuePair<string,object> kv in properties) {
+							print (kv.Key + ": " + kv.Value);
+						}
+						FlagScheduleAsCanceled(properties);
+					}
+				}
+			}
+		};
+		yield break;
+	}
+
+	private void FlagScheduleAsCanceled(IDictionary<string,object> schedule) {
+		IDictionary<string,object> chicken = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID].ToString());
+		IDictionary<string,object> feeds = DatabaseManager.Instance.LoadFeeds(schedule[Constants.DB_KEYWORD_FEEDS_ID].ToString());
+		List<IDictionary<string,object>> s = DatabaseManager.Instance.LoadFeedsSchedule(chicken[Constants.DB_COUCHBASE_ID].ToString());
+		List<IDictionary<string,object>> schedules = new List<IDictionary<string,object>>();
+		System.DateTime dt = System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString());
+
+		foreach(IDictionary<string, object> i in s) {
+			if(i[Constants.DB_KEYWORD_IS_COMPLETED].ToString() == Constants.GENERIC_FALSE &&
+			   System.DateTime.Parse(i[Constants.DB_KEYWORD_END_TIME].ToString()).CompareTo(dt) > 0) {
+				schedules.Add (i);
+			}
+		}
+		System.TimeSpan duration = new System.TimeSpan(int.Parse (feeds[Constants.DB_KEYWORD_DURATION_DAYS].ToString ()),
+		                                          int.Parse (feeds[Constants.DB_KEYWORD_DURATION_HOURS].ToString ()),
+		                                          int.Parse (feeds[Constants.DB_KEYWORD_DURATION_MINUTES].ToString ()),
+		                                          int.Parse (feeds[Constants.DB_KEYWORD_DURATION_SECONDS].ToString ()));
+
+		System.TimeSpan ts = System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()).Subtract(duration) - System.DateTime.Now.ToUniversalTime();
+		if(ts.Ticks < 0) {
+			ts = System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()) - System.DateTime.Now.ToUniversalTime();
+		}
+
+		foreach(IDictionary<string, object> i in schedules) {
+			i[Constants.DB_KEYWORD_END_TIME] = System.DateTime.Parse(i[Constants.DB_KEYWORD_END_TIME].ToString()).Subtract(ts);
+			DatabaseManager.Instance.EditFeedsSchedule(i);
+		}
 
 	}
 

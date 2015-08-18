@@ -41,6 +41,9 @@ public class FeedsManager : MonoBehaviour {
 
 	private List<IEnumerator> countdowns = new List<IEnumerator>();
 
+	private delegate void ButtonDelegate();
+	private int x;
+
 	private static FeedsManager instance;
 	private FeedsManager() {}
 	
@@ -114,6 +117,7 @@ public class FeedsManager : MonoBehaviour {
 				break;
 			}
 		}
+		selectedSchedules.RemoveAll(x => x[Constants.DB_KEYWORD_IS_COMPLETED].ToString() != Constants.GENERIC_FALSE);
 		InitializeSchedules ();
 	}
 
@@ -121,7 +125,8 @@ public class FeedsManager : MonoBehaviour {
 		selectedItem = DatabaseManager.Instance.LoadItem(s);
 		DisplayMessage(selectedItem[Constants.DB_KEYWORD_NAME].ToString(), 
 		               selectedItem[Constants.DB_KEYWORD_DESCRIPTION].ToString() + 
-		               "\n\n Do you want to feed your chicken with this?");
+		               "\n\n " + Constants.MESSAGE_SCHEDULE_FEED,
+		               FinalizeSelectedItem);
 	}
 
 	private void FinalizeSelectedItem() {
@@ -140,16 +145,17 @@ public class FeedsManager : MonoBehaviour {
 			GameManager.Instance.GenerateFeedsSchedule(
 				selectedChicken[Constants.DB_COUCHBASE_ID].ToString(),
 				selectedItem[Constants.DB_COUCHBASE_ID].ToString(),
-				dt.ToString(),
-				scheduleListItems.Count
+				dt.ToString()
 			)
 		);
 		SetSelected(selectedChicken[Constants.DB_KEYWORD_NAME].ToString());
 		scheduleTab.isOn = true;
+		addScheduleButton.interactable = true;
 	}
 
 	public void AddScheduleToList(GameObject g, IDictionary<string, object> schedule) {
 		scheduleListItems.Add (g);
+		g.GetComponentInChildren<FeedsScreenScheduleCancelButton>().index = scheduleListItems.IndexOf(g);
 		if (schedule != null) {
 			IDictionary<string,object> feeds = DatabaseManager.Instance.LoadFeeds(schedule[Constants.DB_KEYWORD_FEEDS_ID].ToString());
 			g.transform.FindChild (Constants.SCHEDULE_PANEL_ICON).GetComponent<Image> ().sprite = 
@@ -177,6 +183,7 @@ public class FeedsManager : MonoBehaviour {
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_NAME).GetComponent<Text>().text = Constants.MESSAGE_SCHEDULE_PANEL_1;
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_STATS).GetComponent<Text>().text = "";
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>().text = Constants.TIMER_DEFAULT;
+			addScheduleButton.interactable = false;
 		}
 		g.transform.SetParent(scheduleListPanel.transform,false);
 		if (g.transform.GetSiblingIndex() != 0) {
@@ -211,6 +218,28 @@ public class FeedsManager : MonoBehaviour {
 		}
 	}
 
+	public void CancelSchedule(int index) {
+		if(index >= selectedSchedules.Count) {
+			GameObject g = scheduleListItems[index];
+			scheduleListItems.Remove(g);
+			Destroy(g);
+			addScheduleButton.interactable = true;
+		}
+		else {
+			x = index;
+			DisplayMessage(Constants.MESSAGE_SCHEDULE_CANCEL_TITLE, 
+			               Constants.MESSAGE_SCHEDULE_CANCEL,
+			               FinalizeCancelSchedule);
+		}
+	}
+
+	private void FinalizeCancelSchedule() {
+		IDictionary<string,object> schedule = selectedSchedules[x];
+		schedule[Constants.DB_KEYWORD_IS_COMPLETED] = Constants.GENERIC_CANCELED;
+		DatabaseManager.Instance.EditFeedsSchedule(schedule);
+		SetSelected(selectedChicken[Constants.DB_KEYWORD_NAME].ToString());
+	}
+
 	public void ButtonBack() {
 		mainCanvas.gameObject.SetActive (true);
 		feedsCanvas.gameObject.SetActive (false);
@@ -232,7 +261,7 @@ public class FeedsManager : MonoBehaviour {
 		}
 	}
 
-	private void DisplayMessage(string title, string message) {
+	private void DisplayMessage(string title, string message, ButtonDelegate bd) {
 		messageCanvas.gameObject.SetActive(true);
 		GameObject.Find("Title Text").GetComponent<Text>().text = title;
 		GameObject.Find("Message Text").GetComponent<Text>().text = message;
@@ -242,7 +271,7 @@ public class FeedsManager : MonoBehaviour {
 		EventTrigger.Entry entry = new EventTrigger.Entry ();
 		entry.eventID = EventTriggerType.Select;
 		entry.callback.AddListener ((eventData) => {
-			FeedsManager.Instance.FinalizeSelectedItem ();
+			bd ();
 			ClearMessage();
 		});
 		trigger.triggers.Add (entry);
@@ -255,7 +284,6 @@ public class FeedsManager : MonoBehaviour {
 			ClearMessage();
 		});
 		trigger.triggers.Add (entry);
-
 	}
 
 	private void ClearMessage() {

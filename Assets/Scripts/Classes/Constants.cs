@@ -45,6 +45,9 @@ public class Constants : MonoBehaviour {
 
 	// schedule panel messages
 	public const string MESSAGE_SCHEDULE_PANEL_1 = "Click the icon to assign an item!";
+	public const string MESSAGE_SCHEDULE_CANCEL_TITLE = "Cancel schedule";
+	public const string MESSAGE_SCHEDULE_CANCEL = "Are you sure you want to cancel the schedule?";
+	public const string MESSAGE_SCHEDULE_FEED = "Do you want to feed your chicken with this?";
 	// end schedule panel messages
 
 	public const int COIN_START = 10000;
@@ -171,7 +174,6 @@ public class Constants : MonoBehaviour {
 
 	// feeds schedule document keywords
 	public const string DB_KEYWORD_END_TIME = "end time";
-	public const string DB_KEYWORD_ORDER = "order";
 	public const string DB_KEYWORD_IS_COMPLETED = "is completed";
 	// end feeds schedule document keywords
 

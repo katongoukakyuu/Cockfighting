@@ -85,13 +85,12 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
-	public Dictionary<string, object> GenerateFeedsSchedule(string chickenId, string feedsId, string endTime, int order) {
+	public Dictionary<string, object> GenerateFeedsSchedule(string chickenId, string feedsId, string endTime) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_FEEDS_SCHEDULE},
 			{Constants.DB_KEYWORD_CHICKEN_ID, chickenId},
 			{Constants.DB_KEYWORD_FEEDS_ID, feedsId},
 			{Constants.DB_KEYWORD_END_TIME, endTime},
-			{Constants.DB_KEYWORD_ORDER, order},
 			{Constants.DB_KEYWORD_IS_COMPLETED, Constants.GENERIC_FALSE},
 			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
 		};

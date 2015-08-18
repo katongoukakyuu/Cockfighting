@@ -169,7 +169,7 @@ public class DatabaseManager : MonoBehaviour {
 		ControlPanelFeedsManager.Instance.SaveFeeds (
 			"Uber Feeds", "Feeds for uber chickens.",
 			10, 10,
-			0, 0, 0, 10,
+			1, 1, 1, 1,
 			10, -20, 10, -10, 10, 10,
 			"Hen Coop"
 		);
@@ -448,7 +448,6 @@ public class DatabaseManager : MonoBehaviour {
 		d.Update((UnsavedRevision newRevision) => {
 			var properties = newRevision.Properties;
 			properties[Constants.DB_KEYWORD_END_TIME] = dic[Constants.DB_KEYWORD_END_TIME].ToString();
-			properties[Constants.DB_KEYWORD_ORDER] = dic[Constants.DB_KEYWORD_ORDER].ToString();
 			properties[Constants.DB_KEYWORD_IS_COMPLETED] = dic[Constants.DB_KEYWORD_IS_COMPLETED].ToString();
 			return true;
 		});
