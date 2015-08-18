@@ -1,21 +1,17 @@
 fileFormatVersion: 2
-guid: d3c5303260df0d945898c459b7da4e0d
-timeCreated: 1437063755
+guid: 1115b39579d08404aa5795da76d9b115
+timeCreated: 1437992900
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: Cylinder
-    100002: Sun
-    100004: Sun.001
-    100006: //RootNode
-    400000: Cylinder
-    400002: Sun
-    400004: Sun.001
-    400006: //RootNode
-    2300000: Cylinder
-    3300000: Cylinder
-    4300000: Cylinder
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Cube
+    7400000: Default Take
+    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -73,7 +69,7 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   additionalBone: 0
   userData: 
   assetBundleName: 
