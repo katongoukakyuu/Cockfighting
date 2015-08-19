@@ -37,12 +37,6 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 		// initialize database
 		manager = Manager.SharedInstance;
 		db = manager.GetDatabase(Constants.DB_NAME);
-		db.Changed += (sender, e) => {
-			var changes = e.Changes.ToList();
-			foreach (DocumentChange change in changes) {
-				print("Document " + change.DocumentId + " changed");
-			}
-		};
 
 		// initialize views
 		View view = db.GetView(Constants.DB_TYPE_BREED);
@@ -60,6 +54,41 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 		return breedList;
 	}
 
+	public void SaveBreed(string name,
+	                      float atkGrowth, float defGrowth, float hpGrowth,
+	                      float agiGrowth, float gamGrowth, float aggGrowth) {
+		Document d = db.CreateDocument ();
+		if (selectedBreed == "") {
+			var properties = new Dictionary<string, object> () {
+				{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_BREED},
+				{Constants.DB_KEYWORD_NAME, name},
+				{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
+				{Constants.DB_KEYWORD_ATTACK_GROWTH, atkGrowth},
+				{Constants.DB_KEYWORD_DEFENSE_GROWTH, defGrowth},
+				{Constants.DB_KEYWORD_HP_GROWTH, hpGrowth},
+				{Constants.DB_KEYWORD_AGILITY_GROWTH, agiGrowth},
+				{Constants.DB_KEYWORD_GAMENESS_GROWTH, gamGrowth},
+				{Constants.DB_KEYWORD_AGGRESSION_GROWTH, aggGrowth}
+			};
+			d.PutProperties (properties);
+			SetMessage("Entry created.");
+		} else {
+			d = db.GetDocument(LoadBreedId(selectedBreed));
+			d.Update((UnsavedRevision newRevision) => {
+				var properties = newRevision.Properties;
+				properties[Constants.DB_KEYWORD_ATTACK_GROWTH] = atkGrowth;
+				properties[Constants.DB_KEYWORD_DEFENSE_GROWTH] = defGrowth;
+				properties[Constants.DB_KEYWORD_HP_GROWTH] = hpGrowth;
+				properties[Constants.DB_KEYWORD_AGILITY_GROWTH] = agiGrowth;
+				properties[Constants.DB_KEYWORD_GAMENESS_GROWTH] = gamGrowth;
+				properties[Constants.DB_KEYWORD_AGGRESSION_GROWTH] = aggGrowth;
+				return true;
+			});
+			SetMessage("Entry updated.");
+		}
+	}
+
+	// VERSION 1
 	public void SaveBreed(string name,
 	                      string headColor1, int headColor1Chance, string headColor2,
 	                      string bodyColor1, int bodyColor1Chance, string bodyColor2,
@@ -116,6 +145,7 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 			SetMessage("Entry updated.");
 		}
 	}
+	// END VERSION 1
 
 	public void LoadBreed() {
 		List<string> l = new List<string> ();
@@ -157,7 +187,20 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 	public bool LoadBreedForEditing(string name) {
 		selectedBreed = name;
 		IDictionary<string, object> dic = LoadBreed (name);
-		if (inputFields.Length == 17) {
+		if (inputFields.Length == 7) {
+			inputFields[0].text = dic[Constants.DB_KEYWORD_NAME].ToString();
+			inputFields[1].text = dic[Constants.DB_KEYWORD_ATTACK_GROWTH].ToString();
+			inputFields[2].text = dic[Constants.DB_KEYWORD_DEFENSE_GROWTH].ToString();
+			inputFields[3].text = dic[Constants.DB_KEYWORD_HP_GROWTH].ToString();
+			inputFields[4].text = dic[Constants.DB_KEYWORD_AGILITY_GROWTH].ToString();
+			inputFields[5].text = dic[Constants.DB_KEYWORD_GAMENESS_GROWTH].ToString();
+			inputFields[6].text = dic[Constants.DB_KEYWORD_AGGRESSION_GROWTH].ToString();
+			
+			inputFields[0].interactable = false;
+			SetMessage("Editing " + selectedBreed);
+			return true;
+		}
+		else if (inputFields.Length == 17) {	// VERSION 1
 			inputFields[0].text = dic[Constants.DB_KEYWORD_NAME].ToString();
 			inputFields[1].text = dic[Constants.DB_KEYWORD_HEAD_COLOR_1].ToString();
 			inputFields[2].text = dic[Constants.DB_KEYWORD_HEAD_COLOR_1_CHANCE].ToString();
@@ -184,7 +227,16 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 	}
 
 	public void ResetFields() {
-		if (inputFields.Length == 17) {
+		if (inputFields.Length == 7) {
+			inputFields[0].text = "";
+			inputFields[1].text = "1";
+			inputFields[2].text = "1";
+			inputFields[3].text = "1";
+			inputFields[4].text = "1";
+			inputFields[5].text = "1";
+			inputFields[6].text = "1";
+		}
+		else if (inputFields.Length == 17) {	// VERSION 1
 			inputFields[0].text = "";
 			inputFields[1].text = "";
 			inputFields[2].text = "" + 100;
@@ -202,11 +254,10 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 			inputFields[14].text = "" + 100;
 			inputFields[15].text = "";
 			inputFields[16].text = "" + 0;
-
-			inputFields[0].interactable = true;
-			selectedBreed = "";
-			SetMessage("Fields reset. Currently on Create mode.");
 		}
+		inputFields[0].interactable = true;
+		selectedBreed = "";
+		SetMessage("Fields reset. Currently on Create mode.");
 	}
 
 	public void SetMessage(string s) {

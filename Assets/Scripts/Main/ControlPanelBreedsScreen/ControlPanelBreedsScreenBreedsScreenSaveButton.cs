@@ -14,7 +14,15 @@ public class ControlPanelBreedsScreenBreedsScreenSaveButton : MonoBehaviour {
 				return;
 			}
 		}
-		if (fieldsToSave.Length == 13) {
+		if (fieldsToSave.Length == 7) {
+			ControlPanelBreedsManager.Instance.SaveBreed(
+				fieldsToSave[0].text,
+				float.Parse(fieldsToSave[1].text), float.Parse(fieldsToSave[2].text),
+				float.Parse(fieldsToSave[3].text), float.Parse(fieldsToSave[4].text),
+				float.Parse(fieldsToSave[5].text), float.Parse(fieldsToSave[6].text)
+				);
+		}
+		else if (fieldsToSave.Length == 13) {	// VERSION 1
 			ControlPanelBreedsManager.Instance.SaveBreed(
 				fieldsToSave[0].text,
 				fieldsToSave[1].text,int.Parse (fieldsToSave[2].text),fieldsToSave[3].text,

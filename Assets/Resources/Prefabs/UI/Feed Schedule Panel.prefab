@@ -258,7 +258,7 @@ GameObject:
   - 114: {fileID: 11411676}
   - 114: {fileID: 11496762}
   m_Layer: 5
-  m_Name: Schedule Panel
+  m_Name: Feed Schedule Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -990,6 +990,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad9caebe1cf2e6e40bb0f2131b9c9cd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  index: -1
 --- !u!114 &11496762
 MonoBehaviour:
   m_ObjectHideFlags: 1

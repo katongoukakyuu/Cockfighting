@@ -37,12 +37,6 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 		// initialize database
 		manager = Manager.SharedInstance;
 		db = manager.GetDatabase(Constants.DB_NAME);
-		db.Changed += (sender, e) => {
-			var changes = e.Changes.ToList();
-			foreach (DocumentChange change in changes) {
-				print("Document " + change.DocumentId + " changed");
-			}
-		};
 
 		// initialize views
 		View view = db.GetView(Constants.DB_TYPE_BUILDING);

@@ -97,6 +97,18 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
+	public Dictionary<string, object> GenerateBreedsSchedule(string chickenId1, string chickenId2, string endTime) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_BREED_SCHEDULE},
+			{Constants.DB_KEYWORD_CHICKEN_ID_1, chickenId1},
+			{Constants.DB_KEYWORD_CHICKEN_ID_2, chickenId2},
+			{Constants.DB_KEYWORD_END_TIME, endTime},
+			{Constants.DB_KEYWORD_IS_COMPLETED, Constants.GENERIC_FALSE},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
+		};
+		return d;
+	}
+
 	public Dictionary<string, object> GenerateFightingMove(string name) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_FIGHTING_MOVE},

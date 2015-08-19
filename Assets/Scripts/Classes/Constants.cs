@@ -21,6 +21,9 @@ public class Constants : MonoBehaviour {
 	public const string FEEDS_MANAGER_STATE_FREE_SELECT = "Free Select";
 	public const string FEEDS_MANAGER_STATE_ASSIGN_ITEM = "Assign Item";
 
+	public const string BREEDS_MANAGER_STATE_FREE_SELECT = "Free Select";
+	public const string BREEDS_MANAGER_STATE_ASSIGN_MATE = "Assign Mate";
+
 	public const string ORIENTATION_NORTH = "north";
 	public const string ORIENTATION_SOUTH = "south";
 	public const string ORIENTATION_EAST = "east";
@@ -41,13 +44,18 @@ public class Constants : MonoBehaviour {
 	public const string GENERIC_TRUE = "true";
 	public const string GENERIC_FALSE = "false";
 	public const string GENERIC_CANCELED = "canceled";
+	public const string GENERIC_CANCEL = "Cancel";
+	public const string GENERIC_BACK = "Back";
 	public const string GENERIC_ERROR_FIELDS = "Please fill up all the fields.";
 
 	// schedule panel messages
-	public const string MESSAGE_SCHEDULE_PANEL_1 = "Click the icon to assign an item!";
+	public const string MESSAGE_SCHEDULE_PANEL_1 = "Press the icon to assign an item!";
+	public const string MESSAGE_SCHEDULE_PANEL_2 = "Press here to assign a mate!";
+	public const string MESSAGE_SCHEDULE_PANEL_3 = "Choose a mate from the list to the left!";
 	public const string MESSAGE_SCHEDULE_CANCEL_TITLE = "Cancel schedule";
 	public const string MESSAGE_SCHEDULE_CANCEL = "Are you sure you want to cancel the schedule?";
 	public const string MESSAGE_SCHEDULE_FEED = "Do you want to feed your chicken with this?";
+	public const string MESSAGE_SCHEDULE_BREED_TITLE = "Confirm breeding";
 	// end schedule panel messages
 
 	public const int COIN_START = 10000;
@@ -67,6 +75,8 @@ public class Constants : MonoBehaviour {
 	public const int CHICKEN_GAMENESS_DEFAULT_MAX = 2500;
 	public const int CHICKEN_AGGRESSION_DEFAULT_MAX = 2500;
 
+	public const double BREED_DURATION_DEFAULT_HOURS = 12d;
+
 	public const string DB_COUCHBASE_ID = "_id";
 
 	public const string DB_KEYWORD_TYPE = "type";
@@ -78,6 +88,7 @@ public class Constants : MonoBehaviour {
 	public const string DB_TYPE_CHICKEN = "chicken";
 	public const string DB_TYPE_FEEDS = "feeds";
 	public const string DB_TYPE_FEEDS_SCHEDULE = "feeds schedule";
+	public const string DB_TYPE_BREED_SCHEDULE = "breed schedule";
 	public const string DB_TYPE_FIGHTING_MOVE = "fighting move";
 	public const string DB_TYPE_FIGHTING_MOVE_OWNED = "fighting move owned";
 	public const string DB_TYPE_ITEM = "item";
@@ -85,12 +96,12 @@ public class Constants : MonoBehaviour {
 	public const string DB_TYPE_REPLAY = "replay";
 	public const string DB_TYPE_REPLAY_TURN = "replay turn";
 
-	public const string DB_KEYWORD_ID = "_id";
 	public const string DB_KEYWORD_NAME = "name";
 	public const string DB_KEYWORD_DESCRIPTION = "description";
 	public const string DB_KEYWORD_CREATED_AT = "created at";
 	public const string DB_KEYWORD_CHICKEN_ID = "chicken id";
 	public const string DB_KEYWORD_FEEDS_ID = "feeds id";
+	public const string DB_KEYWORD_BREED_ID = "breed id";
 	public const string DB_KEYWORD_FIGHTING_MOVE_ID = "fighting move id";
 
 	// player document keywords
@@ -105,26 +116,35 @@ public class Constants : MonoBehaviour {
 	// end player document keywords
 
 	// breed document keywords
+	public const string DB_KEYWORD_ATTACK_GROWTH = "attack growth";
+	public const string DB_KEYWORD_DEFENSE_GROWTH = "defense growth";
+	public const string DB_KEYWORD_HP_GROWTH = "hp growth";
+	public const string DB_KEYWORD_AGILITY_GROWTH = "agility growth";
+	public const string DB_KEYWORD_GAMENESS_GROWTH = "gameness growth";
+	public const string DB_KEYWORD_AGGRESSION_GROWTH = "aggression growth";
+	// end breed document keywords
+
+	// breed document VERSION 1 keywords
 	public const string DB_KEYWORD_HEAD_COLOR_1 = "head color 1";
 	public const string DB_KEYWORD_HEAD_COLOR_1_CHANCE = "head color 1 chance";
 	public const string DB_KEYWORD_HEAD_COLOR_2 = "head color 2";
 	public const string DB_KEYWORD_HEAD_COLOR_2_CHANCE = "head color 2 chance";
-
+	
 	public const string DB_KEYWORD_BODY_COLOR_1 = "body color 1";
 	public const string DB_KEYWORD_BODY_COLOR_1_CHANCE = "body color 1 chance";
 	public const string DB_KEYWORD_BODY_COLOR_2 = "body color 2";
 	public const string DB_KEYWORD_BODY_COLOR_2_CHANCE = "body color 2 chance";
-
+	
 	public const string DB_KEYWORD_WING_COLOR_1 = "wing color 1";
 	public const string DB_KEYWORD_WING_COLOR_1_CHANCE = "wing color 1 chance";
 	public const string DB_KEYWORD_WING_COLOR_2 = "wing color 2";
 	public const string DB_KEYWORD_WING_COLOR_2_CHANCE = "wing color 2 chance";
-
+	
 	public const string DB_KEYWORD_TAIL_COLOR_1 = "tail color 1";
 	public const string DB_KEYWORD_TAIL_COLOR_1_CHANCE = "tail color 1 chance";
 	public const string DB_KEYWORD_TAIL_COLOR_2 = "tail color 2";
 	public const string DB_KEYWORD_TAIL_COLOR_2_CHANCE = "tail color 2 chance";
-	// end breed document keywords
+	// end breed document VERSION 1 keywords
 
 	// chicken document keywords
 	public const string DB_KEYWORD_OWNER = "owner";
@@ -199,7 +219,6 @@ public class Constants : MonoBehaviour {
 	public const string SCHEDULE_PANEL_STATS = "Info/Stats/Stats Text";
 	public const string SCHEDULE_PANEL_TIMER = "Timer/Timer/Timer Text";
 	public const string SCHEDULE_PANEL_HURRY_BUTTON = "Timer/Buttons/Hurry";
-	public const string SCHEDULE_PANEL_CHANGE_BUTTON = "Timer/Buttons/Change";
 	public const string SCHEDULE_PANEL_CANCEL_BUTTON = "Timer/Buttons/Cancel";
 	// end schedule panel children
 

@@ -81,6 +81,20 @@ public class DatabaseManager : MonoBehaviour {
 				emit(doc[Constants.DB_KEYWORD_CHICKEN_ID], doc[Constants.DB_KEYWORD_FEEDS_ID]);
 		}, "1");
 
+		// breeds
+		View view = db.GetView(Constants.DB_TYPE_BREED);
+		view.SetMap ((doc, emit) => {
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_BREED)
+				emit(doc[Constants.DB_KEYWORD_NAME], null);
+		}, "1");
+
+		// breeds schedule
+		View viewBreedsSchedule = db.GetView(Constants.DB_TYPE_BREED_SCHEDULE);
+		viewBreedsSchedule.SetMap ((doc, emit) => {
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_BREED_SCHEDULE)
+				emit(doc[Constants.DB_KEYWORD_CHICKEN_ID_1], doc[Constants.DB_KEYWORD_CHICKEN_ID_2]);
+		}, "1");
+
 		// fighting move
 		View viewFightingMove = db.GetView(Constants.DB_TYPE_FIGHTING_MOVE);
 		viewFightingMove.SetMap ((doc, emit) => {
@@ -154,10 +168,7 @@ public class DatabaseManager : MonoBehaviour {
 		RegisterAccount(GameManager.Instance.RegisterAccount ("test", "test@test.com"));
 		ControlPanelBreedsManager.Instance.SaveBreed (
 			"Kelso",
-			"white",80,"black",
-			"white",60,"black",
-			"white",40,"black",
-			"white",50,"black"
+			1.3f, 1.2f, 1.0f, 0.9f, 1.1f, 1.0f
 		);
 		ControlPanelBuildingsManager.Instance.SaveBuilding (
 			"Hen Coop", "A coop to house hens with.",
@@ -459,6 +470,51 @@ public class DatabaseManager : MonoBehaviour {
 		var rows = query.Run ();
 		foreach(var row in rows) {
 			if(chickenId == null || row.Key.ToString() == chickenId) {
+				l.Add (db.GetDocument (row.DocumentId).Properties);
+			}
+		}
+		return l;
+	}
+
+	public IDictionary<string, object> LoadBreed(string name) {
+		var query = db.GetView (Constants.DB_TYPE_BREED).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.Key.ToString() == name || row.DocumentId == name) {
+				print ("breed found!");
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
+	}
+
+	public IDictionary<string,object> SaveBreedsSchedule(Dictionary<string, object> dic) {
+		Document d = db.CreateDocument();
+		var properties = dic;
+		var rev = d.PutProperties(properties);
+		if (rev != null) {
+			print ("Breeds schedule is saved!");
+			return rev.Properties;
+		}
+		return null;
+	}
+	
+	public void EditBreedsSchedule(IDictionary<string, object> dic) {
+		Document d = db.GetDocument(dic[Constants.DB_COUCHBASE_ID].ToString());
+		d.Update((UnsavedRevision newRevision) => {
+			var properties = newRevision.Properties;
+			properties[Constants.DB_KEYWORD_END_TIME] = dic[Constants.DB_KEYWORD_END_TIME].ToString();
+			properties[Constants.DB_KEYWORD_IS_COMPLETED] = dic[Constants.DB_KEYWORD_IS_COMPLETED].ToString();
+			return true;
+		});
+	}
+	
+	public List<IDictionary<string, object>> LoadBreedsSchedule(string chickenId) {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_BREED_SCHEDULE).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(chickenId == null || row.Key.ToString() == chickenId || row.Value.ToString() == chickenId) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
 		}
