@@ -3975,6 +3975,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac527635b1ffd9a479ac4701033414d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Market: {fileID: 0}
+  Arena: {fileID: 0}
+  FarmGUI: {fileID: 0}
+  BlackOverLay: {fileID: 0}
 --- !u!1 &866601543
 GameObject:
   m_ObjectHideFlags: 0
@@ -6154,7 +6158,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1187533033

@@ -1,11 +1,46 @@
-﻿using UnityEngine;
+﻿ using UnityEngine;
 using System.Collections;
 
 public class ButtonScripts : MonoBehaviour {
 
-	public void toMarket()
+	public Animator Market;
+	public Animator Arena;
+
+	public GameObject FarmGUI;
+	public GameObject BlackOverLay;
+	
+
+
+	public void openMarketPanel()
 	{
-		Application.LoadLevel ("products graphic test");
+		Market.enabled = true;
+		Market.SetBool ("isHidden", false);
+		FarmGUI.SetActive(false);
+		BlackOverLay.SetActive(true);
+
+	}
+
+	public void closemMarketPanel()
+	{
+		Market.SetBool ("isHidden", true);
+		FarmGUI.SetActive (true);
+		BlackOverLay.SetActive (false);
+
+	}
+
+	public void openArenaPanel()
+	{
+		Arena.enabled = true;
+		Arena.SetBool ("isHidden",false);
+		FarmGUI.SetActive(false);
+		BlackOverLay.SetActive (true);
+	}
+
+	public void closeArenaPanel()
+	{
+		Arena.SetBool("isHidden", true);
+		FarmGUI.SetActive (true);
+		BlackOverLay.SetActive(false);
 	}
 
 	public void toFarm()
@@ -32,4 +67,5 @@ public class ButtonScripts : MonoBehaviour {
 	{
 		Application.LoadLevel("Fight Ring");
 	}
+
 }
