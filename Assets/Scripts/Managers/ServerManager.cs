@@ -34,6 +34,14 @@ public class ServerManager : MonoBehaviour {
 		manager = Manager.SharedInstance;
 		db = manager.GetDatabase("cockfighting");
 
+		List<IDictionary<string,object>> chickens = DatabaseManager.Instance.LoadChickens(null);
+		foreach(IDictionary<string,object> i in chickens) {
+			foreach(KeyValuePair<string,object> kv in i) {
+				print (kv.Key + ": " + kv.Value);
+			}
+			print("\n");
+		}
+
 		StartCoroutine(ProcessFeedSchedules());
 		StartCoroutine(ProcessFeedScheduleCanceling());
 
@@ -209,7 +217,7 @@ public class ServerManager : MonoBehaviour {
 		}
 
 		IDictionary<string,object> chickenChild = DatabaseManager.Instance.GenerateChicken(GameManager.Instance.GenerateChicken ("Child", 
-		                                                      chicken1 [Constants.DB_KEYWORD_NAME].ToString(), 
+		                                                      chicken1 [Constants.DB_KEYWORD_OWNER].ToString(), 
 		                                                      Random.Range(0,2) == 0 ? Constants.GENDER_MALE : Constants.GENDER_FEMALE, 
 		                                                      breed, 
 		                                                      Constants.LIFE_STAGE_EGG));
@@ -227,8 +235,9 @@ public class ServerManager : MonoBehaviour {
 		chickenChild[Constants.DB_KEYWORD_AGILITY_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_AGILITY_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_AGILITY_MAX].ToString()))/2;
 		chickenChild[Constants.DB_KEYWORD_GAMENESS_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_GAMENESS_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_GAMENESS_MAX].ToString()))/2;
 		chickenChild[Constants.DB_KEYWORD_AGGRESSION_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString()))/2;
+	
+		DatabaseManager.Instance.EditChicken(chickenChild);
 		
-		DatabaseManager.Instance.GenerateChicken(new Dictionary<string, object>(chickenChild));
 		if(chickenChild[Constants.DB_KEYWORD_GENDER].ToString() != Constants.GENDER_FEMALE) {
 			DatabaseManager.Instance.SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
 				chickenChild[Constants.DB_COUCHBASE_ID].ToString(),
@@ -249,7 +258,7 @@ public class ServerManager : MonoBehaviour {
 		}
 		
 		schedule[Constants.DB_KEYWORD_IS_COMPLETED] = Constants.GENERIC_TRUE;
-		DatabaseManager.Instance.EditFeedsSchedule(schedule);
+		DatabaseManager.Instance.EditBreedsSchedule(schedule);
 		
 	}
 

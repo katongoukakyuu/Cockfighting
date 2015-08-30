@@ -360,7 +360,7 @@ public class DatabaseManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_CHICKEN).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			if(row.Value.ToString() == username) {
+			if(row.Value.ToString() == username || username == null) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
 		}

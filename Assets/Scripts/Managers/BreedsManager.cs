@@ -147,6 +147,7 @@ public class BreedsManager : MonoBehaviour {
 	}
 
 	private void EndSelectMateState() {
+		state = Constants.BREEDS_MANAGER_STATE_FREE_SELECT;
 		SetSelected(selectedChicken[Constants.DB_KEYWORD_NAME].ToString());
 		selectedMate = null;
 		scheduleTab.isOn = true;
@@ -161,11 +162,11 @@ public class BreedsManager : MonoBehaviour {
 		g.GetComponentInChildren<BreedsScreenScheduleCancelButton>().index = scheduleListItems.IndexOf(g);
 		if (schedule != null) {
 			IDictionary<string,object> mate;
-			if(selectedChicken == DatabaseManager.Instance.LoadBreed(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString())) {
-				mate = DatabaseManager.Instance.LoadBreed(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString());
+			if(selectedChicken[Constants.DB_COUCHBASE_ID].ToString() == DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString())[Constants.DB_COUCHBASE_ID].ToString()) {
+				mate = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString());
 			}
 			else {
-				mate = DatabaseManager.Instance.LoadBreed(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString());
+				mate = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString());
 			}
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_NAME).GetComponent<Text>().text = mate[Constants.DB_KEYWORD_NAME].ToString();
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_STATS).GetComponent<Text>().text = GenerateStatsString(mate);
