@@ -705,7 +705,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22491836, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 245
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 11441126, guid: 35923f846d1312041961b94b102ef3f9, type: 2}
       propertyPath: m_Enabled
@@ -6645,7 +6645,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 790, y: -50}
+  m_AnchoredPosition: {x: 630, y: -50}
   m_SizeDelta: {x: 300, y: 60}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &923903614
@@ -9814,7 +9814,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 457.5, y: -200}
+  m_AnchoredPosition: {x: 457.5, y: -45}
   m_SizeDelta: {x: 895, y: 70}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1350518541

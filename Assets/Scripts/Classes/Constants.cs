@@ -75,7 +75,10 @@ public class Constants : MonoBehaviour {
 	public const int CHICKEN_GAMENESS_DEFAULT_MAX = 2500;
 	public const int CHICKEN_AGGRESSION_DEFAULT_MAX = 2500;
 
-	public const double BREED_DURATION_DEFAULT_HOURS = 12d;
+	public const double BREED_DURATION_DEFAULT_DAYS = 0d;
+	public const double BREED_DURATION_DEFAULT_HOURS = 0d;
+	public const double BREED_DURATION_DEFAULT_MINUTES = 0d;
+	public const double BREED_DURATION_DEFAULT_SECONDS = 10d;
 
 	public const string DB_COUCHBASE_ID = "_id";
 

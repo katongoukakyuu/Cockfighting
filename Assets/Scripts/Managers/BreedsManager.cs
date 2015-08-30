@@ -130,7 +130,12 @@ public class BreedsManager : MonoBehaviour {
 				dt = dtTemp;
 			}
 		}
+		
+		dt = dt.AddDays (Constants.BREED_DURATION_DEFAULT_DAYS);
 		dt = dt.AddHours (Constants.BREED_DURATION_DEFAULT_HOURS);
+		dt = dt.AddMinutes (Constants.BREED_DURATION_DEFAULT_MINUTES);
+		dt = dt.AddSeconds (Constants.BREED_DURATION_DEFAULT_SECONDS);
+
 		DatabaseManager.Instance.SaveBreedsSchedule (
 			GameManager.Instance.GenerateBreedsSchedule(
 				selectedChicken[Constants.DB_COUCHBASE_ID].ToString(),
@@ -138,19 +143,32 @@ public class BreedsManager : MonoBehaviour {
 				dt.ToString()
 			)
 		);
+		EndSelectMateState();
+	}
+
+	private void EndSelectMateState() {
 		SetSelected(selectedChicken[Constants.DB_KEYWORD_NAME].ToString());
 		selectedMate = null;
 		scheduleTab.isOn = true;
 		addScheduleButton.interactable = true;
+		foreach (IDictionary<string, object> i in PlayerManager.Instance.playerChickens) {
+			listButtons[PlayerManager.Instance.playerChickens.IndexOf(i)].interactable = true;
+		}
 	}
 
 	public void AddScheduleToList(GameObject g, IDictionary<string, object> schedule) {
 		scheduleListItems.Add (g);
 		g.GetComponentInChildren<BreedsScreenScheduleCancelButton>().index = scheduleListItems.IndexOf(g);
 		if (schedule != null) {
-			IDictionary<string,object> breeds = DatabaseManager.Instance.LoadBreed(schedule[Constants.DB_KEYWORD_BREED_ID].ToString());
-			g.transform.FindChild(Constants.SCHEDULE_PANEL_NAME).GetComponent<Text>().text = breeds[Constants.DB_KEYWORD_NAME].ToString();
-			g.transform.FindChild(Constants.SCHEDULE_PANEL_STATS).GetComponent<Text>().text = GenerateStatsString(breeds);
+			IDictionary<string,object> mate;
+			if(selectedChicken == DatabaseManager.Instance.LoadBreed(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString())) {
+				mate = DatabaseManager.Instance.LoadBreed(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString());
+			}
+			else {
+				mate = DatabaseManager.Instance.LoadBreed(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString());
+			}
+			g.transform.FindChild(Constants.SCHEDULE_PANEL_NAME).GetComponent<Text>().text = mate[Constants.DB_KEYWORD_NAME].ToString();
+			g.transform.FindChild(Constants.SCHEDULE_PANEL_STATS).GetComponent<Text>().text = GenerateStatsString(mate);
 			System.DateTime dt1 = TrimMilli(System.DateTime.Now.ToUniversalTime());
 			System.DateTime dt2 = TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()));
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>().text = "" + (dt2 - dt1);
@@ -158,7 +176,6 @@ public class BreedsManager : MonoBehaviour {
 			                                  dt2);
 			StartCoroutine(ie);
 			countdowns.Add (ie);
-			g.transform.FindChild(Constants.SCHEDULE_PANEL_ICON).GetComponent<Button>().enabled = false;
 		} else {
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_NAME).GetComponent<Text>().text = Constants.MESSAGE_SCHEDULE_PANEL_2;
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_STATS).GetComponent<Text>().text = "";
@@ -238,8 +255,13 @@ public class BreedsManager : MonoBehaviour {
 	}
 
 	public void ButtonBack() {
-		mainCanvas.gameObject.SetActive (true);
-		breedsCanvas.gameObject.SetActive (false);
+		if(state == Constants.BREEDS_MANAGER_STATE_FREE_SELECT) {
+			mainCanvas.gameObject.SetActive (true);
+			breedsCanvas.gameObject.SetActive (false);
+		}
+		else if(state == Constants.BREEDS_MANAGER_STATE_ASSIGN_MATE) {
+			EndSelectMateState();
+		}
 	}
 
 	private void DisplayDetails(IDictionary<string,object> i) {

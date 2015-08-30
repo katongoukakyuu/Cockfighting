@@ -36,6 +36,9 @@ public class ServerManager : MonoBehaviour {
 
 		StartCoroutine(ProcessFeedSchedules());
 		StartCoroutine(ProcessFeedScheduleCanceling());
+
+		StartCoroutine(ProcessBreedSchedules());
+		StartCoroutine(ProcessBreedScheduleCanceling());
 	}
 
 	public void StopAllProcesses() {
@@ -43,6 +46,8 @@ public class ServerManager : MonoBehaviour {
 			StopCoroutine(ie);
 		}
 	}
+
+	// FEED SCHEDULES START
 
 	private IEnumerator ProcessFeedSchedules() {
 		List<IDictionary<string,object>> listSchedules = new List<IDictionary<string,object>>();
@@ -111,7 +116,7 @@ public class ServerManager : MonoBehaviour {
 						foreach(KeyValuePair<string,object> kv in properties) {
 							print (kv.Key + ": " + kv.Value);
 						}
-						FlagScheduleAsCanceled(properties);
+						FlagFeedScheduleAsCanceled(properties);
 					}
 				}
 			}
@@ -119,7 +124,7 @@ public class ServerManager : MonoBehaviour {
 		yield break;
 	}
 
-	private void FlagScheduleAsCanceled(IDictionary<string,object> schedule) {
+	private void FlagFeedScheduleAsCanceled(IDictionary<string,object> schedule) {
 		IDictionary<string,object> chicken = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID].ToString());
 		IDictionary<string,object> feeds = DatabaseManager.Instance.LoadFeeds(schedule[Constants.DB_KEYWORD_FEEDS_ID].ToString());
 		List<IDictionary<string,object>> s = DatabaseManager.Instance.LoadFeedsSchedule(chicken[Constants.DB_COUCHBASE_ID].ToString());
@@ -148,5 +153,155 @@ public class ServerManager : MonoBehaviour {
 		}
 
 	}
+
+	// FEED SCHEDULES END
+
+	// BREED SCHEDULES START
+
+	private IEnumerator ProcessBreedSchedules() {
+		List<IDictionary<string,object>> listSchedules = new List<IDictionary<string,object>>();
+		List<System.DateTime> listEndTimes = new List<System.DateTime>();
+		System.DateTime earliestEndTime = System.DateTime.MinValue;
+		int earliestEndTimeIndex = 0;
+		
+		ProcessBreedSchedulesInitialize(ref listSchedules, ref listEndTimes, ref earliestEndTime, ref earliestEndTimeIndex);
+		
+		while(true) {
+			if(earliestEndTime.CompareTo(System.DateTime.MinValue) != 0 && earliestEndTime.CompareTo(System.DateTime.Now.ToUniversalTime()) < 0) {
+				ProcessBreedSchedulesApplySchedule(listSchedules[earliestEndTimeIndex]);
+				ProcessBreedSchedulesInitialize(ref listSchedules, ref listEndTimes, ref earliestEndTime, ref earliestEndTimeIndex);
+			}
+			yield return new WaitForSeconds(1);
+		}
+	}
+
+	private void ProcessBreedSchedulesInitialize(ref List<IDictionary<string,object>> listSchedules,
+	                                            ref List<System.DateTime> listEndTimes,
+	                                            ref System.DateTime earliestEndTime,
+	                                            ref int earliestEndTimeIndex) {
+		listSchedules = DatabaseManager.Instance.LoadBreedsSchedule(null);
+		listEndTimes.Clear ();
+		earliestEndTime = System.DateTime.MinValue;
+		earliestEndTimeIndex = 0;
+		
+		listSchedules.RemoveAll(i => i[Constants.DB_KEYWORD_IS_COMPLETED].ToString() != Constants.GENERIC_FALSE);
+		
+		foreach(IDictionary<string,object> i in listSchedules) {
+			System.DateTime dtTemp = System.DateTime.Parse (i[Constants.DB_KEYWORD_END_TIME].ToString());
+			listEndTimes.Add (dtTemp);
+			if(earliestEndTime.CompareTo(System.DateTime.MinValue) == 0 || earliestEndTime.CompareTo(dtTemp) > 0) {
+				earliestEndTime = dtTemp;
+				earliestEndTimeIndex = listSchedules.IndexOf(i);
+			}
+		}
+	}
+
+	private void ProcessBreedSchedulesApplySchedule(IDictionary<string,object> schedule) {
+		IDictionary<string,object> chicken1 = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString());
+		IDictionary<string,object> chicken2 = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString());
+		
+		string breed;
+		if(chicken1[Constants.DB_KEYWORD_GENDER].ToString() == Constants.GENDER_MALE) {
+			breed = chicken1[Constants.DB_TYPE_BREED].ToString();
+		}
+		else {
+			breed = chicken2[Constants.DB_TYPE_BREED].ToString();
+		}
+
+		IDictionary<string,object> chickenChild = DatabaseManager.Instance.GenerateChicken(GameManager.Instance.GenerateChicken ("Child", 
+		                                                      chicken1 [Constants.DB_KEYWORD_NAME].ToString(), 
+		                                                      Random.Range(0,2) == 0 ? Constants.GENDER_MALE : Constants.GENDER_FEMALE, 
+		                                                      breed, 
+		                                                      Constants.LIFE_STAGE_EGG));
+
+		chickenChild[Constants.DB_KEYWORD_ATTACK] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_ATTACK].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_ATTACK].ToString()))/2;
+		chickenChild[Constants.DB_KEYWORD_DEFENSE] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_DEFENSE].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_DEFENSE].ToString()))/2;
+		chickenChild[Constants.DB_KEYWORD_HP] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_HP].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_HP].ToString()))/2;
+		chickenChild[Constants.DB_KEYWORD_AGILITY] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_AGILITY].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_AGILITY].ToString()))/2;
+		chickenChild[Constants.DB_KEYWORD_GAMENESS] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_GAMENESS].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_GAMENESS].ToString()))/2;
+		chickenChild[Constants.DB_KEYWORD_AGGRESSION] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_AGGRESSION].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_AGGRESSION].ToString()))/2;
+
+		chickenChild[Constants.DB_KEYWORD_ATTACK_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_ATTACK_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_ATTACK_MAX].ToString()))/2;
+		chickenChild[Constants.DB_KEYWORD_DEFENSE_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_DEFENSE_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_DEFENSE_MAX].ToString()))/2;
+		chickenChild[Constants.DB_KEYWORD_HP_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_HP_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_HP_MAX].ToString()))/2;
+		chickenChild[Constants.DB_KEYWORD_AGILITY_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_AGILITY_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_AGILITY_MAX].ToString()))/2;
+		chickenChild[Constants.DB_KEYWORD_GAMENESS_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_GAMENESS_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_GAMENESS_MAX].ToString()))/2;
+		chickenChild[Constants.DB_KEYWORD_AGGRESSION_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString()))/2;
+		
+		DatabaseManager.Instance.GenerateChicken(new Dictionary<string, object>(chickenChild));
+		if(chickenChild[Constants.DB_KEYWORD_GENDER].ToString() != Constants.GENDER_FEMALE) {
+			DatabaseManager.Instance.SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+				chickenChild[Constants.DB_COUCHBASE_ID].ToString(),
+				DatabaseManager.Instance.LoadFightingMove(Constants.FIGHT_MOVE_DASH)[Constants.DB_COUCHBASE_ID].ToString()
+				));
+			DatabaseManager.Instance.SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+				chickenChild[Constants.DB_COUCHBASE_ID].ToString(),
+				DatabaseManager.Instance.LoadFightingMove(Constants.FIGHT_MOVE_FLYING_TALON)[Constants.DB_COUCHBASE_ID].ToString()
+				));
+			DatabaseManager.Instance.SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+				chickenChild[Constants.DB_COUCHBASE_ID].ToString(),
+				DatabaseManager.Instance.LoadFightingMove(Constants.FIGHT_MOVE_SIDESTEP)[Constants.DB_COUCHBASE_ID].ToString()
+				));
+			DatabaseManager.Instance.SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+				chickenChild[Constants.DB_COUCHBASE_ID].ToString(),
+				DatabaseManager.Instance.LoadFightingMove(Constants.FIGHT_MOVE_PECK)[Constants.DB_COUCHBASE_ID].ToString()
+				));
+		}
+		
+		schedule[Constants.DB_KEYWORD_IS_COMPLETED] = Constants.GENERIC_TRUE;
+		DatabaseManager.Instance.EditFeedsSchedule(schedule);
+		
+	}
+
+	private IEnumerator ProcessBreedScheduleCanceling() {
+		db.Changed += (sender, e) => {
+			var changes = e.Changes.ToList();
+			foreach (DocumentChange change in changes) {
+				IDictionary<string,object> properties = db.GetDocument(change.DocumentId).Properties;
+				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_BREED_SCHEDULE) {
+					if(properties[Constants.DB_KEYWORD_IS_COMPLETED].ToString() == Constants.GENERIC_CANCELED) {
+						print("Schedule " + change.DocumentId + " has been canceled! Details below.");
+						foreach(KeyValuePair<string,object> kv in properties) {
+							print (kv.Key + ": " + kv.Value);
+						}
+						FlagBreedScheduleAsCanceled(properties);
+					}
+				}
+			}
+		};
+		yield break;
+	}
+
+	private void FlagBreedScheduleAsCanceled(IDictionary<string,object> schedule) {
+		IDictionary<string,object> chicken1 = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString());
+		List<IDictionary<string,object>> s = DatabaseManager.Instance.LoadBreedsSchedule(chicken1[Constants.DB_COUCHBASE_ID].ToString());
+		List<IDictionary<string,object>> schedules = new List<IDictionary<string,object>>();
+		System.DateTime dt = System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString());
+		
+		foreach(IDictionary<string, object> i in s) {
+			if(i[Constants.DB_KEYWORD_IS_COMPLETED].ToString() == Constants.GENERIC_FALSE &&
+			   System.DateTime.Parse(i[Constants.DB_KEYWORD_END_TIME].ToString()).CompareTo(dt) > 0) {
+				schedules.Add (i);
+			}
+		}
+
+		System.TimeSpan duration = new System.TimeSpan(int.Parse (Constants.BREED_DURATION_DEFAULT_DAYS.ToString()),
+		                                               int.Parse (Constants.BREED_DURATION_DEFAULT_HOURS.ToString()),
+		                                               int.Parse (Constants.BREED_DURATION_DEFAULT_MINUTES.ToString()),
+		                                               int.Parse (Constants.BREED_DURATION_DEFAULT_SECONDS.ToString()));
+		
+		System.TimeSpan ts = System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()).Subtract(duration) - System.DateTime.Now.ToUniversalTime();
+		if(ts.Ticks < 0) {
+			ts = System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()) - System.DateTime.Now.ToUniversalTime();
+		}
+		
+		foreach(IDictionary<string, object> i in schedules) {
+			i[Constants.DB_KEYWORD_END_TIME] = System.DateTime.Parse(i[Constants.DB_KEYWORD_END_TIME].ToString()).Subtract(ts);
+			DatabaseManager.Instance.EditBreedsSchedule(i);
+		}
+		
+	}
+
+	// BREED SCHEDULES END
 
 }
