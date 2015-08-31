@@ -68,4 +68,9 @@ public class ButtonScripts : MonoBehaviour {
 		Application.LoadLevel("Fight Ring");
 	}
 
+	public void toProgFarm()
+	{
+		Application.LoadLevel ("Farm");
+	}
+
 }

@@ -3246,7 +3246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
-  CloudsSpeed: .699999988
+  CloudsSpeed: 0
 --- !u!23 &650482611
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6138,7 +6138,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1554205290}
-        m_MethodName: LoginScreenButtonLogin
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6158,7 +6158,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1187533033
@@ -8445,13 +8445,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa374bf42a253bc49b98168cb51fa4e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loginPanel: {fileID: 1919467787}
-  registerPanel: {fileID: 1019978761}
-  loginPanelUsernameInput: {fileID: 138416066}
-  loginPanelPasswordInput: {fileID: 994057813}
-  registerPanelUsernameInput: {fileID: 484458441}
-  registerPanelEmailInput: {fileID: 1251532289}
-  errorText: {fileID: 1682762605}
+  loginPanel: {fileID: 0}
+  registerPanel: {fileID: 0}
+  loginPanelUsernameInput: {fileID: 0}
+  loginPanelPasswordInput: {fileID: 0}
+  registerPanelUsernameInput: {fileID: 0}
+  registerPanelEmailInput: {fileID: 0}
+  errorText: {fileID: 0}
   animDuration: .100000001
   animSteps: 10
   xDist: 1280
