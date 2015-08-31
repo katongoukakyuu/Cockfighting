@@ -151,9 +151,6 @@ public class DatabaseManager : MonoBehaviour {
 		if (GameManager.Instance.initializeDatabase) {
 			InitializeDatabase();
 		}
-		Destroy (ControlPanelBreedsManager.Instance);
-		Destroy (ControlPanelBuildingsManager.Instance);
-		Destroy (ControlPanelFeedsManager.Instance);
 
 		if(ServerFightManager.Instance != null) {
 			ServerFightManager.Instance.AutomateFight (
@@ -220,6 +217,21 @@ public class DatabaseManager : MonoBehaviour {
 		SaveMatchmakingCategory (GameManager.Instance.GenerateMatchmakingCategory (
 			"Event", true, false
 		));
+		Destroy (ControlPanelBreedsManager.Instance);
+		Destroy (ControlPanelBuildingsManager.Instance);
+		Destroy (ControlPanelFeedsManager.Instance);
+	}
+
+	public void ReinitializeDatabase() {
+		var query = db.CreateAllDocumentsQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			db.GetDocument(row.DocumentId).Delete();
+		}
+		gameObject.AddComponent<ControlPanelBreedsManager>();
+		gameObject.AddComponent<ControlPanelBuildingsManager>();
+		gameObject.AddComponent<ControlPanelFeedsManager>();
+		InitializeDatabase();
 	}
 
 	public Database GetDatabase() {

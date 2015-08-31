@@ -70,6 +70,10 @@ public class LoginManager : MonoBehaviour {
 			StartCoroutine (SwitchScreen(animDuration, animSteps, screen));
 	}
 
+	public void ReinitializeDatabase() {
+		DatabaseManager.Instance.ReinitializeDatabase();
+	}
+
 	private IEnumerator SwitchScreen(float animDuration, int animSteps, int screen) {
 		/*
 		 * screen:
