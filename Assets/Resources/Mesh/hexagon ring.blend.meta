@@ -6,10 +6,49 @@ ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Cylinder
+    100004: Cylinder_001
+    100006: Cylinder_002
+    100008: Cylinder_003
+    100010: Ads
+    100012: Hexagonal_Ring
+    100014: Interior
+    100016: Ring_Ground
     400000: //RootNode
+    400002: Cylinder
+    400004: Cylinder_001
+    400006: Cylinder_002
+    400008: Cylinder_003
+    400010: Ads
+    400012: Hexagonal_Ring
+    400014: Interior
+    400016: Ring_Ground
     2300000: //RootNode
+    2300002: Cylinder
+    2300004: Cylinder_001
+    2300006: Cylinder_002
+    2300008: Cylinder_003
+    2300010: Ads
+    2300012: Hexagonal_Ring
+    2300014: Interior
+    2300016: Ring_Ground
     3300000: //RootNode
+    3300002: Cylinder
+    3300004: Cylinder_001
+    3300006: Cylinder_002
+    3300008: Cylinder_003
+    3300010: Ads
+    3300012: Hexagonal_Ring
+    3300014: Interior
+    3300016: Ring_Ground
     4300000: Cylinder
+    4300002: Cylinder_001
+    4300004: Cylinder_002
+    4300006: Cylinder_003
+    4300008: Ads
+    4300010: Hexagonal_Ring
+    4300012: Ring_Ground
+    4300014: Interior
     7400000: Default Take
     9500000: //RootNode
   materials:
