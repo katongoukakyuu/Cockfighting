@@ -151,6 +151,36 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
+	public Dictionary<string, object> GenerateMatchmakingCategory(string name, 
+	                                                              bool isPvp, 
+	                                                              bool customMatchesAllowed) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_MATCHMAKING_CATEGORY},
+			{Constants.DB_KEYWORD_NAME, name},
+			{Constants.DB_KEYWORD_IS_PVP, isPvp},
+			{Constants.DB_KEYWORD_CUSTOM_MATCHES_ALLOWED, customMatchesAllowed},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
+		};
+		return d;
+	}
+
+	public Dictionary<string, object> GenerateMatch(string chickenId1, string chickenId2,
+	                                                string playerId1, string playerId2,
+	                                                string category, bool bettingAllowed, string waitDuration) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_MATCHMAKING_CATEGORY},
+			{Constants.DB_KEYWORD_CHICKEN_ID_1, chickenId1},
+			{Constants.DB_KEYWORD_CHICKEN_ID_2, chickenId2},
+			{Constants.DB_KEYWORD_PLAYER_ID_1, playerId1},
+			{Constants.DB_KEYWORD_PLAYER_ID_2, playerId2},
+			{Constants.DB_KEYWORD_CATEGORY, category},
+			{Constants.DB_KEYWORD_BETTING_ALLOWED, bettingAllowed},
+			{Constants.DB_KEYWORD_WAIT_DURATION, waitDuration},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
+		};
+		return d;
+	}
+
 	public List<Vector2> GetBuildingTiles(int[] pos, int[] center, int[] size, string orientation) {
 		List<Vector2> bldgTiles = new List<Vector2> ();
 		int[] posZero = new int[] {

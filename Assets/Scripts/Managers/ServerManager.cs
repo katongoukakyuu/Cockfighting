@@ -34,14 +34,6 @@ public class ServerManager : MonoBehaviour {
 		manager = Manager.SharedInstance;
 		db = manager.GetDatabase("cockfighting");
 
-		List<IDictionary<string,object>> chickens = DatabaseManager.Instance.LoadChickens(null);
-		foreach(IDictionary<string,object> i in chickens) {
-			foreach(KeyValuePair<string,object> kv in i) {
-				print (kv.Key + ": " + kv.Value);
-			}
-			print("\n");
-		}
-
 		StartCoroutine(ProcessFeedSchedules());
 		StartCoroutine(ProcessFeedScheduleCanceling());
 

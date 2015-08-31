@@ -130,6 +130,20 @@ public class DatabaseManager : MonoBehaviour {
 				emit(doc[Constants.DB_KEYWORD_PLAYER_ID], doc[Constants.DB_KEYWORD_ITEM_ID]);
 		}, "1");
 
+		// matchmaking category
+		View viewMatchmaking = db.GetView(Constants.DB_TYPE_MATCHMAKING_CATEGORY);
+		viewMatchmaking.SetMap ((doc, emit) => {
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_MATCHMAKING_CATEGORY)
+				emit(doc[Constants.DB_KEYWORD_NAME], null);
+		}, "1");
+
+		// match
+		View viewMatch = db.GetView(Constants.DB_TYPE_MATCH);
+		viewMatch.SetMap ((doc, emit) => {
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_MATCH)
+				emit(doc[Constants.DB_KEYWORD_PLAYER_ID_1], doc[Constants.DB_KEYWORD_PLAYER_ID_2]);
+		}, "1");
+
 		// delete functions, use caution
 		//DeleteBuildingsOwnedByPlayer (null);
 
@@ -141,8 +155,8 @@ public class DatabaseManager : MonoBehaviour {
 		Destroy (ControlPanelBuildingsManager.Instance);
 		Destroy (ControlPanelFeedsManager.Instance);
 
-		if(FightManager.Instance != null) {
-			FightManager.Instance.AutomateFight (
+		if(ServerFightManager.Instance != null) {
+			ServerFightManager.Instance.AutomateFight (
 				LoadChicken("Gary", "test"),
 				LoadChicken("Larry", "test"),
 				LoadFightingMovesOwned (LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
@@ -195,6 +209,16 @@ public class DatabaseManager : MonoBehaviour {
 			LoadPlayer("test")[Constants.DB_COUCHBASE_ID].ToString (),
 			LoadFeeds("Uber Feeds")[Constants.DB_COUCHBASE_ID].ToString (),
 			"50"
+		));
+
+		SaveMatchmakingCategory (GameManager.Instance.GenerateMatchmakingCategory (
+			"Beginner", false, false
+		));
+		SaveMatchmakingCategory (GameManager.Instance.GenerateMatchmakingCategory (
+			"Player vs. Player", true, true
+		));
+		SaveMatchmakingCategory (GameManager.Instance.GenerateMatchmakingCategory (
+			"Event", true, false
 		));
 	}
 
@@ -631,6 +655,50 @@ public class DatabaseManager : MonoBehaviour {
 		var rows = query.Run ();
 		foreach(var row in rows) {
 			if(row.Key.ToString() == playerId) {
+				l.Add (db.GetDocument (row.DocumentId).Properties);
+			}
+		}
+		return l;
+	}
+
+	public IDictionary<string,object> SaveMatchmakingCategory(Dictionary<string, object> dic) {
+		Document d = db.CreateDocument();
+		var properties = dic;
+		var rev = d.PutProperties(properties);
+		if (rev != null) {
+			print ("Matchmaking category is saved!");
+			return rev.Properties;
+		}
+		return null;
+	}
+	
+	public List<IDictionary<string,object>> LoadMatchmakingCategories() {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_MATCHMAKING_CATEGORY).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			l.Add (db.GetDocument (row.DocumentId).Properties);
+		}
+		return l;
+	}
+
+	public IDictionary<string,object> SaveMatch(Dictionary<string, object> dic) {
+		Document d = db.CreateDocument();
+		var properties = dic;
+		var rev = d.PutProperties(properties);
+		if (rev != null) {
+			print ("Match is saved!");
+			return rev.Properties;
+		}
+		return null;
+	}
+	
+	public List<IDictionary<string,object>> LoadMatch(string playerId) {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_MATCHMAKING_CATEGORY).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.Key.ToString() == playerId || row.Value.ToString() == playerId) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
 		}

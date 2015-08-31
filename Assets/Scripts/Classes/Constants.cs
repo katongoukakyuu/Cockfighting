@@ -8,6 +8,7 @@ public class Constants : MonoBehaviour {
 
 	public const string SCENE_LOGIN = "Login";
 	public const string SCENE_FARM = "Farm";
+	public const string SCENE_FIGHT = "Fight Screen";
 	public const string SCENE_CONTROL_PANEL = "Control Panel";
 	public const string SCENE_CONTROL_PANEL_BREEDS = "Control Panel - Breeds";
 	public const string SCENE_CONTROL_PANEL_BUILDINGS = "Control Panel - Buildings";
@@ -94,6 +95,8 @@ public class Constants : MonoBehaviour {
 	public const string DB_TYPE_BREED_SCHEDULE = "breed schedule";
 	public const string DB_TYPE_FIGHTING_MOVE = "fighting move";
 	public const string DB_TYPE_FIGHTING_MOVE_OWNED = "fighting move owned";
+	public const string DB_TYPE_MATCH = "match";
+	public const string DB_TYPE_MATCHMAKING_CATEGORY = "matchmaking category";
 	public const string DB_TYPE_ITEM = "item";
 	public const string DB_TYPE_ITEM_OWNED = "item owned";
 	public const string DB_TYPE_REPLAY = "replay";
@@ -206,6 +209,25 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_REPLAY = "replay";
 	// end replay document keywords
 
+	// item owned document keywords
+	public const string DB_KEYWORD_PLAYER_ID = "player id";
+	public const string DB_KEYWORD_ITEM_ID = "item id";
+	public const string DB_KEYWORD_QUANTITY = "quantity";
+	// end item owned document keywords
+
+	// matchmaking category document keywords
+	public const string DB_KEYWORD_IS_PVP = "is pvp";
+	public const string DB_KEYWORD_CUSTOM_MATCHES_ALLOWED = "custom matches allowed";
+	// end matchmaking category document keywords
+
+	// match document keywords
+	public const string DB_KEYWORD_PLAYER_ID_1 = "player id 1";
+	public const string DB_KEYWORD_PLAYER_ID_2 = "player id 2";
+	public const string DB_KEYWORD_CATEGORY = "category";
+	public const string DB_KEYWORD_BETTING_ALLOWED = "betting allowed";
+	public const string DB_KEYWORD_WAIT_DURATION = "wait duration";
+	// end match document keywords
+
 	public const string GENDER_MALE = "male";
 	public const string GENDER_FEMALE = "female";
 
@@ -225,12 +247,6 @@ public class Constants : MonoBehaviour {
 	public const string SCHEDULE_PANEL_CANCEL_BUTTON = "Timer/Buttons/Cancel";
 	// end schedule panel children
 
-	// item owned document keywords
-	public const string DB_KEYWORD_PLAYER_ID = "player id";
-	public const string DB_KEYWORD_ITEM_ID = "item id";
-	public const string DB_KEYWORD_QUANTITY = "quantity";
-	// end item owned document keywords
-
 	// fight move list
 	public const string FIGHT_MOVE_NONE = "None";
 	public const string FIGHT_MOVE_DASH = "Dash";
@@ -246,6 +262,7 @@ public class Constants : MonoBehaviour {
 	};
 	// end fight move list
 
+	// replay document keywords
 	public const string REPLAY_ATK1 = "atk1";
 	public const string REPLAY_DEF1 = "def1";
 	public const string REPLAY_HP1 = "hp1";
@@ -264,4 +281,5 @@ public class Constants : MonoBehaviour {
 	public const string REPLAY_X2 = "x2";
 	public const string REPLAY_Y2 = "y2";
 	public const string REPLAY_MOVE2 = "move2";
+	// end replay document keywords
 }
