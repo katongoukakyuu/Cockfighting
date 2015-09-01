@@ -13,7 +13,7 @@ public class JsonTutorial : MonoBehaviour {
 
 	// Use this for initialization
 	private void Start () {
-		PATH = Application.dataPath + "/../testData/";
+		PATH = Application.persistentDataPath + "/../testData/";
 	}
 	
 	private void OnGUI() {

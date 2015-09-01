@@ -11,7 +11,7 @@ public class BuildingsInit : MonoBehaviour {
 	private Buildings buildings = new Buildings();
 	
 	private void Start () {
-		PATH = Application.dataPath + "/../json/";
+		PATH = Application.persistentDataPath + "/../json/";
 		/*{"buildings":[{"id":"1","name":"Hen Coop","xSize":"1","ySize":"2","xCenter":"0","yCenter":"0","prefabName":"Hen Coop","imageName":"Hen Coop.jpg"}]}*/
 		Building b = new Building ();
 		b.id = 1;

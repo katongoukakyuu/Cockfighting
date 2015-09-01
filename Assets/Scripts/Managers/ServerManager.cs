@@ -31,7 +31,9 @@ public class ServerManager : MonoBehaviour {
 			Destroy(gameObject);
 			return;
 		}
+		manager = new Manager (new DirectoryInfo (Application.persistentDataPath), ManagerOptions.Default);
 		manager = Manager.SharedInstance;
+		print ("server manager online!");
 		db = manager.GetDatabase("cockfighting");
 
 		StartCoroutine(ProcessFeedSchedules());

@@ -22,6 +22,11 @@ public class DatabaseManager : MonoBehaviour {
 		}
 	}
 
+	void Awake() {
+		print ("database awake!");
+		Manager.SharedInstance = new Manager (new DirectoryInfo (Application.persistentDataPath), ManagerOptions.Default);
+	}
+
 	void Start () {
 		DontDestroyOnLoad(this);
 		if (FindObjectsOfType(GetType()).Length > 1)
@@ -30,6 +35,9 @@ public class DatabaseManager : MonoBehaviour {
 			return;
 		}
 		manager = Manager.SharedInstance;
+		print ("manager directory is " + manager.Directory);
+
+		print ("database manager online!");
 		db = manager.GetDatabase("cockfighting");
 		db.Changed += (sender, e) => {
 			var changes = e.Changes.ToList();
