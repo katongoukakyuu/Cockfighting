@@ -8,7 +8,6 @@ public class Constants : MonoBehaviour {
 
 	public const string SCENE_LOGIN = "Login";
 	public const string SCENE_FARM = "Farm";
-	public const string SCENE_FIGHT = "Fight Screen";
 	public const string SCENE_CONTROL_PANEL = "Control Panel";
 	public const string SCENE_CONTROL_PANEL_BREEDS = "Control Panel - Breeds";
 	public const string SCENE_CONTROL_PANEL_BUILDINGS = "Control Panel - Buildings";
@@ -24,6 +23,9 @@ public class Constants : MonoBehaviour {
 
 	public const string BREEDS_MANAGER_STATE_FREE_SELECT = "Free Select";
 	public const string BREEDS_MANAGER_STATE_ASSIGN_MATE = "Assign Mate";
+
+	public const string FIGHT_MANAGER_STATE_CATEGORY_SELECT = "Category Select";
+	public const string FIGHT_MANAGER_STATE_MATCH_SELECT = "Match Select";
 
 	public const string ORIENTATION_NORTH = "north";
 	public const string ORIENTATION_SOUTH = "south";
@@ -171,6 +173,8 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_AGILITY_MAX = "agility max";
 	public const string DB_KEYWORD_GAMENESS_MAX = "gameness max";
 	public const string DB_KEYWORD_AGGRESSION_MAX = "aggression max";
+
+	public const string DB_KEYWORD_IS_QUEUED_FOR_MATCH = "is queued for match";
 	// end chicken document keywords
 
 	// building document keywords
@@ -246,6 +250,49 @@ public class Constants : MonoBehaviour {
 	public const string SCHEDULE_PANEL_HURRY_BUTTON = "Timer/Buttons/Hurry";
 	public const string SCHEDULE_PANEL_CANCEL_BUTTON = "Timer/Buttons/Cancel";
 	// end schedule panel children
+
+	// match panel children
+	public const string MATCH_PANEL_IDLE_1 = "Idle 1";
+	public const string MATCH_PANEL_IDLE_2 = "Idle 2";
+	public const string MATCH_PANEL_INFO_1 = "Info 1";
+	public const string MATCH_PANEL_INFO_2 = "Info 2";
+	public const string MATCH_PANEL_WLD_1 = "WLD 1";
+	public const string MATCH_PANEL_WLD_2 = "WLD 2";
+
+	public const string MATCH_PANEL_CHICKEN_1 = "Info 1/Chicken Name/Chicken Name Text";
+	public const string MATCH_PANEL_CHICKEN_2 = "Info 2/Chicken Name/Chicken Name Text";
+	public const string MATCH_PANEL_FARN_1 = "Info 1/Farm Name/Farm Name Text";
+	public const string MATCH_PANEL_FARN_2 = "Info 2/Farm Name/Farm Name Text";
+	public const string MATCH_PANEL_WIN_1 = "WLD 1/Win/Win";
+	public const string MATCH_PANEL_WIN_2 = "WLD 2/Win/Win";
+	public const string MATCH_PANEL_LOSE_1 = "WLD 1/Lose/Lose";
+	public const string MATCH_PANEL_LOSE_2 = "WLD 2/Lose/Lose";
+	public const string MATCH_PANEL_DRAW_1 = "WLD 1/Draw/Draw";
+	public const string MATCH_PANEL_DRAW_2 = "WLD 2/Draw/Draw";
+
+	public const string MATCH_PANEL_TIMER = "Timer/Timer/Timer Text";
+	public const string MATCH_PANEL_JOIN_BUTTON = "Timer/Buttons/Join";
+	public const string MATCH_PANEL_BET_BUTTON = "Timer/Buttons/Bet";
+	public const string MATCH_PANEL_CANCEL_BUTTON = "Timer/Buttons/Cancel";
+	// end match panel children
+
+	// create match children
+	public const string CREATE_MATCH_STAT_ATK_SLIDER = "ATK/Slider";
+	public const string CREATE_MATCH_STAT_DEF_SLIDER = "DEF/Slider";
+	public const string CREATE_MATCH_STAT_HP_SLIDER = "HP/Slider";
+	public const string CREATE_MATCH_STAT_AGI_SLIDER = "AGI/Slider";
+	public const string CREATE_MATCH_STAT_GAM_SLIDER = "GAM/Slider";
+	public const string CREATE_MATCH_STAT_AGG_SLIDER = "AGG/Slider";
+
+	public const string CREATE_MATCH_WAIT_DURATION_SLIDER = "Main Panel/Wait Duration/Slider";
+	public const string CREATE_MATCH_BETTING_BUTTON = "Betting Button";
+	public const string CREATE_MATCH_BETTING_PANEL = "Betting Panel";
+	public const string CREATE_MATCH_BETTING_AMOUNT_SLIDER = "Betting Panel/Amount/Slider";
+	public const string CREATE_MATCH_BETTING_ODDS_SLIDER = "Betting Panel/Odds/Slider";
+	public const string CREATE_MATCH_PRIVATE_BUTTON = "Private Button";
+	public const string CREATE_MATCH_PRIVATE_PANEL = "Private Panel";
+	public const string CREATE_MATCH_PRIVATE_PASSWORD = "Private Panel/Password/InputField";
+	// end create match children
 
 	// fight move list
 	public const string FIGHT_MOVE_NONE = "None";

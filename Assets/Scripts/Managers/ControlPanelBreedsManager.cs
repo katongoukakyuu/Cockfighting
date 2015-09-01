@@ -35,9 +35,7 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 		breedList = new List<string> ();
 
 		// initialize database
-		manager = new Manager (new DirectoryInfo (Application.persistentDataPath), ManagerOptions.Default);
 		manager = Manager.SharedInstance;
-		print("breeds manager online!");
 		db = manager.GetDatabase(Constants.DB_NAME);
 
 		// initialize views

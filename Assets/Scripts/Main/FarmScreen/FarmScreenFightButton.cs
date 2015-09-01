@@ -6,8 +6,13 @@ using System.IO;
 
 public class FarmScreenFightButton : MonoBehaviour {
 
+	public Canvas mainCanvas;
+	public Canvas fightCanvas;
+
 	public void ButtonPressed() {
-		Application.LoadLevel (Constants.SCENE_FIGHT);
+		mainCanvas.gameObject.SetActive (false);
+		fightCanvas.gameObject.SetActive (true);
+		FightManager.Instance.Initialize ();
 	}
 	
 }

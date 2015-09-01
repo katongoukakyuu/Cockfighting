@@ -8,7 +8,6 @@ public class BreedsManager : MonoBehaviour {
 
 	public Canvas mainCanvas;
 	public Canvas breedsCanvas;
-	public Canvas messageCanvas;
 
 	public Button addScheduleButton;
 	public Button confirmButton;
@@ -41,7 +40,6 @@ public class BreedsManager : MonoBehaviour {
 
 	private List<IEnumerator> countdowns = new List<IEnumerator>();
 
-	private delegate void ButtonDelegate();
 	private int x;
 
 	private static BreedsManager instance;
@@ -116,7 +114,7 @@ public class BreedsManager : MonoBehaviour {
 	}
 
 	public void SetSelectedMate() {
-		DisplayMessage(Constants.MESSAGE_SCHEDULE_BREED_TITLE,
+		MessageManager.Instance.DisplayMessage(Constants.MESSAGE_SCHEDULE_BREED_TITLE,
 		               "Do you want to breed\n" + selectedChicken[Constants.DB_KEYWORD_NAME].ToString() + 
 		               "\nwith\n" + selectedMate[Constants.DB_KEYWORD_NAME].ToString() + "?",
 		               FinalizeSelectedItem);
@@ -242,7 +240,7 @@ public class BreedsManager : MonoBehaviour {
 		}
 		else {
 			x = index;
-			DisplayMessage(Constants.MESSAGE_SCHEDULE_CANCEL_TITLE, 
+			MessageManager.Instance.DisplayMessage(Constants.MESSAGE_SCHEDULE_CANCEL_TITLE, 
 			               Constants.MESSAGE_SCHEDULE_CANCEL,
 			               FinalizeCancelSchedule);
 		}
@@ -300,44 +298,6 @@ public class BreedsManager : MonoBehaviour {
 				listDetails[details.IndexOf(i)].GetComponent<Button>().interactable = false;
 			}
 		}*/
-	}
-
-	private void DisplayMessage(string title, string message, ButtonDelegate bd) {
-		messageCanvas.gameObject.SetActive(true);
-		GameObject.Find("Title Text").GetComponent<Text>().text = title;
-		GameObject.Find("Message Text").GetComponent<Text>().text = message;
-
-		GameObject okButton = GameObject.Find("Msg OK Button").gameObject;
-		EventTrigger trigger = okButton.GetComponentInParent<EventTrigger> ();
-		EventTrigger.Entry entry = new EventTrigger.Entry ();
-		entry.eventID = EventTriggerType.Select;
-		entry.callback.AddListener ((eventData) => {
-			bd ();
-			ClearMessage();
-		});
-		trigger.triggers.Add (entry);
-
-		GameObject cancelButton = GameObject.Find("Msg Cancel Button").gameObject;
-		trigger = cancelButton.GetComponentInParent<EventTrigger> ();
-		entry = new EventTrigger.Entry ();
-		entry.eventID = EventTriggerType.Select;
-		entry.callback.AddListener ((eventData) => {
-			ClearMessage();
-		});
-		trigger.triggers.Add (entry);
-	}
-
-	private void ClearMessage() {
-		GameObject okButton = GameObject.Find("Msg OK Button").gameObject;
-		EventTrigger trigger = okButton.GetComponentInParent<EventTrigger> ();
-		GameObject cancelButton = GameObject.Find("Msg Cancel Button").gameObject;
-		EventTrigger trigger2 = cancelButton.GetComponentInParent<EventTrigger> ();
-
-		GameObject.Find("Title Text").GetComponent<Text>().text = "";
-		GameObject.Find("Message Text").GetComponent<Text>().text = "";
-		trigger.triggers.Clear();
-		trigger2.triggers.Clear();
-		messageCanvas.gameObject.SetActive(false);
 	}
 
 	private string GenerateStatsString(IDictionary<string, object> i) {

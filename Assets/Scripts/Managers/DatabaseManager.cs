@@ -23,7 +23,6 @@ public class DatabaseManager : MonoBehaviour {
 	}
 
 	void Awake() {
-		print ("database awake!");
 		Manager.SharedInstance = new Manager (new DirectoryInfo (Application.persistentDataPath), ManagerOptions.Default);
 	}
 
@@ -36,8 +35,6 @@ public class DatabaseManager : MonoBehaviour {
 		}
 		manager = Manager.SharedInstance;
 		print ("manager directory is " + manager.Directory);
-
-		print ("database manager online!");
 		db = manager.GetDatabase("cockfighting");
 		db.Changed += (sender, e) => {
 			var changes = e.Changes.ToList();
@@ -715,11 +712,21 @@ public class DatabaseManager : MonoBehaviour {
 	
 	public List<IDictionary<string,object>> LoadMatch(string playerId) {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
-		var query = db.GetView (Constants.DB_TYPE_MATCHMAKING_CATEGORY).CreateQuery();
+		var query = db.GetView (Constants.DB_TYPE_MATCH).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			if(row.Key.ToString() == playerId || row.Value.ToString() == playerId) {
+			if(playerId == null || row.Key.ToString() == playerId || row.Value.ToString() == playerId) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
+			}
+		}
+		return l;
+	}
+
+	public List<IDictionary<string,object>> LoadMatchesByCategory(string categoryId) {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		foreach(IDictionary<string,object> id in LoadMatch(null)) {
+			if(id[Constants.DB_KEYWORD_CATEGORY].ToString() == categoryId) {
+				l.Add (id);
 			}
 		}
 		return l;

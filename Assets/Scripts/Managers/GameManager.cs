@@ -66,7 +66,8 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_AGILITY_MAX, Constants.CHICKEN_AGILITY_DEFAULT_MAX},
 			{Constants.DB_KEYWORD_GAMENESS_MAX, Constants.CHICKEN_GAMENESS_DEFAULT_MAX},
 			{Constants.DB_KEYWORD_AGGRESSION_MAX, Constants.CHICKEN_AGGRESSION_DEFAULT_MAX},
-			{Constants.DB_KEYWORD_LIFE_STAGE, lifeStage}
+			{Constants.DB_KEYWORD_LIFE_STAGE, lifeStage},
+			{Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH, false},
 		};
 		return d;
 	}

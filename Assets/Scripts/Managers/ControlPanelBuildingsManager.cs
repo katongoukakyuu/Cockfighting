@@ -35,9 +35,7 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 		buildingList = new List<string> ();
 
 		// initialize database
-		manager = new Manager (new DirectoryInfo (Application.persistentDataPath), ManagerOptions.Default);
 		manager = Manager.SharedInstance;
-		print ("buidings manager online!");
 		db = manager.GetDatabase(Constants.DB_NAME);
 
 		// initialize views

@@ -1,0 +1,19 @@
+﻿using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
+public class FightScreenChickenStatAutoAdjust : MonoBehaviour {
+	
+	private Text text;
+	private Slider slider;
+
+	public void Start() {
+		text = GetComponentInChildren<Text>();
+		slider = GetComponent<Slider>();
+		OnChange();
+	}
+
+	public void OnChange() {
+		text.text = slider.value + " / " + slider.maxValue;
+	}
+}
