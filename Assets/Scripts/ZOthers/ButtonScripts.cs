@@ -8,41 +8,61 @@ public class ButtonScripts : MonoBehaviour {
 
 	public GameObject FarmGUI;
 	public GameObject BlackOverLay;
-	
 
+	public GameObject ModeSection;
+	public GameObject FightScreen;
+
+	public GameObject camera;
+
+
+	void Open()
+	{
+		FarmGUI.SetActive(false);
+		BlackOverLay.SetActive(true);
+		((MonoBehaviour)camera.GetComponent("CameraControls")).enabled = false;
+	}
+
+	void Close()
+	{
+		FarmGUI.SetActive (true);
+		BlackOverLay.SetActive (false);
+		((MonoBehaviour)camera.GetComponent("CameraControls")).enabled = true;
+	}
 
 	public void openMarketPanel()
 	{
 		Market.enabled = true;
 		Market.SetBool ("isHidden", false);
-		FarmGUI.SetActive(false);
-		BlackOverLay.SetActive(true);
-
+		Open ();
 	}
 
 	public void closemMarketPanel()
 	{
 		Market.SetBool ("isHidden", true);
-		FarmGUI.SetActive (true);
-		BlackOverLay.SetActive (false);
-
+		Close ();
 	}
 
 	public void openArenaPanel()
 	{
 		Arena.enabled = true;
 		Arena.SetBool ("isHidden",false);
-		FarmGUI.SetActive(false);
-		BlackOverLay.SetActive (true);
+		Open ();
 	}
 
 	public void closeArenaPanel()
 	{
 		Arena.SetBool("isHidden", true);
-		FarmGUI.SetActive (true);
-		BlackOverLay.SetActive(false);
+		ModeSection.SetActive (true);
+		FightScreen.SetActive(false);
+		Close();
 	}
 
+	public void OpenFight()
+	{
+		ModeSection.SetActive (false);
+		FightScreen.SetActive(true);
+	}
+	
 	public void toFarm()
 	{
 		Application.LoadLevel ("graphic test");
@@ -72,5 +92,4 @@ public class ButtonScripts : MonoBehaviour {
 	{
 		Application.LoadLevel ("Farm");
 	}
-
 }
