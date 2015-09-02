@@ -56,9 +56,18 @@ public class MatchCreateManager : MonoBehaviour {
 			b.GetComponentInChildren<Text> ().text = i[Constants.DB_KEYWORD_NAME].ToString();
 			b.transform.SetParent(listPanel.transform,false);
 		}
+		if(listChickenButtons.Count > 0) {
+			SetSelected(listChickenButtons[0].GetComponentInChildren<Text> ().text);
+		}
+		else {
+			MessageManager.Instance.DisplayMessage(Constants.MESSAGE_MATCH_CREATE_NO_COCKS_AVAILABLE_TITLE,
+			                                       Constants.MESSAGE_MATCH_CREATE_NO_COCKS_AVAILABLE,
+			                                       ButtonBack, false);
+		} 
 	}
 
 	public void SetSelected(string s) {
+		okButton.interactable = true;
 		foreach (IDictionary<string, object> i in PlayerManager.Instance.playerChickens) {
 			if(i[Constants.DB_KEYWORD_NAME].ToString() == s) {
 				selectedChicken = i;
@@ -82,19 +91,45 @@ public class MatchCreateManager : MonoBehaviour {
 	}
 
 	public void ButtonOk() {
-		print ("selected chicken name: " + selectedChicken[Constants.DB_KEYWORD_NAME].ToString());
-		print ("wait duration: " + optionsPanel.transform.FindChild(Constants.CREATE_MATCH_WAIT_DURATION_SLIDER).GetComponent<Slider>().value + " minutes");
+		string chickenId = selectedChicken[Constants.DB_COUCHBASE_ID].ToString();
+		string playerId = PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString();
+		string categoryId = FightManager.Instance.GetSelectedCategory()[Constants.DB_COUCHBASE_ID].ToString();
+		string bettingOption = Constants.BETTING_OPTION_NONE;
+		int bettingAmount = 0;
+		string password = "";
+		System.DateTime dt = System.DateTime.MinValue;
 		if(optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_BUTTON).GetComponent<Toggle>().isOn) {
 			// save betting info
-			print ("betting amount: " + optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_AMOUNT_SLIDER).GetComponent<Slider>().value);
-			print ("betting odds: " + optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_ODDS_SLIDER).GetComponent<Slider>().value);
+			bettingOption = Constants.BETTING_OPTION_SINGLE_BETTING;
+			bettingAmount = (int)optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_AMOUNT_SLIDER).GetComponent<Slider>().value;
+		}
+		if(optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_BUTTON).GetComponent<Toggle>().isOn) {
+			// save betting info
+			bettingOption = Constants.BETTING_OPTION_SPECTATOR_BETTING;
+			bettingAmount = (int)optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<Slider>().value;
+			dt = TrimMilli(System.DateTime.Now.ToUniversalTime());
+			dt = dt.AddMinutes (System.Convert.ToDouble(optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_WAIT_DURATION_SLIDER).GetComponent<Slider>().value));
 		}
 		if(optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_BUTTON).GetComponent<Toggle>().isOn) {
 			// save private info
-			print ("password: " + optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_PASSWORD).GetComponent<InputField>().text);
+			password = optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_PASSWORD).GetComponent<InputField>().text;
 		}
 
-		//matchCreateCanvas.gameObject.SetActive (false);
+		IDictionary<string,object> savedMatch = DatabaseManager.Instance.SaveMatch(GameManager.Instance.GenerateMatch(chickenId, "", playerId, "", categoryId, bettingOption, password, dt.ToString()));
+		foreach(KeyValuePair<string,object> kv in savedMatch) {
+			print (kv.Key + ": " + kv.Value);
+		}
+		if(bettingOption != Constants.BETTING_OPTION_NONE) {
+			IDictionary<string,object> savedBet = DatabaseManager.Instance.SaveBet(GameManager.Instance.GenerateBet(savedMatch[Constants.DB_COUCHBASE_ID].ToString(), playerId, 
+			                                 DatabaseManager.Instance.LoadBettingOdds(0)[Constants.DB_COUCHBASE_ID].ToString(), chickenId, Constants.BETTED_CHICKEN_STATUS_LLAMADO,
+			                                 bettingAmount));
+			foreach(KeyValuePair<string,object> kv in savedBet) {
+				print (kv.Key + ": " + kv.Value);
+			}
+		}
+
+		matchCreateCanvas.gameObject.SetActive (false);
+		FightManager.Instance.InitializeMatches();
 	}
 
 	public void ButtonBack() {
@@ -103,9 +138,28 @@ public class MatchCreateManager : MonoBehaviour {
 
 	public void ButtonBetting(Toggle t) {
 		optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_PANEL).gameObject.SetActive(t.isOn);
+		if(t.isOn) {
+			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_BUTTON).GetComponent<Toggle>().isOn = false;
+		}
+	}
+
+	public void ButtonBetting2(Toggle t) {
+		optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_PANEL).gameObject.SetActive(t.isOn);
+		if(t.isOn) {
+			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_BUTTON).GetComponent<Toggle>().isOn = false;
+			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_BUTTON).GetComponent<Toggle>().isOn = false;
+		}
 	}
 
 	public void ButtonPrivate(Toggle t) {
 		optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_PANEL).gameObject.SetActive(t.isOn);
+		if(t.isOn) {
+			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_BUTTON).GetComponent<Toggle>().isOn = false;
+		}
+	}
+
+	private System.DateTime TrimMilli(System.DateTime dt)
+	{
+		return new System.DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0, dt.Kind);
 	}
 }

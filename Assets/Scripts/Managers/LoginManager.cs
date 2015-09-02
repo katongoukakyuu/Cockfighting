@@ -57,7 +57,7 @@ public class LoginManager : MonoBehaviour {
 			DisplayError(Constants.LOGIN_ERROR_USERNAME_LENGTH);
 			return;
 		}
-		Dictionary<string, object> d = GameManager.Instance.RegisterAccount(registerPanelUsernameInput.text,registerPanelEmailInput.text);
+		Dictionary<string, object> d = GameManager.Instance.RegisterAccount(registerPanelUsernameInput.text,registerPanelEmailInput.text,"");
 		DatabaseManager.Instance.RegisterAccount(d);
 	}
 

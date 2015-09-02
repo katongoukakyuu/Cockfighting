@@ -7,7 +7,7 @@ public class FightScreenChickenStatAutoAdjust : MonoBehaviour {
 	private Text text;
 	private Slider slider;
 
-	public void Start() {
+	public void Awake() {
 		text = GetComponentInChildren<Text>();
 		slider = GetComponent<Slider>();
 		OnChange();

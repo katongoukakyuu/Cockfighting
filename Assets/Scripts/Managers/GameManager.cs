@@ -29,12 +29,13 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public Dictionary<string, object> RegisterAccount(string username, string email) {
+	public Dictionary<string, object> RegisterAccount(string username, string email, string farmName) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_ACCOUNT},
 			{Constants.DB_KEYWORD_USERNAME, username},
 			{Constants.DB_KEYWORD_PASSWORD, "test"},
 			{Constants.DB_KEYWORD_EMAIL, email},
+			{Constants.DB_KEYWORD_FARM_NAME, farmName},
 			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
 			{Constants.DB_KEYWORD_MATCHES_WON, 0},
 			{Constants.DB_KEYWORD_MATCHES_LOST, 0},
@@ -167,16 +168,47 @@ public class GameManager : MonoBehaviour {
 
 	public Dictionary<string, object> GenerateMatch(string chickenId1, string chickenId2,
 	                                                string playerId1, string playerId2,
-	                                                string category, bool bettingAllowed, string waitDuration) {
+	                                                string categoryId, string bettingOption, 
+	                                                string password, string waitDuration) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
-			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_MATCHMAKING_CATEGORY},
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_MATCH},
 			{Constants.DB_KEYWORD_CHICKEN_ID_1, chickenId1},
 			{Constants.DB_KEYWORD_CHICKEN_ID_2, chickenId2},
 			{Constants.DB_KEYWORD_PLAYER_ID_1, playerId1},
 			{Constants.DB_KEYWORD_PLAYER_ID_2, playerId2},
-			{Constants.DB_KEYWORD_CATEGORY, category},
-			{Constants.DB_KEYWORD_BETTING_ALLOWED, bettingAllowed},
+			{Constants.DB_KEYWORD_CATEGORY_ID, categoryId},
+			{Constants.DB_KEYWORD_BETTING_OPTION, bettingOption},
 			{Constants.DB_KEYWORD_WAIT_DURATION, waitDuration},
+			{Constants.DB_KEYWORD_END_TIME, System.DateTime.MinValue.ToString()},
+			{Constants.DB_KEYWORD_STATUS, Constants.MATCH_STATUS_WAITING_FOR_OPPONENT},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
+		};
+		return d;
+	}
+
+	public Dictionary<string, object> GenerateBettingOdds(string name, int llamadoOdds, int dehadoOdds, int order) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_BETTING_ODDS},
+			{Constants.DB_KEYWORD_NAME, name},
+			{Constants.DB_KEYWORD_LLAMADO_ODDS, llamadoOdds},
+			{Constants.DB_KEYWORD_DEHADO_ODDS, dehadoOdds},
+			{Constants.DB_KEYWORD_ORDER, order},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
+		};
+		return d;
+	}
+
+	public Dictionary<string, object> GenerateBet(string matchId, string playerId,
+	                                              string bettingOddsId, string bettedChickenId,
+	                                              string bettedChickenStatus, int betAmount) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_BET},
+			{Constants.DB_KEYWORD_MATCH_ID, matchId},
+			{Constants.DB_KEYWORD_PLAYER_ID, playerId},
+			{Constants.DB_KEYWORD_BETTING_ODDS_ID, bettingOddsId},
+			{Constants.DB_KEYWORD_BETTED_CHICKEN_ID, bettedChickenId},
+			{Constants.DB_KEYWORD_BETTED_CHICKEN_STATUS, bettedChickenStatus},
+			{Constants.DB_KEYWORD_BET_AMOUNT, betAmount},
 			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
 		};
 		return d;

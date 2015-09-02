@@ -10,6 +10,8 @@ public class FightManager : MonoBehaviour {
 	public Canvas fightCanvas;
 
 	public GameObject listPanel;
+	public GameObject matchmakingPanel;
+	public GameObject matchmakingListPanel;
 	public GameObject queueButton;
 
 	private string state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
@@ -19,7 +21,7 @@ public class FightManager : MonoBehaviour {
 	private List<IDictionary<string,object>> listMMCategories = new List<IDictionary<string,object>> ();
 	private IDictionary<string,object> selectedMMCategory;
 
-	public Button matchButton;
+	public GameObject matchButton;
 	private List<GameObject> listMatchButtons = new List<GameObject> ();
 	private List<IDictionary<string,object>> listMatches = new List<IDictionary<string,object>> ();
 	private IDictionary<string,object> selectedMatch;
@@ -38,15 +40,19 @@ public class FightManager : MonoBehaviour {
 		}
 	}
 
+	public IDictionary<string,object> GetSelectedCategory() {
+		return selectedMMCategory;
+	}
+
 	public void Initialize() {
+		listPanel.gameObject.SetActive(true);
+		matchmakingPanel.gameObject.SetActive(false);
+
 		foreach (Button b in listMMCategoryButtons) {
 			Destroy (b.gameObject);
 		}
-		foreach (IEnumerator ie in countdowns) {
-			StopCoroutine(ie);
-		}
+
 		listMMCategoryButtons.Clear ();
-		countdowns.Clear ();
 
 		listMMCategories = DatabaseManager.Instance.LoadMatchmakingCategories ();
 		foreach (IDictionary<string, object> i in listMMCategories) {
@@ -67,7 +73,10 @@ public class FightManager : MonoBehaviour {
 		}
 	}
 
-	private void InitializeMatches() {
+	public void InitializeMatches() {
+		listPanel.gameObject.SetActive(false);
+		matchmakingPanel.gameObject.SetActive(true);
+
 		if(selectedMMCategory[Constants.DB_KEYWORD_CUSTOM_MATCHES_ALLOWED].Equals(false)) {
 			queueButton.SetActive(false);
 		}
@@ -75,6 +84,61 @@ public class FightManager : MonoBehaviour {
 			queueButton.SetActive(true);
 		}
 
+		foreach (GameObject g in listMatchButtons) {
+			Destroy (g);
+		}
+		foreach (IEnumerator ie in countdowns) {
+			StopCoroutine(ie);
+		}
+		listMatchButtons.Clear ();
+		countdowns.Clear ();
+		
+		listMatches = DatabaseManager.Instance.LoadMatchesByCategory(selectedMMCategory[Constants.DB_COUCHBASE_ID].ToString());
+		foreach (IDictionary<string, object> i in listMatches) {
+			IDictionary<string, object> chicken = DatabaseManager.Instance.LoadChicken(i[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString());
+			IDictionary<string,object> player = DatabaseManager.Instance.LoadPlayer(i[Constants.DB_KEYWORD_PLAYER_ID_1].ToString());
+			GameObject g = Instantiate(matchButton);
+			listMatchButtons.Add (g);
+			g.name = i[Constants.DB_COUCHBASE_ID].ToString();
+			g.transform.FindChild(Constants.MATCH_PANEL_TIMER).GetComponent<Text>().text = "";
+
+			g.transform.FindChild(Constants.MATCH_PANEL_IDLE_1).gameObject.SetActive(false);
+			g.transform.FindChild(Constants.MATCH_PANEL_INFO_1).gameObject.SetActive(true);
+			g.transform.FindChild(Constants.MATCH_PANEL_WLD_1).gameObject.SetActive(true);
+			g.transform.FindChild(Constants.MATCH_PANEL_CHICKEN_1).GetComponent<Text>().text = chicken[Constants.DB_KEYWORD_NAME].ToString();
+			g.transform.FindChild(Constants.MATCH_PANEL_FARM_1).GetComponent<Text>().text = player[Constants.DB_KEYWORD_FARM_NAME].ToString();
+			g.transform.FindChild(Constants.MATCH_PANEL_WIN_1).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_WON].ToString();
+			g.transform.FindChild(Constants.MATCH_PANEL_LOSE_1).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_LOST].ToString();
+			g.transform.FindChild(Constants.MATCH_PANEL_DRAW_1).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_TIED].ToString();
+
+			if(i[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString() == "") {
+				g.transform.FindChild(Constants.MATCH_PANEL_IDLE_2).gameObject.SetActive(true);
+				g.transform.FindChild(Constants.MATCH_PANEL_INFO_2).gameObject.SetActive(false);
+				g.transform.FindChild(Constants.MATCH_PANEL_WLD_2).gameObject.SetActive(false);
+			}
+			else {
+				chicken = DatabaseManager.Instance.LoadChicken(i[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString());
+				player = DatabaseManager.Instance.LoadPlayer(i[Constants.DB_KEYWORD_PLAYER_ID_2].ToString());
+				g.transform.FindChild(Constants.MATCH_PANEL_IDLE_2).gameObject.SetActive(false);
+				g.transform.FindChild(Constants.MATCH_PANEL_INFO_2).gameObject.SetActive(true);
+				g.transform.FindChild(Constants.MATCH_PANEL_WLD_2).gameObject.SetActive(true);
+				g.transform.FindChild(Constants.MATCH_PANEL_CHICKEN_2).GetComponent<Text>().text = chicken[Constants.DB_KEYWORD_NAME].ToString();
+				g.transform.FindChild(Constants.MATCH_PANEL_FARM_2).GetComponent<Text>().text = player[Constants.DB_KEYWORD_FARM_NAME].ToString();
+				g.transform.FindChild(Constants.MATCH_PANEL_WIN_2).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_WON].ToString();
+				g.transform.FindChild(Constants.MATCH_PANEL_LOSE_2).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_LOST].ToString();
+				g.transform.FindChild(Constants.MATCH_PANEL_DRAW_2).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_TIED].ToString();
+				System.DateTime dt1 = TrimMilli(System.DateTime.Now.ToUniversalTime());
+				System.DateTime dt2 = TrimMilli(System.DateTime.Parse(i[Constants.DB_KEYWORD_END_TIME].ToString()));
+				if(dt2 != System.DateTime.MinValue) {
+					g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>().text = "" + (dt2 - dt1);
+					IEnumerator ie = DisplayCountdown(g.transform.FindChild(Constants.MATCH_PANEL_TIMER).GetComponent<Text>(), dt2);
+					StartCoroutine(ie);
+					countdowns.Add (ie);
+				}
+			}
+			
+			g.transform.SetParent(matchmakingListPanel.transform,false);
+		}
 	}
 
 	public void SetSelected(string s) {
@@ -138,8 +202,21 @@ public class FightManager : MonoBehaviour {
 	}
 
 	public void ButtonBack() {
-		mainCanvas.gameObject.SetActive (true);
-		fightCanvas.gameObject.SetActive (false);
+		switch(state) {
+		case Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT:
+			mainCanvas.gameObject.SetActive (true);
+			listPanel.gameObject.SetActive (true);
+			matchmakingPanel.gameObject.SetActive (false);
+			fightCanvas.gameObject.SetActive (false);
+			break;
+		case Constants.FIGHT_MANAGER_STATE_MATCH_SELECT:
+			listPanel.gameObject.SetActive (true);
+			matchmakingPanel.gameObject.SetActive (false);
+			break;
+		default:
+			break;
+		}
+
 	}
 
 	private System.DateTime TrimMilli(System.DateTime dt)

@@ -149,6 +149,20 @@ public class DatabaseManager : MonoBehaviour {
 				emit(doc[Constants.DB_KEYWORD_PLAYER_ID_1], doc[Constants.DB_KEYWORD_PLAYER_ID_2]);
 		}, "1");
 
+		// betting odds
+		View viewBetingOdds = db.GetView(Constants.DB_TYPE_BETTING_ODDS);
+		viewBetingOdds.SetMap ((doc, emit) => {
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_BETTING_ODDS)
+				emit(doc[Constants.DB_KEYWORD_NAME], doc[Constants.DB_KEYWORD_ORDER]);
+		}, "1");
+
+		// bet
+		View viewBet = db.GetView(Constants.DB_TYPE_BET);
+		viewBet.SetMap ((doc, emit) => {
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_BET)
+				emit(doc[Constants.DB_KEYWORD_MATCH_ID], doc[Constants.DB_KEYWORD_PLAYER_ID]);
+		}, "1");
+
 		// delete functions, use caution
 		//DeleteBuildingsOwnedByPlayer (null);
 
@@ -181,7 +195,7 @@ public class DatabaseManager : MonoBehaviour {
 			Constants.FIGHT_MOVE_PECK
 		));
 
-		RegisterAccount(GameManager.Instance.RegisterAccount ("test", "test@test.com"));
+		RegisterAccount(GameManager.Instance.RegisterAccount ("test", "test@test.com", "Savior Studios"));
 		ControlPanelBreedsManager.Instance.SaveBreed (
 			"Kelso",
 			1.3f, 1.2f, 1.0f, 0.9f, 1.1f, 1.0f
@@ -222,6 +236,47 @@ public class DatabaseManager : MonoBehaviour {
 		SaveMatchmakingCategory (GameManager.Instance.GenerateMatchmakingCategory (
 			"Event", true, false
 		));
+
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Even Odds", 10, 10, 0
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Ten-Nine", 10, 9, 1
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Nine-Eight", 9, 8, 2
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Ten-Eight", 10, 8, 3
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Eight-Six", 8, 6, 4
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Eleven-Eight", 11, 8, 5
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Three-Two", 3, 2, 6
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Ten-Six", 10, 6, 7
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Double Odds", 10, 5, 8
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Ten-Four", 10, 4, 9
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Ten-Three", 10, 3, 10
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Ten-Two", 10, 2, 11
+		));
+		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+			"Ten-One", 10, 1, 12
+		));
+
 		Destroy (ControlPanelBreedsManager.Instance);
 		Destroy (ControlPanelBuildingsManager.Instance);
 		Destroy (ControlPanelFeedsManager.Instance);
@@ -338,6 +393,22 @@ public class DatabaseManager : MonoBehaviour {
 			}
 		}
 		return false;
+	}
+
+	public void EditAccount(IDictionary<string, object> dic) {
+		Document d = db.GetDocument(dic[Constants.DB_COUCHBASE_ID].ToString());
+		d.Update((UnsavedRevision newRevision) => {
+			var properties = newRevision.Properties;
+			properties[Constants.DB_KEYWORD_PASSWORD] = dic[Constants.DB_KEYWORD_PASSWORD].ToString();
+			properties[Constants.DB_KEYWORD_EMAIL] = dic[Constants.DB_KEYWORD_EMAIL].ToString();
+			properties[Constants.DB_KEYWORD_FARM_NAME] = dic[Constants.DB_KEYWORD_FARM_NAME].ToString();
+			properties[Constants.DB_KEYWORD_MATCHES_WON] = dic[Constants.DB_KEYWORD_MATCHES_WON].ToString();
+			properties[Constants.DB_KEYWORD_MATCHES_LOST] = dic[Constants.DB_KEYWORD_MATCHES_LOST].ToString();
+			properties[Constants.DB_KEYWORD_MATCHES_TIED] = dic[Constants.DB_KEYWORD_MATCHES_TIED].ToString();
+			properties[Constants.DB_KEYWORD_COIN] = dic[Constants.DB_KEYWORD_COIN].ToString();
+			properties[Constants.DB_KEYWORD_CASH] = dic[Constants.DB_KEYWORD_CASH].ToString();
+			return true;
+		});
 	}
 
 	public void UpdatePlayer(string username, string id) {
@@ -725,8 +796,85 @@ public class DatabaseManager : MonoBehaviour {
 	public List<IDictionary<string,object>> LoadMatchesByCategory(string categoryId) {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
 		foreach(IDictionary<string,object> id in LoadMatch(null)) {
-			if(id[Constants.DB_KEYWORD_CATEGORY].ToString() == categoryId) {
+			if(id[Constants.DB_KEYWORD_CATEGORY_ID].ToString() == categoryId) {
 				l.Add (id);
+			}
+		}
+		return l;
+	}
+
+	public IDictionary<string,object> SaveBettingOdds(Dictionary<string, object> dic) {
+		Document d = db.CreateDocument();
+		var properties = dic;
+		var rev = d.PutProperties(properties);
+		if (rev != null) {
+			print ("Betting odds is saved!");
+			return rev.Properties;
+		}
+		return null;
+	}
+
+	public List<IDictionary<string,object>> LoadBettingOdds() {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_BETTING_ODDS).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			l.Add (db.GetDocument (row.DocumentId).Properties);
+		}
+		return l;
+	}
+
+	public IDictionary<string, object> LoadBettingOdds(string bettingOddsId) {
+		var query = db.GetView (Constants.DB_TYPE_BETTING_ODDS).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.DocumentId == bettingOddsId) {
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
+	}
+
+	public IDictionary<string, object> LoadBettingOdds(int bettingOddsOrder) {
+		var query = db.GetView (Constants.DB_TYPE_BETTING_ODDS).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.Value.ToString() == bettingOddsOrder.ToString()) {
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
+	}
+
+	public IDictionary<string,object> SaveBet(Dictionary<string, object> dic) {
+		Document d = db.CreateDocument();
+		var properties = dic;
+		var rev = d.PutProperties(properties);
+		if (rev != null) {
+			print ("Bet is saved!");
+			return rev.Properties;
+		}
+		return null;
+	}
+
+	public IDictionary<string, object> LoadBet(string matchId, string playerId) {
+		var query = db.GetView (Constants.DB_TYPE_BET).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.Key.ToString() == matchId && row.Value.ToString() == playerId) {
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
+	}
+
+	public List<IDictionary<string,object>> LoadBets(string id) {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_BET).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.Key.ToString() == id || row.Value.ToString() == id) {
+				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
 		}
 		return l;

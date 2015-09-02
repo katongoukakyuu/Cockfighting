@@ -305,4 +305,25 @@ public class ServerManager : MonoBehaviour {
 
 	// BREED SCHEDULES END
 
+	// MATCHES START
+
+	private IEnumerator ProcessMatchesStatusChanges() {
+		db.Changed += (sender, e) => {
+			var changes = e.Changes.ToList();
+			foreach (DocumentChange change in changes) {
+				IDictionary<string,object> properties = db.GetDocument(change.DocumentId).Properties;
+				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_MATCH) {
+					if(properties[Constants.DB_KEYWORD_STATUS].ToString() == Constants.MATCH_STATUS_WAITING_FOR_OPPONENT) {
+						print("Match " + change.DocumentId + " status has been changed! Details below.");
+						foreach(KeyValuePair<string,object> kv in properties) {
+							print (kv.Key + ": " + kv.Value);
+						}
+					}
+				}
+			}
+		};
+		yield break;
+	}
+
+	// MATCHES END
 }

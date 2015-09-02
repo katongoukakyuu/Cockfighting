@@ -61,6 +61,11 @@ public class Constants : MonoBehaviour {
 	public const string MESSAGE_SCHEDULE_BREED_TITLE = "Confirm breeding";
 	// end schedule panel messages
 
+	// match create messages
+	public const string MESSAGE_MATCH_CREATE_NO_COCKS_AVAILABLE_TITLE = "No cocks available";
+	public const string MESSAGE_MATCH_CREATE_NO_COCKS_AVAILABLE = "You have no cocks to fight with.";
+	// end match create messages
+
 	public const int COIN_START = 10000;
 	public const int CASH_START = 200;
 
@@ -88,6 +93,8 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_TYPE = "type";
 	public const string DB_KEYWORD_SUBTYPE = "subtype";
 	public const string DB_TYPE_ACCOUNT = "account";
+	public const string DB_TYPE_BET = "bet";
+	public const string DB_TYPE_BETTING_ODDS = "betting odds";
 	public const string DB_TYPE_BREED = "breed";
 	public const string DB_TYPE_BUILDING = "building";
 	public const string DB_TYPE_BUILDING_OWNED = "building owned";
@@ -116,6 +123,7 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_USERNAME = "username";
 	public const string DB_KEYWORD_PASSWORD = "password";
 	public const string DB_KEYWORD_EMAIL = "email";
+	public const string DB_KEYWORD_FARM_NAME = "farm name";
 	public const string DB_KEYWORD_MATCHES_WON = "matches won";
 	public const string DB_KEYWORD_MATCHES_LOST = "matches lost";
 	public const string DB_KEYWORD_MATCHES_TIED = "matches tied";
@@ -227,10 +235,43 @@ public class Constants : MonoBehaviour {
 	// match document keywords
 	public const string DB_KEYWORD_PLAYER_ID_1 = "player id 1";
 	public const string DB_KEYWORD_PLAYER_ID_2 = "player id 2";
-	public const string DB_KEYWORD_CATEGORY = "category";
-	public const string DB_KEYWORD_BETTING_ALLOWED = "betting allowed";
+	public const string DB_KEYWORD_CATEGORY_ID = "category id";
+	public const string DB_KEYWORD_BETTING_OPTION = "betting option";
 	public const string DB_KEYWORD_WAIT_DURATION = "wait duration";
+	public const string DB_KEYWORD_STATUS = "status";
 	// end match document keywords
+
+	// betting options
+	public const string BETTING_OPTION_NONE = "none";
+	public const string BETTING_OPTION_SINGLE_BETTING = "single betting";
+	public const string BETTING_OPTION_SPECTATOR_BETTING = "spectator betting";
+	// end betting options
+
+	// match status
+	public const string MATCH_STATUS_WAITING_FOR_OPPONENT = "waiting for opponent";
+	public const string MATCH_STATUS_CANCELED = "canceled";
+	public const string MATCH_STATUS_FINISHED = "finished";
+	public const string MATCH_STATUS_BETTING_PERIOD = "betting period";
+	// end match status
+
+	// betting odds document keywords
+	public const string DB_KEYWORD_LLAMADO_ODDS = "llamado odds";
+	public const string DB_KEYWORD_DEHADO_ODDS = "dehado odds";
+	public const string DB_KEYWORD_ORDER = "order";
+	// end betting odds document keywords
+
+	// bet document keywords
+	public const string DB_KEYWORD_MATCH_ID = "match id";
+	public const string DB_KEYWORD_BETTING_ODDS_ID = "betting odds id";
+	public const string DB_KEYWORD_BETTED_CHICKEN_ID = "betted chicken id";
+	public const string DB_KEYWORD_BETTED_CHICKEN_STATUS = "betted chicken status";
+	public const string DB_KEYWORD_BET_AMOUNT = "bet amount";
+
+	public const string BETTED_CHICKEN_STATUS_LLAMADO = "llamado";
+	public const string BETTED_CHICKEN_STATUS_DEHADO = "dehado";
+	// end bet document keywords
+
+	public const int BETTING_ODDS_COUNT = 7;
 
 	public const string GENDER_MALE = "male";
 	public const string GENDER_FEMALE = "female";
@@ -261,8 +302,8 @@ public class Constants : MonoBehaviour {
 
 	public const string MATCH_PANEL_CHICKEN_1 = "Info 1/Chicken Name/Chicken Name Text";
 	public const string MATCH_PANEL_CHICKEN_2 = "Info 2/Chicken Name/Chicken Name Text";
-	public const string MATCH_PANEL_FARN_1 = "Info 1/Farm Name/Farm Name Text";
-	public const string MATCH_PANEL_FARN_2 = "Info 2/Farm Name/Farm Name Text";
+	public const string MATCH_PANEL_FARM_1 = "Info 1/Farm Name/Farm Name Text";
+	public const string MATCH_PANEL_FARM_2 = "Info 2/Farm Name/Farm Name Text";
 	public const string MATCH_PANEL_WIN_1 = "WLD 1/Win/Win";
 	public const string MATCH_PANEL_WIN_2 = "WLD 2/Win/Win";
 	public const string MATCH_PANEL_LOSE_1 = "WLD 1/Lose/Lose";
@@ -284,11 +325,13 @@ public class Constants : MonoBehaviour {
 	public const string CREATE_MATCH_STAT_GAM_SLIDER = "GAM/Slider";
 	public const string CREATE_MATCH_STAT_AGG_SLIDER = "AGG/Slider";
 
-	public const string CREATE_MATCH_WAIT_DURATION_SLIDER = "Main Panel/Wait Duration/Slider";
 	public const string CREATE_MATCH_BETTING_BUTTON = "Betting Button";
 	public const string CREATE_MATCH_BETTING_PANEL = "Betting Panel";
 	public const string CREATE_MATCH_BETTING_AMOUNT_SLIDER = "Betting Panel/Amount/Slider";
-	public const string CREATE_MATCH_BETTING_ODDS_SLIDER = "Betting Panel/Odds/Slider";
+	public const string CREATE_MATCH_BETTING_2_BUTTON = "Betting 2 Button";
+	public const string CREATE_MATCH_BETTING_2_PANEL = "Betting 2 Panel";
+	public const string CREATE_MATCH_BETTING_2_AMOUNT_SLIDER = "Betting 2 Panel/Amount/Slider";
+	public const string CREATE_MATCH_BETTING_2_WAIT_DURATION_SLIDER = "Betting 2 Panel/Wait Duration/Slider";
 	public const string CREATE_MATCH_PRIVATE_BUTTON = "Private Button";
 	public const string CREATE_MATCH_PRIVATE_PANEL = "Private Panel";
 	public const string CREATE_MATCH_PRIVATE_PASSWORD = "Private Panel/Password/InputField";

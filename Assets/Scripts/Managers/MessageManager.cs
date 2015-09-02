@@ -22,7 +22,7 @@ public class MessageManager : MonoBehaviour {
 		}
 	}
 
-	public void DisplayMessage(string title, string message, ButtonDelegate bd) {
+	public void DisplayMessage(string title, string message, ButtonDelegate bd, bool allowCancel) {
 		messageCanvas.gameObject.SetActive(true);
 		GameObject.Find("Title Text").GetComponent<Text>().text = title;
 		GameObject.Find("Message Text").GetComponent<Text>().text = message;
@@ -38,13 +38,19 @@ public class MessageManager : MonoBehaviour {
 		trigger.triggers.Add (entry);
 
 		GameObject cancelButton = GameObject.Find("Msg Cancel Button").gameObject;
-		trigger = cancelButton.GetComponentInParent<EventTrigger> ();
-		entry = new EventTrigger.Entry ();
-		entry.eventID = EventTriggerType.Select;
-		entry.callback.AddListener ((eventData) => {
-			ClearMessage();
-		});
-		trigger.triggers.Add (entry);
+		if(allowCancel) {
+			cancelButton.SetActive(true);
+			trigger = cancelButton.GetComponentInParent<EventTrigger> ();
+			entry = new EventTrigger.Entry ();
+			entry.eventID = EventTriggerType.Select;
+			entry.callback.AddListener ((eventData) => {
+				ClearMessage();
+			});
+			trigger.triggers.Add (entry);
+		}
+		else {
+			cancelButton.SetActive(false);
+		}
 	}
 
 	public void ClearMessage() {

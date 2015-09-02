@@ -117,7 +117,7 @@ public class BreedsManager : MonoBehaviour {
 		MessageManager.Instance.DisplayMessage(Constants.MESSAGE_SCHEDULE_BREED_TITLE,
 		               "Do you want to breed\n" + selectedChicken[Constants.DB_KEYWORD_NAME].ToString() + 
 		               "\nwith\n" + selectedMate[Constants.DB_KEYWORD_NAME].ToString() + "?",
-		               FinalizeSelectedItem);
+		               FinalizeSelectedItem, true);
 	}
 
 	private void FinalizeSelectedItem() {
@@ -242,7 +242,7 @@ public class BreedsManager : MonoBehaviour {
 			x = index;
 			MessageManager.Instance.DisplayMessage(Constants.MESSAGE_SCHEDULE_CANCEL_TITLE, 
 			               Constants.MESSAGE_SCHEDULE_CANCEL,
-			               FinalizeCancelSchedule);
+			               FinalizeCancelSchedule, true);
 		}
 	}
 

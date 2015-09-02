@@ -124,7 +124,7 @@ public class FeedsManager : MonoBehaviour {
 		MessageManager.Instance.DisplayMessage(selectedItem[Constants.DB_KEYWORD_NAME].ToString(), 
 		               selectedItem[Constants.DB_KEYWORD_DESCRIPTION].ToString() + 
 		               "\n\n " + Constants.MESSAGE_SCHEDULE_FEED,
-		               FinalizeSelectedItem);
+		               FinalizeSelectedItem, true);
 	}
 
 	private void FinalizeSelectedItem() {
@@ -227,7 +227,7 @@ public class FeedsManager : MonoBehaviour {
 			x = index;
 			MessageManager.Instance.DisplayMessage(Constants.MESSAGE_SCHEDULE_CANCEL_TITLE, 
 			               Constants.MESSAGE_SCHEDULE_CANCEL,
-			               FinalizeCancelSchedule);
+			               FinalizeCancelSchedule, true);
 		}
 	}
 
