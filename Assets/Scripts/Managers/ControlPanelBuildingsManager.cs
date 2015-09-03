@@ -113,7 +113,6 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 		foreach(var row in rows) {
 			print (row.Key);
 			if(row.Key.ToString() == name) {
-				print ("building found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
@@ -126,7 +125,6 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 		foreach(var row in rows) {
 			print (row.Key);
 			if(row.Key.ToString() == name) {
-				print ("building found!");
 				return row.DocumentId;
 			}
 		}

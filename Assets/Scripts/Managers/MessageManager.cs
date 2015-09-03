@@ -24,27 +24,27 @@ public class MessageManager : MonoBehaviour {
 
 	public void DisplayMessage(string title, string message, ButtonDelegate bd, bool allowCancel) {
 		messageCanvas.gameObject.SetActive(true);
-		GameObject.Find("Title Text").GetComponent<Text>().text = title;
-		GameObject.Find("Message Text").GetComponent<Text>().text = message;
+		GameObject.Find(Constants.MESSAGE_PANEL_TITLE).GetComponent<Text>().text = title;
+		GameObject.Find(Constants.MESSAGE_PANEL_MESSAGE).GetComponent<Text>().text = message;
 
-		GameObject okButton = GameObject.Find("Msg OK Button").gameObject;
+		GameObject okButton = GameObject.Find(Constants.MESSAGE_PANEL_OK_BUTTON).gameObject;
 		EventTrigger trigger = okButton.GetComponentInParent<EventTrigger> ();
 		EventTrigger.Entry entry = new EventTrigger.Entry ();
 		entry.eventID = EventTriggerType.Select;
 		entry.callback.AddListener ((eventData) => {
 			bd ();
-			ClearMessage();
+			ClearMessage(allowCancel);
 		});
 		trigger.triggers.Add (entry);
 
-		GameObject cancelButton = GameObject.Find("Msg Cancel Button").gameObject;
+		GameObject cancelButton = GameObject.Find(Constants.MESSAGE_PANEL_CANCEL_BUTTON).gameObject;
 		if(allowCancel) {
 			cancelButton.SetActive(true);
 			trigger = cancelButton.GetComponentInParent<EventTrigger> ();
 			entry = new EventTrigger.Entry ();
 			entry.eventID = EventTriggerType.Select;
 			entry.callback.AddListener ((eventData) => {
-				ClearMessage();
+				ClearMessage(allowCancel);
 			});
 			trigger.triggers.Add (entry);
 		}
@@ -53,16 +53,23 @@ public class MessageManager : MonoBehaviour {
 		}
 	}
 
-	public void ClearMessage() {
-		GameObject okButton = GameObject.Find("Msg OK Button").gameObject;
+	public void ClearMessage(bool allowCancel) {
+		GameObject okButton = GameObject.Find(Constants.MESSAGE_PANEL_OK_BUTTON).gameObject;
 		EventTrigger trigger = okButton.GetComponentInParent<EventTrigger> ();
-		GameObject cancelButton = GameObject.Find("Msg Cancel Button").gameObject;
-		EventTrigger trigger2 = cancelButton.GetComponentInParent<EventTrigger> ();
+		GameObject cancelButton;
+		EventTrigger trigger2;
 
-		GameObject.Find("Title Text").GetComponent<Text>().text = "";
-		GameObject.Find("Message Text").GetComponent<Text>().text = "";
+
+		GameObject.Find(Constants.MESSAGE_PANEL_TITLE).GetComponent<Text>().text = "";
+		GameObject.Find(Constants.MESSAGE_PANEL_MESSAGE).GetComponent<Text>().text = "";
 		trigger.triggers.Clear();
-		trigger2.triggers.Clear();
+
+		if(allowCancel) {
+			cancelButton = GameObject.Find(Constants.MESSAGE_PANEL_CANCEL_BUTTON).gameObject;
+			trigger2 = cancelButton.GetComponentInParent<EventTrigger> ();
+			trigger2.triggers.Clear();
+		}
+
 		messageCanvas.gameObject.SetActive(false);
 	}
 }

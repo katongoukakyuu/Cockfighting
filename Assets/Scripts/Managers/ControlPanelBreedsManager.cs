@@ -164,7 +164,6 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 		foreach(var row in rows) {
 			print (row.Key);
 			if(row.Key.ToString() == name) {
-				print ("breed found!");
 				return row.DocumentId;
 			}
 		}
@@ -177,7 +176,6 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 		foreach(var row in rows) {
 			print (row.Key);
 			if(row.Key.ToString() == name) {
-				print ("breed found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}

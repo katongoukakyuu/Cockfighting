@@ -62,8 +62,8 @@ public class FightManager : MonoBehaviour {
 			b.GetComponentInChildren<Text> ().text = i[Constants.DB_KEYWORD_NAME].ToString();
 			b.transform.SetParent(listPanel.transform,false);
 
-			if(i[Constants.DB_KEYWORD_IS_PVP].Equals(true) && 
-			   i[Constants.DB_KEYWORD_CUSTOM_MATCHES_ALLOWED].Equals(false) &&
+			if(bool.Parse(i[Constants.DB_KEYWORD_IS_PVP].ToString()) && 
+			   !bool.Parse(i[Constants.DB_KEYWORD_CUSTOM_MATCHES_ALLOWED].ToString()) &&
 			   DatabaseManager.Instance.LoadMatchesByCategory(i[Constants.DB_COUCHBASE_ID].ToString()).Count == 0) {
 				b.interactable = false;
 			}
@@ -77,7 +77,7 @@ public class FightManager : MonoBehaviour {
 		listPanel.gameObject.SetActive(false);
 		matchmakingPanel.gameObject.SetActive(true);
 
-		if(selectedMMCategory[Constants.DB_KEYWORD_CUSTOM_MATCHES_ALLOWED].Equals(false)) {
+		if(!bool.Parse(selectedMMCategory[Constants.DB_KEYWORD_CUSTOM_MATCHES_ALLOWED].ToString())) {
 			queueButton.SetActive(false);
 		}
 		else {
@@ -100,6 +100,7 @@ public class FightManager : MonoBehaviour {
 			GameObject g = Instantiate(matchButton);
 			listMatchButtons.Add (g);
 			g.name = i[Constants.DB_COUCHBASE_ID].ToString();
+			g.GetComponentInChildren<FightScreenViewMatch>().SetMatch(i);
 			g.transform.FindChild(Constants.MATCH_PANEL_TIMER).GetComponent<Text>().text = "";
 
 			g.transform.FindChild(Constants.MATCH_PANEL_IDLE_1).gameObject.SetActive(false);
@@ -210,6 +211,7 @@ public class FightManager : MonoBehaviour {
 			fightCanvas.gameObject.SetActive (false);
 			break;
 		case Constants.FIGHT_MANAGER_STATE_MATCH_SELECT:
+			state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
 			listPanel.gameObject.SetActive (true);
 			matchmakingPanel.gameObject.SetActive (false);
 			break;

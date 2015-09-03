@@ -39,6 +39,8 @@ public class ServerManager : MonoBehaviour {
 
 		StartCoroutine(ProcessBreedSchedules());
 		StartCoroutine(ProcessBreedScheduleCanceling());
+
+		StartCoroutine(ProcessMatchesStatusChanges());
 	}
 
 	public void StopAllProcesses() {
@@ -314,15 +316,28 @@ public class ServerManager : MonoBehaviour {
 				IDictionary<string,object> properties = db.GetDocument(change.DocumentId).Properties;
 				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_MATCH) {
 					if(properties[Constants.DB_KEYWORD_STATUS].ToString() == Constants.MATCH_STATUS_WAITING_FOR_OPPONENT) {
-						print("Match " + change.DocumentId + " status has been changed! Details below.");
-						foreach(KeyValuePair<string,object> kv in properties) {
-							print (kv.Key + ": " + kv.Value);
-						}
+						print("Match " + change.DocumentId + " status has been changed!");
+						FlagChickensAsQueuedInMatch(properties);
 					}
 				}
 			}
 		};
 		yield break;
+	}
+
+	private void FlagChickensAsQueuedInMatch(IDictionary<string,object> schedule) {
+		IDictionary<string,object> chicken1 = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString());
+		IDictionary<string,object> chicken2 = null;
+
+		chicken1[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH] = true;
+		DatabaseManager.Instance.EditChicken(chicken1);
+
+		if(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString() != "") {
+			chicken2 = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString());
+			chicken2[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH] = true;
+			DatabaseManager.Instance.EditChicken(chicken2);
+		}
+		
 	}
 
 	// MATCHES END

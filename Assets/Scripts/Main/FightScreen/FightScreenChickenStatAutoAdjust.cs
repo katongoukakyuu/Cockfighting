@@ -14,6 +14,8 @@ public class FightScreenChickenStatAutoAdjust : MonoBehaviour {
 	}
 
 	public void OnChange() {
-		text.text = slider.value + " / " + slider.maxValue;
+		if(text) {
+			text.text = slider.value + " / " + slider.maxValue;
+		}
 	}
 }

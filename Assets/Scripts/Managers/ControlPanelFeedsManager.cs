@@ -124,7 +124,6 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 		foreach(var row in rows) {
 			print (row.Key);
 			if(row.Key.ToString() == name) {
-				print ("feeds found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
@@ -137,7 +136,6 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 		foreach(var row in rows) {
 			print (row.Key);
 			if(row.Key.ToString() == name) {
-				print ("feeds found!");
 				return row.DocumentId;
 			}
 		}

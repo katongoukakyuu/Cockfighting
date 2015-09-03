@@ -12,7 +12,7 @@ public class MatchCreateManager : MonoBehaviour {
 	public GameObject statsPanel;
 	public GameObject optionsPanel;
 
-	private string state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
+	//private string state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
 
 	public Button listChickenButton;
 	private List<Button> listChickenButtons = new List<Button> ();
@@ -44,11 +44,11 @@ public class MatchCreateManager : MonoBehaviour {
 		}
 		listChickenButtons.Clear ();
 		countdowns.Clear ();
-		
+
 		foreach (IDictionary<string, object> i in PlayerManager.Instance.playerChickens) {
 			if((i[Constants.DB_KEYWORD_LIFE_STAGE].ToString() != Constants.LIFE_STAGE_STAG &&
 			   i[Constants.DB_KEYWORD_LIFE_STAGE].ToString() != Constants.LIFE_STAGE_COCK) || 
-			   i[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH].Equals(true)) {
+			   bool.Parse(i[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH].ToString())) {
 				continue;
 			}
 			Button b = Instantiate(listChickenButton);
@@ -115,17 +115,14 @@ public class MatchCreateManager : MonoBehaviour {
 			password = optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_PASSWORD).GetComponent<InputField>().text;
 		}
 
-		IDictionary<string,object> savedMatch = DatabaseManager.Instance.SaveMatch(GameManager.Instance.GenerateMatch(chickenId, "", playerId, "", categoryId, bettingOption, password, dt.ToString()));
-		foreach(KeyValuePair<string,object> kv in savedMatch) {
-			print (kv.Key + ": " + kv.Value);
-		}
+		IDictionary<string,object> savedMatch = DatabaseManager.Instance.SaveMatch(
+			GameManager.Instance.GenerateMatch(chickenId, "", playerId, "", categoryId, bettingOption, 
+		                                   DatabaseManager.Instance.LoadBettingOdds(0)[Constants.DB_COUCHBASE_ID].ToString(), password, dt.ToString())
+		);
 		if(bettingOption != Constants.BETTING_OPTION_NONE) {
-			IDictionary<string,object> savedBet = DatabaseManager.Instance.SaveBet(GameManager.Instance.GenerateBet(savedMatch[Constants.DB_COUCHBASE_ID].ToString(), playerId, 
+			DatabaseManager.Instance.SaveBet(GameManager.Instance.GenerateBet(savedMatch[Constants.DB_COUCHBASE_ID].ToString(), playerId, 
 			                                 DatabaseManager.Instance.LoadBettingOdds(0)[Constants.DB_COUCHBASE_ID].ToString(), chickenId, Constants.BETTED_CHICKEN_STATUS_LLAMADO,
 			                                 bettingAmount));
-			foreach(KeyValuePair<string,object> kv in savedBet) {
-				print (kv.Key + ": " + kv.Value);
-			}
 		}
 
 		matchCreateCanvas.gameObject.SetActive (false);

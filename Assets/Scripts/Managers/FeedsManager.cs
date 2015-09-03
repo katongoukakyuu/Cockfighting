@@ -26,7 +26,7 @@ public class FeedsManager : MonoBehaviour {
 	public GameObject inventoryScreenPanel;
 	public GameObject inventoryIcon;
 
-	private string state = Constants.FEEDS_MANAGER_STATE_FREE_SELECT;
+	//private string state = Constants.FEEDS_MANAGER_STATE_FREE_SELECT;
 
 	private List<Button> listButtons = new List<Button>();
 	private IDictionary<string,object> selectedChicken;
@@ -194,7 +194,7 @@ public class FeedsManager : MonoBehaviour {
 		if (t.isOn) {
 			RestrictChoice(null);
 
-			state = Constants.FEEDS_MANAGER_STATE_FREE_SELECT;
+			//state = Constants.FEEDS_MANAGER_STATE_FREE_SELECT;
 			schedulePanel.SetActive (true);
 			inventoryPanel.SetActive (false);
 		}
@@ -208,7 +208,7 @@ public class FeedsManager : MonoBehaviour {
 	}
 
 	public void SwitchToAssignItemMode(string itemType) {
-		state = Constants.FEEDS_MANAGER_STATE_ASSIGN_ITEM;
+		//state = Constants.FEEDS_MANAGER_STATE_ASSIGN_ITEM;
 		inventoryTab.isOn = true;
 
 		if(itemType != null) {

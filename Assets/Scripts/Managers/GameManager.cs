@@ -168,7 +168,7 @@ public class GameManager : MonoBehaviour {
 
 	public Dictionary<string, object> GenerateMatch(string chickenId1, string chickenId2,
 	                                                string playerId1, string playerId2,
-	                                                string categoryId, string bettingOption, 
+	                                                string categoryId, string bettingOption, string bettingOddsId, 
 	                                                string password, string waitDuration) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_MATCH},
@@ -176,8 +176,10 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_CHICKEN_ID_2, chickenId2},
 			{Constants.DB_KEYWORD_PLAYER_ID_1, playerId1},
 			{Constants.DB_KEYWORD_PLAYER_ID_2, playerId2},
+			{Constants.DB_KEYWORD_LLAMADO, chickenId1},
 			{Constants.DB_KEYWORD_CATEGORY_ID, categoryId},
 			{Constants.DB_KEYWORD_BETTING_OPTION, bettingOption},
+			{Constants.DB_KEYWORD_BETTING_ODDS_ID, bettingOddsId},
 			{Constants.DB_KEYWORD_WAIT_DURATION, waitDuration},
 			{Constants.DB_KEYWORD_END_TIME, System.DateTime.MinValue.ToString()},
 			{Constants.DB_KEYWORD_STATUS, Constants.MATCH_STATUS_WAITING_FOR_OPPONENT},

@@ -236,15 +236,17 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_PLAYER_ID_1 = "player id 1";
 	public const string DB_KEYWORD_PLAYER_ID_2 = "player id 2";
 	public const string DB_KEYWORD_CATEGORY_ID = "category id";
+	public const string DB_KEYWORD_LLAMADO = "llamado";
+	public const string DB_KEYWORD_DEHADO = "dehado";
 	public const string DB_KEYWORD_BETTING_OPTION = "betting option";
 	public const string DB_KEYWORD_WAIT_DURATION = "wait duration";
 	public const string DB_KEYWORD_STATUS = "status";
 	// end match document keywords
 
 	// betting options
-	public const string BETTING_OPTION_NONE = "none";
-	public const string BETTING_OPTION_SINGLE_BETTING = "single betting";
-	public const string BETTING_OPTION_SPECTATOR_BETTING = "spectator betting";
+	public const string BETTING_OPTION_NONE = "No Betting";
+	public const string BETTING_OPTION_SINGLE_BETTING = "Single Betting";
+	public const string BETTING_OPTION_SPECTATOR_BETTING = "Spectator Betting";
 	// end betting options
 
 	// match status
@@ -282,6 +284,13 @@ public class Constants : MonoBehaviour {
 	public const string LIFE_STAGE_COCK = "cock";
 	public const string LIFE_STAGE_HEN = "hen";
 
+	// message panel children
+	public const string MESSAGE_PANEL_TITLE = "Msg Title Text";
+	public const string MESSAGE_PANEL_MESSAGE = "Msg Message Text";
+	public const string MESSAGE_PANEL_OK_BUTTON = "Msg OK Button";
+	public const string MESSAGE_PANEL_CANCEL_BUTTON = "Msg Cancel Button";
+	// end message panel children
+
 	// schedule panel children
 	public const string SCHEDULE_PANEL_ICON = "Inventory Icon";
 	public const string SCHEDULE_PANEL_ICON_COUNT = "Inventory Icon/Panel/Inventory Count";
@@ -312,8 +321,7 @@ public class Constants : MonoBehaviour {
 	public const string MATCH_PANEL_DRAW_2 = "WLD 2/Draw/Draw";
 
 	public const string MATCH_PANEL_TIMER = "Timer/Timer/Timer Text";
-	public const string MATCH_PANEL_JOIN_BUTTON = "Timer/Buttons/Join";
-	public const string MATCH_PANEL_BET_BUTTON = "Timer/Buttons/Bet";
+	public const string MATCH_PANEL_VIEW_BUTTON = "Timer/Buttons/View";
 	public const string MATCH_PANEL_CANCEL_BUTTON = "Timer/Buttons/Cancel";
 	// end match panel children
 
@@ -336,6 +344,37 @@ public class Constants : MonoBehaviour {
 	public const string CREATE_MATCH_PRIVATE_PANEL = "Private Panel";
 	public const string CREATE_MATCH_PRIVATE_PASSWORD = "Private Panel/Password/InputField";
 	// end create match children
+
+	// view match children
+	public const string VIEW_MATCH_CHICKEN_VIEW_NAME = "Text/Chicken Name";
+	public const string VIEW_MATCH_CHICKEN_VIEW_LEFT_ARROW = "Text/Left Button";
+	public const string VIEW_MATCH_CHICKEN_VIEW_RIGHT_ARROW = "Text/Right Button";
+	public const string VIEW_MATCH_CHICKEN_VIEW_IMAGE = "Text/Chicken View";
+
+	public const string VIEW_MATCH_STAT_VIEW_NAME = "Text/Text";
+	public const string VIEW_MATCH_STAT_VIEW_LEFT_ARROW = "Text/Left Button";
+	public const string VIEW_MATCH_STAT_VIEW_RIGHT_ARROW = "Text/Right Button";
+
+	public const string VIEW_MATCH_STAT_PANEL_1 = "Stats Panel 1";
+	public const string VIEW_MATCH_STAT_PANEL_2 = "Stats Panel 2";
+
+	public const string VIEW_MATCH_STAT_ATK_SLIDER = "Stats Panel 1/ATK/Slider";
+	public const string VIEW_MATCH_STAT_DEF_SLIDER = "Stats Panel 1/DEF/Slider";
+	public const string VIEW_MATCH_STAT_HP_SLIDER = "Stats Panel 1/HP/Slider";
+	public const string VIEW_MATCH_STAT_AGI_SLIDER = "Stats Panel 1/AGI/Slider";
+	public const string VIEW_MATCH_STAT_GAM_SLIDER = "Stats Panel 1/GAM/Slider";
+	public const string VIEW_MATCH_STAT_AGG_SLIDER = "Stats Panel 1/AGG/Slider";
+
+	public const string VIEW_MATCH_STAT_FARM_NAME = "Stats Panel 2/Main Panel/Farm Name/Text 2";
+	public const string VIEW_MATCH_STAT_OWNER = "Stats Panel 2/Main Panel/Owner/Text 2";
+	public const string VIEW_MATCH_STAT_RECORD = "Stats Panel 2/Main Panel/Record/Text 2";
+
+	public const string VIEW_MATCH_INFO_BETTING_STYLE = "Panel/Main Panel/Betting Style/Text 2";
+	public const string VIEW_MATCH_INFO_FAVORITE = "Panel/Main Panel/Favorite/Text 2";
+	public const string VIEW_MATCH_INFO_ODDS = "Panel/Main Panel/Odds/Text 2";
+
+
+	// end view match children
 
 	// fight move list
 	public const string FIGHT_MOVE_NONE = "None";

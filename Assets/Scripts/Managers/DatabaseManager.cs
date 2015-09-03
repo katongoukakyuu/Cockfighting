@@ -375,7 +375,6 @@ public class DatabaseManager : MonoBehaviour {
 		var rows = query.Run ();
 		foreach(var row in rows) {
 			if(row.Key.ToString() == name || row.DocumentId == name) {
-				print ("player found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
@@ -387,7 +386,6 @@ public class DatabaseManager : MonoBehaviour {
 		var rows = query.Run ();
 		foreach(var row in rows) {
 			if(row.Key.ToString() == username && row.Value.ToString() == password) {
-				print ("account found!");
 				UpdatePlayer (username, row.DocumentId);
 				return true;
 			}
@@ -416,20 +414,6 @@ public class DatabaseManager : MonoBehaviour {
 		PlayerManager.Instance.playerChickens = LoadChickens (username);
 		PlayerManager.Instance.playerBuildings = LoadBuildingsOwnedByPlayer (username);
 		PlayerManager.Instance.playerOccupiedTiles = LoadPlayerOccupiedTiles (username);
-		/*
-		print ("Account details:");
-		foreach (KeyValuePair<string, object> item in PlayerManager.Instance.player)
-			print(item.Key + ": " + item.Value);
-		print ("Account's chicken details:");
-		foreach (IDictionary<string,object> i in PlayerManager.Instance.playerChickens) {
-			foreach (KeyValuePair<string, object> item in i)
-				print(item.Key + ": " + item.Value);
-		}
-		print ("Player occupied tiles:");
-		foreach (Vector2 v in PlayerManager.Instance.playerOccupiedTiles) {
-			print(v.x + " " + v.y);
-		}
-		*/
 	}
 
 	public IDictionary<string,object> GenerateChicken(Dictionary<string, object> dic) {
@@ -463,6 +447,7 @@ public class DatabaseManager : MonoBehaviour {
 			properties[Constants.DB_KEYWORD_GAMENESS_MAX] = dic[Constants.DB_KEYWORD_GAMENESS_MAX].ToString();
 			properties[Constants.DB_KEYWORD_AGGRESSION_MAX] = dic[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString();
 			properties[Constants.DB_KEYWORD_LIFE_STAGE] = dic[Constants.DB_KEYWORD_LIFE_STAGE].ToString();
+			properties[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH] = dic[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH].ToString();
 			return true;
 		});
 	}
@@ -484,7 +469,6 @@ public class DatabaseManager : MonoBehaviour {
 		var rows = query.Run ();
 		foreach(var row in rows) {
 			if(row.Key.ToString() == name && row.Value.ToString() == owner) {
-				print ("chicken found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
@@ -496,7 +480,6 @@ public class DatabaseManager : MonoBehaviour {
 		var rows = query.Run ();
 		foreach(var row in rows) {
 			if(row.DocumentId == chickenId) {
-				print ("chicken found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
@@ -548,7 +531,6 @@ public class DatabaseManager : MonoBehaviour {
 		var rows = query.Run ();
 		foreach(var row in rows) {
 			if(row.Key.ToString() == name || row.DocumentId == name) {
-				print ("feeds found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
@@ -593,7 +575,6 @@ public class DatabaseManager : MonoBehaviour {
 		var rows = query.Run ();
 		foreach(var row in rows) {
 			if(row.Key.ToString() == name || row.DocumentId == name) {
-				print ("breed found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
@@ -719,7 +700,6 @@ public class DatabaseManager : MonoBehaviour {
 		var rows = query.Run ();
 		foreach(var row in rows) {
 			if(row.Key.ToString() == name || row.DocumentId == name) {
-				print ("item found!");
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}

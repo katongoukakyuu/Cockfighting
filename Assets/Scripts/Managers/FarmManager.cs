@@ -43,7 +43,11 @@ public class FarmManager : MonoBehaviour {
 		eventHandler = (sender, e) => {
 			var changes = e.Changes.ToList();
 			foreach (DocumentChange change in changes) {
-				if(change.DocumentId.Contains(PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString ())) {
+				IDictionary<string,object> properties = DatabaseManager.Instance.GetDatabase().GetDocument(change.DocumentId).Properties;
+				if((properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_ACCOUNT &&
+				   properties[Constants.DB_COUCHBASE_ID].ToString() == PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString()) ||
+				   (properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_CHICKEN &&
+				 	properties[Constants.DB_KEYWORD_OWNER].ToString() == PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString())) {
 					DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString (),
 					                                      PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
 					UpdateScreen();
