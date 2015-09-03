@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 7deb942f7c399d445bd6b82254bac267
-timeCreated: 1435988872
+timeCreated: 1441291219
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -47,19 +47,23 @@ TextureImporter:
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureType: 8
-  buildTargetSettings: []
+  buildTargetSettings:
+  - buildTarget: Android
+    maxTextureSize: 1024
+    textureFormat: -3
+    compressionQuality: 50
   spriteSheet:
     sprites:
     - name: Yellow Button GUI_0
       rect:
         serializedVersion: 2
-        x: 1
+        x: 0
         y: 0
-        width: 255
+        width: 256
         height: 256
       alignment: 0
       pivot: {x: .5, y: .5}
-      border: {x: 32, y: 35, z: 30, w: 36}
+      border: {x: 30, y: 30, z: 30, w: 30}
   spritePackingTag: 
   userData: 
   assetBundleName: 
