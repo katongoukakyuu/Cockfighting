@@ -55,16 +55,23 @@ public class Constants : MonoBehaviour {
 	public const string MESSAGE_SCHEDULE_PANEL_1 = "Press the icon to assign an item!";
 	public const string MESSAGE_SCHEDULE_PANEL_2 = "Press here to assign a mate!";
 	public const string MESSAGE_SCHEDULE_PANEL_3 = "Choose a mate from the list to the left!";
-	public const string MESSAGE_SCHEDULE_CANCEL_TITLE = "Cancel schedule";
+	public const string MESSAGE_SCHEDULE_CANCEL_TITLE = "Cancel Schedule";
 	public const string MESSAGE_SCHEDULE_CANCEL = "Are you sure you want to cancel the schedule?";
 	public const string MESSAGE_SCHEDULE_FEED = "Do you want to feed your chicken with this?";
-	public const string MESSAGE_SCHEDULE_BREED_TITLE = "Confirm breeding";
+	public const string MESSAGE_SCHEDULE_BREED_TITLE = "Confirm Breeding";
 	// end schedule panel messages
 
 	// match create messages
-	public const string MESSAGE_MATCH_CREATE_NO_COCKS_AVAILABLE_TITLE = "No cocks available";
+	public const string MESSAGE_MATCH_CREATE_NO_COCKS_AVAILABLE_TITLE = "No Cocks Available";
 	public const string MESSAGE_MATCH_CREATE_NO_COCKS_AVAILABLE = "You have no cocks to fight with.";
+	public const string MESSAGE_MATCH_CREATE_CONFIRM_TITLE = "Confirm Fight";
+	public const string MESSAGE_MATCH_CREATE_CONFIRM = "Are you sure you want to fight with this cock?";
 	// end match create messages
+
+	// match view fight messages
+	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_TITLE = "Confirm Fight";
+	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM = "Are you sure you want to fight this cock?";
+	// end match view fight messages
 
 	public const int COIN_START = 10000;
 	public const int CASH_START = 200;
@@ -251,6 +258,7 @@ public class Constants : MonoBehaviour {
 
 	// match status
 	public const string MATCH_STATUS_WAITING_FOR_OPPONENT = "waiting for opponent";
+	public const string MATCH_STATUS_OPPONENT_FOUND = "opponent found";
 	public const string MATCH_STATUS_CANCELED = "canceled";
 	public const string MATCH_STATUS_FINISHED = "finished";
 	public const string MATCH_STATUS_BETTING_PERIOD = "betting period";
@@ -357,6 +365,8 @@ public class Constants : MonoBehaviour {
 
 	public const string VIEW_MATCH_STAT_PANEL_1 = "Stats Panel 1";
 	public const string VIEW_MATCH_STAT_PANEL_2 = "Stats Panel 2";
+	public const string VIEW_MATCH_STAT_PANEL_1_NAME = "Cock Stats";
+	public const string VIEW_MATCH_STAT_PANEL_2_NAME = "Farm Info";
 
 	public const string VIEW_MATCH_STAT_ATK_SLIDER = "Stats Panel 1/ATK/Slider";
 	public const string VIEW_MATCH_STAT_DEF_SLIDER = "Stats Panel 1/DEF/Slider";

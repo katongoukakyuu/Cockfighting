@@ -315,7 +315,8 @@ public class ServerManager : MonoBehaviour {
 			foreach (DocumentChange change in changes) {
 				IDictionary<string,object> properties = db.GetDocument(change.DocumentId).Properties;
 				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_MATCH) {
-					if(properties[Constants.DB_KEYWORD_STATUS].ToString() == Constants.MATCH_STATUS_WAITING_FOR_OPPONENT) {
+					if(properties[Constants.DB_KEYWORD_STATUS].ToString() == Constants.MATCH_STATUS_WAITING_FOR_OPPONENT ||
+					   properties[Constants.DB_KEYWORD_STATUS].ToString() == Constants.MATCH_STATUS_OPPONENT_FOUND) {
 						print("Match " + change.DocumentId + " status has been changed!");
 						FlagChickensAsQueuedInMatch(properties);
 					}
@@ -336,8 +337,62 @@ public class ServerManager : MonoBehaviour {
 			chicken2 = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString());
 			chicken2[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH] = true;
 			DatabaseManager.Instance.EditChicken(chicken2);
+			ResolveMatch(schedule);
 		}
-		
+	}
+
+	private void ResolveMatch(IDictionary<string,object> schedule) {
+		int winner = 0, loser = 0;
+		List<IDictionary<string,object>> chickens = new List<IDictionary<string,object>>();
+		List<IDictionary<string,object>> players = new List<IDictionary<string,object>>();
+
+		chickens.Add (DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString()));
+		chickens.Add (DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString()));
+		players.Add (DatabaseManager.Instance.LoadPlayer(schedule[Constants.DB_KEYWORD_PLAYER_ID_1].ToString()));
+		players.Add (DatabaseManager.Instance.LoadPlayer(schedule[Constants.DB_KEYWORD_PLAYER_ID_2].ToString()));
+
+		winner = ServerFightManager.Instance.AutomateFight (
+			DatabaseManager.Instance.LoadChicken(chickens[0][Constants.DB_COUCHBASE_ID].ToString()),
+			DatabaseManager.Instance.LoadChicken(chickens[1][Constants.DB_COUCHBASE_ID].ToString()),
+			DatabaseManager.Instance.LoadFightingMovesOwned (chickens[0][Constants.DB_COUCHBASE_ID].ToString()),
+			DatabaseManager.Instance.LoadFightingMovesOwned (chickens[1][Constants.DB_COUCHBASE_ID].ToString())
+		);
+		loser = Mathf.Abs (winner - 1);
+
+		foreach(IDictionary<string,object> i in chickens) {
+			i[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH] = false;
+			DatabaseManager.Instance.EditChicken(i);
+		}
+
+		List<IDictionary<string,object>> bets = DatabaseManager.Instance.LoadBets(schedule[Constants.DB_COUCHBASE_ID].ToString());
+		foreach(IDictionary<string,object> i in bets) {
+			if(i[Constants.DB_KEYWORD_BETTED_CHICKEN_ID].ToString() != chickens[winner][Constants.DB_COUCHBASE_ID].ToString()) {
+				continue;
+			}
+			Utility.PrintDictionary(i);
+			IDictionary<string,object> odds = DatabaseManager.Instance.LoadBettingOdds(i[Constants.DB_KEYWORD_BETTING_ODDS_ID].ToString());
+			int prize = 0;
+			if(i[Constants.DB_KEYWORD_BETTED_CHICKEN_STATUS].ToString() == Constants.BETTED_CHICKEN_STATUS_LLAMADO) {
+				prize = (int) int.Parse (i[Constants.DB_KEYWORD_BET_AMOUNT].ToString()) * int.Parse (odds[Constants.DB_KEYWORD_LLAMADO_ODDS].ToString()) / int.Parse (odds[Constants.DB_KEYWORD_DEHADO_ODDS].ToString());
+			}
+
+			IDictionary<string,object> player = DatabaseManager.Instance.LoadPlayer(i[Constants.DB_KEYWORD_PLAYER_ID].ToString());
+			player[Constants.DB_KEYWORD_COIN] = (int.Parse (player[Constants.DB_KEYWORD_COIN].ToString()) + prize);
+			DatabaseManager.Instance.EditAccount(player);
+		}
+
+		if(winner != -1) {
+			players[winner][Constants.DB_KEYWORD_MATCHES_WON] = int.Parse (players[winner][Constants.DB_KEYWORD_MATCHES_WON].ToString()) + 1;
+			players[loser][Constants.DB_KEYWORD_MATCHES_LOST] = int.Parse (players[loser][Constants.DB_KEYWORD_MATCHES_LOST].ToString()) + 1;
+		}
+		else {
+			players[winner][Constants.DB_KEYWORD_MATCHES_TIED] = int.Parse (players[winner][Constants.DB_KEYWORD_MATCHES_TIED].ToString()) + 1;
+			players[loser][Constants.DB_KEYWORD_MATCHES_TIED] = int.Parse (players[loser][Constants.DB_KEYWORD_MATCHES_TIED].ToString()) + 1;
+		}
+
+
+		schedule[Constants.DB_KEYWORD_STATUS] = Constants.MATCH_STATUS_FINISHED;
+		DatabaseManager.Instance.EditMatch(schedule);
 	}
 
 	// MATCHES END

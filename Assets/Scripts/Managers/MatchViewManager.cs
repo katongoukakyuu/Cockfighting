@@ -24,7 +24,8 @@ public class MatchViewManager : MonoBehaviour {
 	public Button[] statPanelButtons;
 	public Button fightButton;
 	public Button betButton;
-	public Button cancelButton;
+	public Button cancelMatchButton;
+	public Button backButton;
 
 	private static MatchViewManager instance;
 	private MatchViewManager() {}
@@ -43,11 +44,27 @@ public class MatchViewManager : MonoBehaviour {
 		matchViewCanvas.gameObject.SetActive(true);
 		chickens.Add (DatabaseManager.Instance.LoadChicken(match[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString()));
 		players.Add (DatabaseManager.Instance.LoadPlayer(match[Constants.DB_KEYWORD_PLAYER_ID_1].ToString()));
-		if(match[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString() != "") {
+		if(match[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString() != "") {
 			chickens.Add (DatabaseManager.Instance.LoadChicken(match[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString()));
 			players.Add (DatabaseManager.Instance.LoadPlayer(match[Constants.DB_KEYWORD_PLAYER_ID_2].ToString()));
+			foreach(Button b in viewPanelButtons) {
+				b.interactable = true;
+			}
+		}
+		else {
+			fightButton.interactable = true;
+			if(match[Constants.DB_KEYWORD_PLAYER_ID_1].ToString() != PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString()) {
+
+			}
+			foreach(Button b in viewPanelButtons) {
+				b.interactable = false;
+			}
 		}
 		SetSelected(0);
+	}
+
+	public void Deinitialize() {
+		matchViewCanvas.gameObject.SetActive(false);
 	}
 
 	public void SetSelected(int i) {
@@ -87,8 +104,22 @@ public class MatchViewManager : MonoBehaviour {
 
 	}
 
-	public void ButtonOk() {
+	private void ConfirmFight() {
+		MatchCreateManager.Instance.Initialize(selectedMatch);
+	}
 
+	public void ButtonFight() {
+		MessageManager.Instance.DisplayMessage(Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_TITLE,
+		                                       Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM,
+		                                       ConfirmFight, true);
+	}
+
+	public void ButtonBet() {
+
+	}
+
+	public void ButtonCancelMatch() {
+		
 	}
 
 	public void ButtonBack() {
@@ -96,15 +127,17 @@ public class MatchViewManager : MonoBehaviour {
 	}
 
 	public void ButtonSwitchView() {
-		
+		SetSelected((chickens.IndexOf(selectedChicken) + 1) % 2);
 	}
 
 	public void ButtonSwitchStat() {
 		if(statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_PANEL_1).gameObject.activeSelf) {
+			statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_VIEW_NAME).GetComponent<Text>().text = Constants.VIEW_MATCH_STAT_PANEL_2_NAME;
 			statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_PANEL_1).gameObject.SetActive(false);
 			statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_PANEL_2).gameObject.SetActive(true);
 		}
 		else {
+			statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_VIEW_NAME).GetComponent<Text>().text = Constants.VIEW_MATCH_STAT_PANEL_1_NAME;
 			statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_PANEL_1).gameObject.SetActive(true);
 			statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_PANEL_2).gameObject.SetActive(false);
 		}

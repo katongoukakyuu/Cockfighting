@@ -170,15 +170,6 @@ public class DatabaseManager : MonoBehaviour {
 		if (GameManager.Instance.initializeDatabase) {
 			InitializeDatabase();
 		}
-
-		if(ServerFightManager.Instance != null) {
-			ServerFightManager.Instance.AutomateFight (
-				LoadChicken("Gary", "test"),
-				LoadChicken("Larry", "test"),
-				LoadFightingMovesOwned (LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
-				LoadFightingMovesOwned (LoadChicken("Larry", "test") [Constants.DB_COUCHBASE_ID].ToString())
-				);
-		}
 	}
 
 	private void InitializeDatabase() {
@@ -196,6 +187,7 @@ public class DatabaseManager : MonoBehaviour {
 		));
 
 		RegisterAccount(GameManager.Instance.RegisterAccount ("test", "test@test.com", "Savior Studios"));
+		RegisterAccount(GameManager.Instance.RegisterAccount ("test2", "test@test.com", "Devil Studios"));
 		ControlPanelBreedsManager.Instance.SaveBreed (
 			"Kelso",
 			1.3f, 1.2f, 1.0f, 0.9f, 1.1f, 1.0f
@@ -394,6 +386,7 @@ public class DatabaseManager : MonoBehaviour {
 	}
 
 	public void EditAccount(IDictionary<string, object> dic) {
+		Utility.PrintDictionary(dic);
 		Document d = db.GetDocument(dic[Constants.DB_COUCHBASE_ID].ToString());
 		d.Update((UnsavedRevision newRevision) => {
 			var properties = newRevision.Properties;
@@ -759,6 +752,26 @@ public class DatabaseManager : MonoBehaviour {
 			return rev.Properties;
 		}
 		return null;
+	}
+
+	public void EditMatch(IDictionary<string, object> dic) {
+		Document d = db.GetDocument(dic[Constants.DB_COUCHBASE_ID].ToString());
+		d.Update((UnsavedRevision newRevision) => {
+			var properties = newRevision.Properties;
+			properties[Constants.DB_KEYWORD_CHICKEN_ID_1] = dic[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString();
+			properties[Constants.DB_KEYWORD_CHICKEN_ID_2] = dic[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString();
+			properties[Constants.DB_KEYWORD_PLAYER_ID_1] = dic[Constants.DB_KEYWORD_PLAYER_ID_1].ToString();
+			properties[Constants.DB_KEYWORD_PLAYER_ID_2] = dic[Constants.DB_KEYWORD_PLAYER_ID_2].ToString();
+			properties[Constants.DB_KEYWORD_LLAMADO] = dic[Constants.DB_KEYWORD_LLAMADO].ToString();
+			properties[Constants.DB_KEYWORD_CATEGORY_ID] = dic[Constants.DB_KEYWORD_CATEGORY_ID].ToString();
+			properties[Constants.DB_KEYWORD_BETTING_OPTION] = dic[Constants.DB_KEYWORD_BETTING_OPTION].ToString();
+			properties[Constants.DB_KEYWORD_BETTING_ODDS_ID] = dic[Constants.DB_KEYWORD_BETTING_ODDS_ID].ToString();
+			properties[Constants.DB_KEYWORD_WAIT_DURATION] = dic[Constants.DB_KEYWORD_WAIT_DURATION].ToString();
+			properties[Constants.DB_KEYWORD_PASSWORD] = dic[Constants.DB_KEYWORD_PASSWORD].ToString();
+			properties[Constants.DB_KEYWORD_END_TIME] = dic[Constants.DB_KEYWORD_END_TIME].ToString();
+			properties[Constants.DB_KEYWORD_STATUS] = dic[Constants.DB_KEYWORD_STATUS].ToString();
+			return true;
+		});
 	}
 	
 	public List<IDictionary<string,object>> LoadMatch(string playerId) {

@@ -6,9 +6,6 @@ using System.Linq;
 
 public class ServerFightManager : MonoBehaviour {
 
-	public Transform chicken1;
-	public Transform chicken2;
-
 	private List<string> moveName = new List<string>();
 	private int[] atk = new int[2], def = new int[2], hp = new int[2], agi = new int[2], gam = new int[2], agg = new int[2];
 	private Vector3[] pos = new Vector3[2];
@@ -35,7 +32,7 @@ public class ServerFightManager : MonoBehaviour {
 		}
 	}
 
-	public void AutomateFight(IDictionary<string,object> c1,
+	public int AutomateFight(IDictionary<string,object> c1,
 	                            IDictionary<string,object> c2,
 	                            List<IDictionary<string, object>> c1Moves,
 	                            List<IDictionary<string, object>> c2Moves) {
@@ -53,8 +50,8 @@ public class ServerFightManager : MonoBehaviour {
 		gam[1] = int.Parse (c2[Constants.DB_KEYWORD_GAMENESS].ToString());
 		agg[1] = int.Parse (c2[Constants.DB_KEYWORD_AGGRESSION].ToString());
 
-		pos[0] = chicken1.position;
-		pos[1] = chicken2.position;
+		pos[0] = new Vector3(Random.Range(0,11), 0, Random.Range (0, 11));
+		pos[1] = new Vector3(Random.Range(0,11), 0, Random.Range (0, 11));
 		UpdateDistance();
 		print (pos[0]);
 		print (pos[1]);
@@ -87,12 +84,9 @@ public class ServerFightManager : MonoBehaviour {
 		foreach(KeyValuePair<string,object> kv in loadedReplay) {
 			print (kv.Key + ": " + kv.Value);
 		}
-		/*foreach (IDictionary<string,object> id in l) {
-			foreach(KeyValuePair<string,object> kv in id) {
-				print (kv.Key + ": " + kv.Value);
-			}
-		}
-		print ("replay list has " + l.Count () + " elements.");*/
+		
+		if(hp[0] <= 0) return 0;
+		else return 1;
 	}
 
 	private string AssignNextMove(List<IDictionary<string, object>> moves, int playerNum) {

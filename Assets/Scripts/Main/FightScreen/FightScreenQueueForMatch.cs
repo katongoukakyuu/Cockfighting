@@ -7,6 +7,6 @@ public class FightScreenQueueForMatch : MonoBehaviour {
 	
 	public void ButtonPressed() {
 		createMatchCanvas.gameObject.SetActive (true);
-		MatchCreateManager.Instance.Initialize();
+		MatchCreateManager.Instance.Initialize(null);
 	}
 }

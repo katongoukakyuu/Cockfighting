@@ -181,6 +181,7 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_BETTING_OPTION, bettingOption},
 			{Constants.DB_KEYWORD_BETTING_ODDS_ID, bettingOddsId},
 			{Constants.DB_KEYWORD_WAIT_DURATION, waitDuration},
+			{Constants.DB_KEYWORD_PASSWORD, password},
 			{Constants.DB_KEYWORD_END_TIME, System.DateTime.MinValue.ToString()},
 			{Constants.DB_KEYWORD_STATUS, Constants.MATCH_STATUS_WAITING_FOR_OPPONENT},
 			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}

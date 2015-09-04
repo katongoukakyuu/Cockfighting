@@ -95,6 +95,10 @@ public class FightManager : MonoBehaviour {
 		
 		listMatches = DatabaseManager.Instance.LoadMatchesByCategory(selectedMMCategory[Constants.DB_COUCHBASE_ID].ToString());
 		foreach (IDictionary<string, object> i in listMatches) {
+			if(i[Constants.DB_KEYWORD_STATUS].ToString() != Constants.MATCH_STATUS_WAITING_FOR_OPPONENT && 
+			   i[Constants.DB_KEYWORD_STATUS].ToString() != Constants.MATCH_STATUS_BETTING_PERIOD) {
+				continue;
+			}
 			IDictionary<string, object> chicken = DatabaseManager.Instance.LoadChicken(i[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString());
 			IDictionary<string,object> player = DatabaseManager.Instance.LoadPlayer(i[Constants.DB_KEYWORD_PLAYER_ID_1].ToString());
 			GameObject g = Instantiate(matchButton);

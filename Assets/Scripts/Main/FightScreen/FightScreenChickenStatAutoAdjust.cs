@@ -6,6 +6,7 @@ public class FightScreenChickenStatAutoAdjust : MonoBehaviour {
 	
 	private Text text;
 	private Slider slider;
+	public int multiplier = 1;
 
 	public void Awake() {
 		text = GetComponentInChildren<Text>();
@@ -15,7 +16,7 @@ public class FightScreenChickenStatAutoAdjust : MonoBehaviour {
 
 	public void OnChange() {
 		if(text) {
-			text.text = slider.value + " / " + slider.maxValue;
+			text.text = (slider.value * multiplier) + " / " + (slider.maxValue * multiplier);
 		}
 	}
 }
