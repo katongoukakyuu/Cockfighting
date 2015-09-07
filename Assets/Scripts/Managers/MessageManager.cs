@@ -35,7 +35,7 @@ public class MessageManager : MonoBehaviour {
 		entry.eventID = EventTriggerType.Select;
 		entry.callback.AddListener ((eventData) => {
 			ClearMessage(allowCancel);
-			bd ();
+			if(bd != null) bd ();
 		});
 		trigger.triggers.Add (entry);
 		

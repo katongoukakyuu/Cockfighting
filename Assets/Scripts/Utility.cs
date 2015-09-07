@@ -9,4 +9,13 @@ public class Utility : MonoBehaviour {
 			print(kv.Key.ToString() + ": " + kv.Value.ToString());
 		}
 	}
+
+	public static int GetPayout(int betAmount, IDictionary<string,object> bettingOdds, bool isLlamado) {
+		if(isLlamado) {
+			return (int) betAmount * 2 * int.Parse (bettingOdds[Constants.DB_KEYWORD_DEHADO_ODDS].ToString()) / int.Parse (bettingOdds[Constants.DB_KEYWORD_LLAMADO_ODDS].ToString());
+		}
+		else {
+			return (int) betAmount * 2 * int.Parse (bettingOdds[Constants.DB_KEYWORD_LLAMADO_ODDS].ToString()) / int.Parse (bettingOdds[Constants.DB_KEYWORD_DEHADO_ODDS].ToString());
+		}
+	}
 }

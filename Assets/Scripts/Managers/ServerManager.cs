@@ -41,6 +41,7 @@ public class ServerManager : MonoBehaviour {
 		StartCoroutine(ProcessBreedScheduleCanceling());
 
 		StartCoroutine(ProcessMatchesStatusChanges());
+		StartCoroutine(ProcessMatchSchedules());
 	}
 
 	public void StopAllProcesses() {
@@ -309,6 +310,62 @@ public class ServerManager : MonoBehaviour {
 
 	// MATCHES START
 
+	private IEnumerator ProcessMatchSchedules() {
+		List<IDictionary<string,object>> listSchedules = new List<IDictionary<string,object>>();
+		List<System.DateTime> listEndTimes = new List<System.DateTime>();
+		System.DateTime earliestEndTime = System.DateTime.MinValue;
+		int earliestEndTimeIndex = 0;
+		
+		ProcessMatchSchedulesInitialize(ref listSchedules, ref listEndTimes, ref earliestEndTime, ref earliestEndTimeIndex);
+		
+		while(true) {
+			if(earliestEndTime.CompareTo(System.DateTime.MinValue) != 0 && earliestEndTime.CompareTo(System.DateTime.Now.ToUniversalTime()) < 0) {
+				UpdateMatchSchedule(listSchedules[earliestEndTimeIndex]);
+				ProcessMatchSchedulesInitialize(ref listSchedules, ref listEndTimes, ref earliestEndTime, ref earliestEndTimeIndex);
+			}
+			yield return new WaitForSeconds(1);
+		}
+	}
+
+	private void ProcessMatchSchedulesInitialize(ref List<IDictionary<string,object>> listSchedules,
+	                                             ref List<System.DateTime> listEndTimes,
+	                                             ref System.DateTime earliestEndTime,
+	                                             ref int earliestEndTimeIndex) {
+		listSchedules = DatabaseManager.Instance.LoadMatch(null);
+		listEndTimes.Clear ();
+		earliestEndTime = System.DateTime.MinValue;
+		earliestEndTimeIndex = 0;
+		
+		listSchedules.RemoveAll(i => i[Constants.DB_KEYWORD_STATUS].ToString() != Constants.MATCH_STATUS_BETTING_PERIOD);
+		
+		foreach(IDictionary<string,object> i in listSchedules) {
+			System.DateTime dtTemp = System.DateTime.Parse (i[Constants.DB_KEYWORD_INTERVAL_TIME].ToString());
+			listEndTimes.Add (dtTemp);
+			if(earliestEndTime.CompareTo(System.DateTime.MinValue) == 0 || earliestEndTime.CompareTo(dtTemp) > 0) {
+				earliestEndTime = dtTemp;
+				earliestEndTimeIndex = listSchedules.IndexOf(i);
+			}
+		}
+	}
+
+	private void UpdateMatchSchedule(IDictionary<string,object> schedule) {
+		System.DateTime intervalTime = TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_INTERVAL_TIME].ToString()));
+		System.TimeSpan interval = TrimMilli(System.TimeSpan.FromTicks(long.Parse(schedule[Constants.DB_KEYWORD_INTERVAL].ToString())));
+		int bettingOddsOrder = int.Parse (DatabaseManager.Instance.LoadBettingOdds(schedule[Constants.DB_KEYWORD_BETTING_ODDS_ID].ToString())[Constants.DB_KEYWORD_ORDER].ToString());
+		int intervalsLeft = int.Parse (schedule[Constants.DB_KEYWORD_INTERVALS_LEFT].ToString());
+
+		if(intervalsLeft == 0) {
+			ResolveMatch(schedule);
+		}
+		else {
+			intervalTime = intervalTime.Add (interval);
+			schedule[Constants.DB_KEYWORD_INTERVALS_LEFT] = (intervalsLeft - 1);
+			schedule[Constants.DB_KEYWORD_INTERVAL_TIME] = intervalTime;
+			schedule[Constants.DB_KEYWORD_BETTING_ODDS_ID] = DatabaseManager.Instance.LoadBettingOdds(bettingOddsOrder+1)[Constants.DB_COUCHBASE_ID].ToString();
+			DatabaseManager.Instance.EditMatch(schedule);
+		}
+	}
+
 	private IEnumerator ProcessMatchesStatusChanges() {
 		db.Changed += (sender, e) => {
 			var changes = e.Changes.ToList();
@@ -337,8 +394,30 @@ public class ServerManager : MonoBehaviour {
 			chicken2 = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString());
 			chicken2[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH] = true;
 			DatabaseManager.Instance.EditChicken(chicken2);
-			ResolveMatch(schedule);
+			if(schedule[Constants.DB_KEYWORD_BETTING_OPTION].ToString() == Constants.BETTING_OPTION_SPECTATOR_BETTING) {
+				SwitchToBettingPeriod(schedule);
+			}
+			else {
+				ResolveMatch(schedule);
+			}
 		}
+	}
+
+	private void SwitchToBettingPeriod(IDictionary<string,object> schedule) {
+		System.DateTime startTime = TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_CREATED_AT].ToString()));
+		System.DateTime endTime = TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()));
+		System.TimeSpan interval = endTime - startTime;
+		System.DateTime intervalTime;
+
+		interval = TrimMilli(new System.TimeSpan(interval.Ticks/Constants.BETTING_ODDS_COUNT));
+		intervalTime = startTime.Add (interval);
+
+		schedule[Constants.DB_KEYWORD_INTERVAL] = interval.Ticks;
+		schedule[Constants.DB_KEYWORD_INTERVALS_LEFT] = (Constants.BETTING_ODDS_COUNT - 1);
+		schedule[Constants.DB_KEYWORD_INTERVAL_TIME] = intervalTime;
+		schedule[Constants.DB_KEYWORD_BETTING_ODDS_ID] = DatabaseManager.Instance.LoadBettingOdds(0)[Constants.DB_COUCHBASE_ID].ToString();
+		schedule[Constants.DB_KEYWORD_STATUS] = Constants.MATCH_STATUS_BETTING_PERIOD;
+		DatabaseManager.Instance.EditMatch(schedule);
 	}
 
 	private void ResolveMatch(IDictionary<string,object> schedule) {
@@ -369,11 +448,14 @@ public class ServerManager : MonoBehaviour {
 			if(i[Constants.DB_KEYWORD_BETTED_CHICKEN_ID].ToString() != chickens[winner][Constants.DB_COUCHBASE_ID].ToString()) {
 				continue;
 			}
-			Utility.PrintDictionary(i);
+
 			IDictionary<string,object> odds = DatabaseManager.Instance.LoadBettingOdds(i[Constants.DB_KEYWORD_BETTING_ODDS_ID].ToString());
 			int prize = 0;
 			if(i[Constants.DB_KEYWORD_BETTED_CHICKEN_STATUS].ToString() == Constants.BETTED_CHICKEN_STATUS_LLAMADO) {
-				prize = (int) int.Parse (i[Constants.DB_KEYWORD_BET_AMOUNT].ToString()) * int.Parse (odds[Constants.DB_KEYWORD_LLAMADO_ODDS].ToString()) / int.Parse (odds[Constants.DB_KEYWORD_DEHADO_ODDS].ToString());
+				prize = Utility.GetPayout(int.Parse (i[Constants.DB_KEYWORD_BET_AMOUNT].ToString()), odds, true);
+			}
+			else {
+				prize = Utility.GetPayout(int.Parse (i[Constants.DB_KEYWORD_BET_AMOUNT].ToString()), odds, false);
 			}
 
 			IDictionary<string,object> player = DatabaseManager.Instance.LoadPlayer(i[Constants.DB_KEYWORD_PLAYER_ID].ToString());
@@ -396,4 +478,14 @@ public class ServerManager : MonoBehaviour {
 	}
 
 	// MATCHES END
+
+	private System.DateTime TrimMilli(System.DateTime dt)
+	{
+		return new System.DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0, dt.Kind);
+	}
+
+	private System.TimeSpan TrimMilli(System.TimeSpan dt)
+	{
+		return new System.TimeSpan(dt.Days, dt.Hours, dt.Minutes, dt.Seconds);
+	}
 }

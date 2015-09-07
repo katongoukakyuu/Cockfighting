@@ -104,17 +104,17 @@ public class MatchCreateManager : MonoBehaviour {
 				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_AMOUNT_SLIDER).GetComponent<Slider>().value = (int) initialBetAmount / 
 					optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_AMOUNT_SLIDER).GetComponent<FightScreenChickenStatAutoAdjust>().multiplier;
 			}
-			else if(match[Constants.DB_KEYWORD_BETTING_OPTION].ToString() == Constants.BETTING_OPTION_SINGLE_BETTING) {
+			else if(match[Constants.DB_KEYWORD_BETTING_OPTION].ToString() == Constants.BETTING_OPTION_SPECTATOR_BETTING) {
 				IDictionary<string,object> initialBet = DatabaseManager.Instance.LoadBet(match[Constants.DB_COUCHBASE_ID].ToString(), match[Constants.DB_KEYWORD_PLAYER_ID_1].ToString());
 				int initialBetAmount = int.Parse (initialBet[Constants.DB_KEYWORD_BET_AMOUNT].ToString());
 
 				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_BUTTON).GetComponent<Toggle>().isOn = true;
-				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<Slider>().interactable = false;
-				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<Slider>().value = (int) initialBetAmount / 
-					optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<FightScreenChickenStatAutoAdjust>().multiplier;
-				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_WAIT_DURATION_SLIDER).GetComponent<Slider>().interactable = false;
-				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_WAIT_DURATION_SLIDER).GetComponent<Slider>().value = (int)int.Parse(match[Constants.DB_KEYWORD_WAIT_DURATION].ToString()) / 
-					optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_WAIT_DURATION_SLIDER).GetComponent<FightScreenChickenStatAutoAdjust>().multiplier;
+				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<Slider>().interactable = true;
+				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<Slider>().value = (int) (initialBetAmount * Constants.MINIMUM_BET_RATIO / 
+					optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<FightScreenChickenStatAutoAdjust>().multiplier);
+				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<Slider>().minValue = 
+					(int) (optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<Slider>().value);
+				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_WAIT_DURATION_PANEL).gameObject.SetActive(false);
 			}
 			if(match[Constants.DB_KEYWORD_PASSWORD].ToString() != "") {				
 				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_BUTTON).GetComponent<Toggle>().isOn = true;
@@ -123,6 +123,7 @@ public class MatchCreateManager : MonoBehaviour {
 			}
 		}
 		else {
+			selectedMatch = null;
 			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_BUTTON).GetComponent<Toggle>().interactable = true;
 			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_BUTTON).GetComponent<Toggle>().interactable = true;
 			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_BUTTON).GetComponent<Toggle>().interactable = true;
@@ -134,9 +135,9 @@ public class MatchCreateManager : MonoBehaviour {
 			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_AMOUNT_SLIDER).GetComponent<Slider>().value = 0;
 
 			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<Slider>().interactable = true;
+			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<Slider>().minValue = 0;
 			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<Slider>().value = 0;
-			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_WAIT_DURATION_SLIDER).GetComponent<Slider>().interactable = true;
-			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_WAIT_DURATION_SLIDER).GetComponent<Slider>().value = 0;
+			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_WAIT_DURATION_PANEL).gameObject.SetActive(true);
 
 			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_PASSWORD).GetComponent<InputField>().interactable = true;
 			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_PASSWORD).GetComponent<InputField>().text = "";
@@ -209,6 +210,9 @@ public class MatchCreateManager : MonoBehaviour {
 				DatabaseManager.Instance.SaveBet(GameManager.Instance.GenerateBet(savedMatch[Constants.DB_COUCHBASE_ID].ToString(), playerId, 
 				                                                                  DatabaseManager.Instance.LoadBettingOdds(0)[Constants.DB_COUCHBASE_ID].ToString(), chickenId, Constants.BETTED_CHICKEN_STATUS_LLAMADO,
 				                                                                  bettingAmount));
+				IDictionary<string,object> player = PlayerManager.Instance.player;
+				player[Constants.DB_KEYWORD_COIN] = (int.Parse(player[Constants.DB_KEYWORD_COIN].ToString()) - bettingAmount);
+				DatabaseManager.Instance.EditAccount(player);
 			}
 		}
 		else {
@@ -216,6 +220,9 @@ public class MatchCreateManager : MonoBehaviour {
 				DatabaseManager.Instance.SaveBet(GameManager.Instance.GenerateBet(selectedMatch[Constants.DB_COUCHBASE_ID].ToString(), playerId, 
 				                                                                  DatabaseManager.Instance.LoadBettingOdds(0)[Constants.DB_COUCHBASE_ID].ToString(), chickenId, Constants.DB_KEYWORD_DEHADO,
 				                                                                  bettingAmount));
+				IDictionary<string,object> player = PlayerManager.Instance.player;
+				player[Constants.DB_KEYWORD_COIN] = (int.Parse(player[Constants.DB_KEYWORD_COIN].ToString()) - bettingAmount);
+				DatabaseManager.Instance.EditAccount(player);
 			}
 			selectedMatch[Constants.DB_KEYWORD_CHICKEN_ID_2] = chickenId;
 			selectedMatch[Constants.DB_KEYWORD_PLAYER_ID_2] = playerId;

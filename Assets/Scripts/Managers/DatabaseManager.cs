@@ -188,6 +188,7 @@ public class DatabaseManager : MonoBehaviour {
 
 		RegisterAccount(GameManager.Instance.RegisterAccount ("test", "test@test.com", "Savior Studios"));
 		RegisterAccount(GameManager.Instance.RegisterAccount ("test2", "test@test.com", "Devil Studios"));
+		RegisterAccount(GameManager.Instance.RegisterAccount ("test3", "test@test.com", "Purgatory Studios"));
 		ControlPanelBreedsManager.Instance.SaveBreed (
 			"Kelso",
 			1.3f, 1.2f, 1.0f, 0.9f, 1.1f, 1.0f
@@ -766,10 +767,21 @@ public class DatabaseManager : MonoBehaviour {
 			properties[Constants.DB_KEYWORD_CATEGORY_ID] = dic[Constants.DB_KEYWORD_CATEGORY_ID].ToString();
 			properties[Constants.DB_KEYWORD_BETTING_OPTION] = dic[Constants.DB_KEYWORD_BETTING_OPTION].ToString();
 			properties[Constants.DB_KEYWORD_BETTING_ODDS_ID] = dic[Constants.DB_KEYWORD_BETTING_ODDS_ID].ToString();
-			properties[Constants.DB_KEYWORD_WAIT_DURATION] = dic[Constants.DB_KEYWORD_WAIT_DURATION].ToString();
 			properties[Constants.DB_KEYWORD_PASSWORD] = dic[Constants.DB_KEYWORD_PASSWORD].ToString();
 			properties[Constants.DB_KEYWORD_END_TIME] = dic[Constants.DB_KEYWORD_END_TIME].ToString();
 			properties[Constants.DB_KEYWORD_STATUS] = dic[Constants.DB_KEYWORD_STATUS].ToString();
+			if(dic.ContainsKey(Constants.DB_KEYWORD_INTERVAL)) {
+				properties[Constants.DB_KEYWORD_INTERVAL] = dic[Constants.DB_KEYWORD_INTERVAL].ToString();
+			}
+			if(dic.ContainsKey(Constants.DB_KEYWORD_INTERVALS_LEFT)) {
+				properties[Constants.DB_KEYWORD_INTERVALS_LEFT] = dic[Constants.DB_KEYWORD_INTERVALS_LEFT].ToString();
+			}
+			if(dic.ContainsKey(Constants.DB_KEYWORD_INTERVAL_TIME)) {
+				properties[Constants.DB_KEYWORD_INTERVAL_TIME] = dic[Constants.DB_KEYWORD_INTERVAL_TIME].ToString();
+			}
+			if(dic.ContainsKey(Constants.DB_KEYWORD_BETTING_ODDS_ID)) {
+				properties[Constants.DB_KEYWORD_BETTING_ODDS_ID] = dic[Constants.DB_KEYWORD_BETTING_ODDS_ID].ToString();
+			}
 			return true;
 		});
 	}

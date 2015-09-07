@@ -101,8 +101,11 @@ public class FightManager : MonoBehaviour {
 			}
 			IDictionary<string, object> chicken = DatabaseManager.Instance.LoadChicken(i[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString());
 			IDictionary<string,object> player = DatabaseManager.Instance.LoadPlayer(i[Constants.DB_KEYWORD_PLAYER_ID_1].ToString());
+			IDictionary<string,object> bettingOdds = DatabaseManager.Instance.LoadBettingOdds(i[Constants.DB_KEYWORD_BETTING_ODDS_ID].ToString());
+
 			GameObject g = Instantiate(matchButton);
 			listMatchButtons.Add (g);
+
 			g.name = i[Constants.DB_COUCHBASE_ID].ToString();
 			g.GetComponentInChildren<FightScreenViewMatch>().SetMatch(i);
 			g.transform.FindChild(Constants.MATCH_PANEL_TIMER).GetComponent<Text>().text = "";
@@ -112,9 +115,16 @@ public class FightManager : MonoBehaviour {
 			g.transform.FindChild(Constants.MATCH_PANEL_WLD_1).gameObject.SetActive(true);
 			g.transform.FindChild(Constants.MATCH_PANEL_CHICKEN_1).GetComponent<Text>().text = chicken[Constants.DB_KEYWORD_NAME].ToString();
 			g.transform.FindChild(Constants.MATCH_PANEL_FARM_1).GetComponent<Text>().text = player[Constants.DB_KEYWORD_FARM_NAME].ToString();
-			g.transform.FindChild(Constants.MATCH_PANEL_WIN_1).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_WON].ToString();
-			g.transform.FindChild(Constants.MATCH_PANEL_LOSE_1).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_LOST].ToString();
-			g.transform.FindChild(Constants.MATCH_PANEL_DRAW_1).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_TIED].ToString();
+			g.transform.FindChild(Constants.MATCH_PANEL_WIN_1).GetComponent<Text>().text = "W: " + player[Constants.DB_KEYWORD_MATCHES_WON].ToString();
+			g.transform.FindChild(Constants.MATCH_PANEL_LOSE_1).GetComponent<Text>().text = "L: " + player[Constants.DB_KEYWORD_MATCHES_LOST].ToString();
+			g.transform.FindChild(Constants.MATCH_PANEL_DRAW_1).GetComponent<Text>().text = "D: " + player[Constants.DB_KEYWORD_MATCHES_TIED].ToString();
+			if(i[Constants.DB_KEYWORD_LLAMADO].ToString() == chicken[Constants.DB_COUCHBASE_ID].ToString()) {
+				g.transform.FindChild(Constants.MATCH_PANEL_ODDS_1).GetComponent<Text>().text = "O: " + bettingOdds[Constants.DB_KEYWORD_LLAMADO_ODDS].ToString();
+			}
+			else {
+				g.transform.FindChild(Constants.MATCH_PANEL_ODDS_1).GetComponent<Text>().text = "O: " + bettingOdds[Constants.DB_KEYWORD_DEHADO_ODDS].ToString();
+			}
+
 
 			if(i[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString() == "") {
 				g.transform.FindChild(Constants.MATCH_PANEL_IDLE_2).gameObject.SetActive(true);
@@ -129,9 +139,16 @@ public class FightManager : MonoBehaviour {
 				g.transform.FindChild(Constants.MATCH_PANEL_WLD_2).gameObject.SetActive(true);
 				g.transform.FindChild(Constants.MATCH_PANEL_CHICKEN_2).GetComponent<Text>().text = chicken[Constants.DB_KEYWORD_NAME].ToString();
 				g.transform.FindChild(Constants.MATCH_PANEL_FARM_2).GetComponent<Text>().text = player[Constants.DB_KEYWORD_FARM_NAME].ToString();
-				g.transform.FindChild(Constants.MATCH_PANEL_WIN_2).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_WON].ToString();
-				g.transform.FindChild(Constants.MATCH_PANEL_LOSE_2).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_LOST].ToString();
-				g.transform.FindChild(Constants.MATCH_PANEL_DRAW_2).GetComponent<Text>().text = player[Constants.DB_KEYWORD_MATCHES_TIED].ToString();
+				g.transform.FindChild(Constants.MATCH_PANEL_WIN_2).GetComponent<Text>().text = "W: " + player[Constants.DB_KEYWORD_MATCHES_WON].ToString();
+				g.transform.FindChild(Constants.MATCH_PANEL_LOSE_2).GetComponent<Text>().text = "L: " + player[Constants.DB_KEYWORD_MATCHES_LOST].ToString();
+				g.transform.FindChild(Constants.MATCH_PANEL_DRAW_2).GetComponent<Text>().text = "D: " + player[Constants.DB_KEYWORD_MATCHES_TIED].ToString();
+				if(i[Constants.DB_KEYWORD_LLAMADO].ToString() == chicken[Constants.DB_COUCHBASE_ID].ToString()) {
+					g.transform.FindChild(Constants.MATCH_PANEL_ODDS_2).GetComponent<Text>().text = "O: " + bettingOdds[Constants.DB_KEYWORD_LLAMADO_ODDS].ToString();
+				}
+				else {
+					g.transform.FindChild(Constants.MATCH_PANEL_ODDS_2).GetComponent<Text>().text = "O: " + bettingOdds[Constants.DB_KEYWORD_DEHADO_ODDS].ToString();
+				}
+
 				System.DateTime dt1 = TrimMilli(System.DateTime.Now.ToUniversalTime());
 				System.DateTime dt2 = TrimMilli(System.DateTime.Parse(i[Constants.DB_KEYWORD_END_TIME].ToString()));
 				if(dt2 != System.DateTime.MinValue) {

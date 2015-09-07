@@ -64,6 +64,8 @@ public class Constants : MonoBehaviour {
 	// match create messages
 	public const string MESSAGE_MATCH_CREATE_NO_COCKS_AVAILABLE_TITLE = "No Cocks Available";
 	public const string MESSAGE_MATCH_CREATE_NO_COCKS_AVAILABLE = "You have no cocks to fight with.";
+	public const string MESSAGE_MATCH_CREATE_NOT_ENOUGH_COINS_TITLE = "Not Enough Coins";
+	public const string MESSAGE_MATCH_CREATE_NOT_ENOUGH_COINS = "You do not have enough Coins to make the minimum bet.";
 	public const string MESSAGE_MATCH_CREATE_CONFIRM_TITLE = "Confirm Fight";
 	public const string MESSAGE_MATCH_CREATE_CONFIRM = "Are you sure you want to fight with this cock?";
 	// end match create messages
@@ -71,7 +73,20 @@ public class Constants : MonoBehaviour {
 	// match view fight messages
 	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_TITLE = "Confirm Fight";
 	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM = "Are you sure you want to fight this cock?";
+	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SINGLE_BET_1 = "Are you sure you want to bet ";
+	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SINGLE_BET_2 = " Coins to fight this cock?";
+	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SPECTATOR_BET_1 = "Are you sure you want to bet at least ";
+	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SPECTATOR_BET_2 = " Coins to fight this cock?";
 	// end match view fight messages
+
+	// match bet fight messages
+	public const string MESSAGE_MATCH_BET_CONFIRM_TITLE = "Confirm Bet";
+	public const string MESSAGE_MATCH_BET_CONFIRM = "Are you sure you want to bet on the selected cock?";
+	public const string MESSAGE_MATCH_BET_MESSAGE_1 = "With the odds at ";
+	public const string MESSAGE_MATCH_BET_MESSAGE_2A = " for you, your winning payout will be ";
+	public const string MESSAGE_MATCH_BET_MESSAGE_2B = " against you, your winning payout will be ";
+	public const string MESSAGE_MATCH_BET_MESSAGE_3 = " Coins.";
+	// end match bet fight messages
 
 	public const int COIN_START = 10000;
 	public const int CASH_START = 200;
@@ -246,14 +261,18 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_LLAMADO = "llamado";
 	public const string DB_KEYWORD_DEHADO = "dehado";
 	public const string DB_KEYWORD_BETTING_OPTION = "betting option";
-	public const string DB_KEYWORD_WAIT_DURATION = "wait duration";
 	public const string DB_KEYWORD_STATUS = "status";
+	public const string DB_KEYWORD_INTERVAL = "interval";
+	public const string DB_KEYWORD_INTERVALS_LEFT = "intervals left";
+	public const string DB_KEYWORD_INTERVAL_TIME = "interval time";
 	// end match document keywords
 
 	// betting options
 	public const string BETTING_OPTION_NONE = "No Betting";
 	public const string BETTING_OPTION_SINGLE_BETTING = "Single Betting";
 	public const string BETTING_OPTION_SPECTATOR_BETTING = "Spectator Betting";
+	public const float MINIMUM_BET_RATIO = 0.5f;
+	public const float MAXIMUM_BET_RATIO = 1.5f;
 	// end betting options
 
 	// match status
@@ -327,6 +346,8 @@ public class Constants : MonoBehaviour {
 	public const string MATCH_PANEL_LOSE_2 = "WLD 2/Lose/Lose";
 	public const string MATCH_PANEL_DRAW_1 = "WLD 1/Draw/Draw";
 	public const string MATCH_PANEL_DRAW_2 = "WLD 2/Draw/Draw";
+	public const string MATCH_PANEL_ODDS_1 = "WLD 1/Odds/Odds";
+	public const string MATCH_PANEL_ODDS_2 = "WLD 2/Odds/Odds";
 
 	public const string MATCH_PANEL_TIMER = "Timer/Timer/Timer Text";
 	public const string MATCH_PANEL_VIEW_BUTTON = "Timer/Buttons/View";
@@ -347,6 +368,7 @@ public class Constants : MonoBehaviour {
 	public const string CREATE_MATCH_BETTING_2_BUTTON = "Betting 2 Button";
 	public const string CREATE_MATCH_BETTING_2_PANEL = "Betting 2 Panel";
 	public const string CREATE_MATCH_BETTING_2_AMOUNT_SLIDER = "Betting 2 Panel/Amount/Slider";
+	public const string CREATE_MATCH_BETTING_2_WAIT_DURATION_PANEL = "Betting 2 Panel/Wait Duration";
 	public const string CREATE_MATCH_BETTING_2_WAIT_DURATION_SLIDER = "Betting 2 Panel/Wait Duration/Slider";
 	public const string CREATE_MATCH_PRIVATE_BUTTON = "Private Button";
 	public const string CREATE_MATCH_PRIVATE_PANEL = "Private Panel";
@@ -382,9 +404,12 @@ public class Constants : MonoBehaviour {
 	public const string VIEW_MATCH_INFO_BETTING_STYLE = "Panel/Main Panel/Betting Style/Text 2";
 	public const string VIEW_MATCH_INFO_FAVORITE = "Panel/Main Panel/Favorite/Text 2";
 	public const string VIEW_MATCH_INFO_ODDS = "Panel/Main Panel/Odds/Text 2";
-
-
 	// end view match children
+
+	// match bet children	
+	public const string BET_MATCH_BET_SLIDER = "Bet Panel/Bet/Slider";
+	public const string BET_MATCH_MESSAGE = "Message Panel/Message";
+	// match bet children
 
 	// fight move list
 	public const string FIGHT_MOVE_NONE = "None";

@@ -17,6 +17,9 @@ public class MatchViewManager : MonoBehaviour {
 	private List<IDictionary<string,object>> chickens = new List<IDictionary<string,object>>();
 	private List<IDictionary<string,object>> players = new List<IDictionary<string,object>>();
 	private IDictionary<string,object> selectedMatch;
+	private IDictionary<string,object> bettingOption;
+	private IDictionary<string,object> initialBet;
+	private int minimumBet;
 	private IDictionary<string,object> selectedChicken;
 	private IDictionary<string,object> selectedPlayer;
 
@@ -40,21 +43,36 @@ public class MatchViewManager : MonoBehaviour {
 	}
 
 	public void Initialize(IDictionary<string,object> match) {
-		selectedMatch = match;
 		matchViewCanvas.gameObject.SetActive(true);
+		selectedMatch = match;
 		chickens.Add (DatabaseManager.Instance.LoadChicken(match[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString()));
 		players.Add (DatabaseManager.Instance.LoadPlayer(match[Constants.DB_KEYWORD_PLAYER_ID_1].ToString()));
+		initialBet = DatabaseManager.Instance.LoadBet(selectedMatch[Constants.DB_COUCHBASE_ID].ToString(),players[0][Constants.DB_COUCHBASE_ID].ToString());
+		if(initialBet != null) {
+			minimumBet = (int)(int.Parse(initialBet[Constants.DB_KEYWORD_BET_AMOUNT].ToString()) * Constants.MINIMUM_BET_RATIO);
+		}
 		if(match[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString() != "") {
 			chickens.Add (DatabaseManager.Instance.LoadChicken(match[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString()));
 			players.Add (DatabaseManager.Instance.LoadPlayer(match[Constants.DB_KEYWORD_PLAYER_ID_2].ToString()));
+			fightButton.interactable = false;
+			if(match[Constants.DB_KEYWORD_STATUS].ToString() == Constants.MATCH_STATUS_BETTING_PERIOD && 
+			   match[Constants.DB_KEYWORD_PLAYER_ID_1].ToString() != PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString() &&
+			   match[Constants.DB_KEYWORD_PLAYER_ID_2].ToString() != PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString()) {
+				betButton.interactable = true;
+			}
+			else {
+				betButton.interactable = false;
+			}
 			foreach(Button b in viewPanelButtons) {
 				b.interactable = true;
 			}
 		}
 		else {
-			fightButton.interactable = true;
 			if(match[Constants.DB_KEYWORD_PLAYER_ID_1].ToString() != PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString()) {
-
+				fightButton.interactable = true;
+			}
+			else {
+				fightButton.interactable = false;
 			}
 			foreach(Button b in viewPanelButtons) {
 				b.interactable = false;
@@ -93,6 +111,9 @@ public class MatchViewManager : MonoBehaviour {
 			selectedPlayer[Constants.DB_KEYWORD_MATCHES_WON].ToString() + " - " + selectedPlayer[Constants.DB_KEYWORD_MATCHES_LOST].ToString() + " - " + selectedPlayer[Constants.DB_KEYWORD_MATCHES_TIED].ToString();
 
 		infoPanel.transform.FindChild(Constants.VIEW_MATCH_INFO_BETTING_STYLE).GetComponent<Text>().text = selectedMatch[Constants.DB_KEYWORD_BETTING_OPTION].ToString();
+		if(selectedMatch[Constants.DB_KEYWORD_BETTING_OPTION].ToString() == Constants.BETTING_OPTION_SINGLE_BETTING) {
+			infoPanel.transform.FindChild(Constants.VIEW_MATCH_INFO_BETTING_STYLE).GetComponent<Text>().text += " - " + initialBet[Constants.DB_KEYWORD_BET_AMOUNT].ToString();
+		}
 		if(chickens[0][Constants.DB_COUCHBASE_ID].ToString() == selectedMatch[Constants.DB_KEYWORD_LLAMADO].ToString()) {
 			infoPanel.transform.FindChild(Constants.VIEW_MATCH_INFO_FAVORITE).GetComponent<Text>().text = chickens[0][Constants.DB_KEYWORD_NAME].ToString();
 		} else {
@@ -104,18 +125,55 @@ public class MatchViewManager : MonoBehaviour {
 
 	}
 
+	public void CreateBet(int amount) {
+		string isLlamado;
+		if(selectedMatch[Constants.DB_KEYWORD_LLAMADO].ToString() == selectedChicken[Constants.DB_COUCHBASE_ID].ToString()) {
+			isLlamado = Constants.BETTED_CHICKEN_STATUS_LLAMADO;
+		}
+		else {
+			isLlamado = Constants.DB_KEYWORD_DEHADO;
+		}
+		DatabaseManager.Instance.SaveBet(GameManager.Instance.GenerateBet(selectedMatch[Constants.DB_COUCHBASE_ID].ToString(), PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString(), 
+		                                                                  selectedMatch[Constants.DB_KEYWORD_BETTING_ODDS_ID].ToString(), selectedChicken[Constants.DB_COUCHBASE_ID].ToString(), isLlamado,
+		                                                                  amount));
+		IDictionary<string,object> player = PlayerManager.Instance.player;
+		player[Constants.DB_KEYWORD_COIN] = (int.Parse(player[Constants.DB_KEYWORD_COIN].ToString()) - amount);
+		DatabaseManager.Instance.EditAccount(player);
+		Deinitialize();
+	}
+
 	private void ConfirmFight() {
 		MatchCreateManager.Instance.Initialize(selectedMatch);
 	}
 
 	public void ButtonFight() {
-		MessageManager.Instance.DisplayMessage(Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_TITLE,
-		                                       Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM,
-		                                       ConfirmFight, true);
+		string title, message;
+		if((selectedMatch[Constants.DB_KEYWORD_BETTING_OPTION].ToString() == Constants.BETTING_OPTION_SINGLE_BETTING && 
+		   	int.Parse (PlayerManager.Instance.player[Constants.DB_KEYWORD_COIN].ToString()) < int.Parse (initialBet[Constants.DB_KEYWORD_BET_AMOUNT].ToString())) ||
+		   (selectedMatch[Constants.DB_KEYWORD_BETTING_OPTION].ToString() == Constants.BETTING_OPTION_SPECTATOR_BETTING && 
+		 	int.Parse (PlayerManager.Instance.player[Constants.DB_KEYWORD_COIN].ToString()) < minimumBet)) {
+			title = Constants.MESSAGE_MATCH_CREATE_NOT_ENOUGH_COINS_TITLE;
+			message = Constants.MESSAGE_MATCH_CREATE_NOT_ENOUGH_COINS;
+			MessageManager.Instance.DisplayMessage(title, message, null, false);
+			return;
+		}
+		if(selectedMatch[Constants.DB_KEYWORD_BETTING_OPTION].ToString() == Constants.BETTING_OPTION_SINGLE_BETTING) {
+			title = Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_TITLE;
+			message = Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SINGLE_BET_1 + initialBet[Constants.DB_KEYWORD_BET_AMOUNT].ToString() + Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SINGLE_BET_2;
+		}
+		else if(selectedMatch[Constants.DB_KEYWORD_BETTING_OPTION].ToString() == Constants.BETTING_OPTION_SPECTATOR_BETTING) {
+			title = Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_TITLE;
+			message = Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SPECTATOR_BET_1 + minimumBet + Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SPECTATOR_BET_2;
+		}
+		else {
+			title = Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_TITLE;
+			message = Constants.MESSAGE_MATCH_VIEW_FIGHT_CONFIRM;
+		}
+		MessageManager.Instance.DisplayMessage(title, message, ConfirmFight, true);
 	}
 
 	public void ButtonBet() {
-
+		MatchBetManager.Instance.Initialize(selectedMatch, selectedChicken);
 	}
 
 	public void ButtonCancelMatch() {
