@@ -139,7 +139,7 @@ public class FeedsManager : MonoBehaviour {
 		dt = dt.AddHours (System.Convert.ToDouble(selectedItem[Constants.DB_KEYWORD_DURATION_HOURS].ToString()));
 		dt = dt.AddMinutes (System.Convert.ToDouble(selectedItem[Constants.DB_KEYWORD_DURATION_MINUTES].ToString()));
 		dt = dt.AddSeconds (System.Convert.ToDouble(selectedItem[Constants.DB_KEYWORD_DURATION_SECONDS].ToString()));
-		DatabaseManager.Instance.SaveFeedsSchedule (
+		DatabaseManager.Instance.SaveEntry (
 			GameManager.Instance.GenerateFeedsSchedule(
 				selectedChicken[Constants.DB_COUCHBASE_ID].ToString(),
 				selectedItem[Constants.DB_COUCHBASE_ID].ToString(),

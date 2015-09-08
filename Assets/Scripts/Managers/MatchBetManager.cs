@@ -52,6 +52,7 @@ public class MatchBetManager : MonoBehaviour {
 
 	private void ConfirmOk() {
 		MatchViewManager.Instance.CreateBet((int)mainPanel.transform.FindChild(Constants.BET_MATCH_BET_SLIDER).GetComponent<Slider>().value * multiplier);
+		Deinitialize();
 	}
 
 	public void ButtonOk() {

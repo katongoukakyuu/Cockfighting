@@ -211,7 +211,7 @@ public class ServerManager : MonoBehaviour {
 			breed = chicken2[Constants.DB_TYPE_BREED].ToString();
 		}
 
-		IDictionary<string,object> chickenChild = DatabaseManager.Instance.GenerateChicken(GameManager.Instance.GenerateChicken ("Child", 
+		IDictionary<string,object> chickenChild = DatabaseManager.Instance.SaveEntry(GameManager.Instance.GenerateChicken ("Child", 
 		                                                      chicken1 [Constants.DB_KEYWORD_OWNER].ToString(), 
 		                                                      Random.Range(0,2) == 0 ? Constants.GENDER_MALE : Constants.GENDER_FEMALE, 
 		                                                      breed, 
@@ -234,19 +234,19 @@ public class ServerManager : MonoBehaviour {
 		DatabaseManager.Instance.EditChicken(chickenChild);
 		
 		if(chickenChild[Constants.DB_KEYWORD_GENDER].ToString() != Constants.GENDER_FEMALE) {
-			DatabaseManager.Instance.SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+			DatabaseManager.Instance.SaveEntry (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
 				chickenChild[Constants.DB_COUCHBASE_ID].ToString(),
 				DatabaseManager.Instance.LoadFightingMove(Constants.FIGHT_MOVE_DASH)[Constants.DB_COUCHBASE_ID].ToString()
 				));
-			DatabaseManager.Instance.SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+			DatabaseManager.Instance.SaveEntry (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
 				chickenChild[Constants.DB_COUCHBASE_ID].ToString(),
 				DatabaseManager.Instance.LoadFightingMove(Constants.FIGHT_MOVE_FLYING_TALON)[Constants.DB_COUCHBASE_ID].ToString()
 				));
-			DatabaseManager.Instance.SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+			DatabaseManager.Instance.SaveEntry (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
 				chickenChild[Constants.DB_COUCHBASE_ID].ToString(),
 				DatabaseManager.Instance.LoadFightingMove(Constants.FIGHT_MOVE_SIDESTEP)[Constants.DB_COUCHBASE_ID].ToString()
 				));
-			DatabaseManager.Instance.SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+			DatabaseManager.Instance.SaveEntry (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
 				chickenChild[Constants.DB_COUCHBASE_ID].ToString(),
 				DatabaseManager.Instance.LoadFightingMove(Constants.FIGHT_MOVE_PECK)[Constants.DB_COUCHBASE_ID].ToString()
 				));
@@ -349,6 +349,10 @@ public class ServerManager : MonoBehaviour {
 	}
 
 	private void UpdateMatchSchedule(IDictionary<string,object> schedule) {
+		if(schedule[Constants.DB_KEYWORD_STATUS].ToString() == Constants.MATCH_STATUS_CANCELED) {
+			return;
+		}
+
 		System.DateTime intervalTime = TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_INTERVAL_TIME].ToString()));
 		System.TimeSpan interval = TrimMilli(System.TimeSpan.FromTicks(long.Parse(schedule[Constants.DB_KEYWORD_INTERVAL].ToString())));
 		int bettingOddsOrder = int.Parse (DatabaseManager.Instance.LoadBettingOdds(schedule[Constants.DB_KEYWORD_BETTING_ODDS_ID].ToString())[Constants.DB_KEYWORD_ORDER].ToString());
@@ -378,6 +382,15 @@ public class ServerManager : MonoBehaviour {
 						FlagChickensAsQueuedInMatch(properties);
 					}
 				}
+				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_BET) {
+					LlamadoDehadoCheck(properties[Constants.DB_KEYWORD_MATCH_ID].ToString(), properties);
+				}
+				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_MATCH) {
+					if(properties[Constants.DB_KEYWORD_STATUS].ToString() == Constants.MATCH_STATUS_CANCELED) {
+						print("Match " + change.DocumentId + " has been canceled!");
+						FlagMatchAsCanceled(properties);
+					}
+				}
 			}
 		};
 		yield break;
@@ -400,6 +413,26 @@ public class ServerManager : MonoBehaviour {
 			else {
 				ResolveMatch(schedule);
 			}
+		}
+	}
+
+	private void FlagMatchAsCanceled(IDictionary<string,object> schedule) {
+		List<IDictionary<string,object>> chickens = new List<IDictionary<string,object>>();
+		
+		chickens.Add (DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString()));
+		chickens.Add (DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString()));
+		
+		foreach(IDictionary<string,object> i in chickens) {
+			i[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH] = false;
+			DatabaseManager.Instance.EditChicken(i);
+		}
+		
+		List<IDictionary<string,object>> bets = DatabaseManager.Instance.LoadBets(schedule[Constants.DB_COUCHBASE_ID].ToString());
+		foreach(IDictionary<string,object> i in bets) {			
+			int prize = int.Parse (i[Constants.DB_KEYWORD_BET_AMOUNT].ToString());
+			IDictionary<string,object> player = DatabaseManager.Instance.LoadPlayer(i[Constants.DB_KEYWORD_PLAYER_ID].ToString());
+			player[Constants.DB_KEYWORD_COIN] = (int.Parse (player[Constants.DB_KEYWORD_COIN].ToString()) + prize);
+			DatabaseManager.Instance.EditAccount(player);
 		}
 	}
 
@@ -475,6 +508,36 @@ public class ServerManager : MonoBehaviour {
 
 		schedule[Constants.DB_KEYWORD_STATUS] = Constants.MATCH_STATUS_FINISHED;
 		DatabaseManager.Instance.EditMatch(schedule);
+	}
+
+	private void LlamadoDehadoCheck(string matchId, IDictionary<string,object> bet) {
+		if(bet[Constants.DB_COUCHBASE_ID].ToString() == DatabaseManager.Instance.LoadBettingOdds(0)[Constants.DB_COUCHBASE_ID].ToString()) {
+			return;
+		}
+
+		IDictionary<string,object> match = DatabaseManager.Instance.LoadMatchById(matchId);
+		if(match[Constants.DB_KEYWORD_BETTING_OPTION].ToString() != Constants.BETTING_OPTION_SPECTATOR_BETTING) {
+			return;
+		}
+
+		List<IDictionary<string,object>> matchBets = DatabaseManager.Instance.LoadBets(matchId);
+		int[] bets = {0, 0};
+
+		foreach(IDictionary<string,object> i in matchBets) {
+			if(i[Constants.DB_KEYWORD_BETTED_CHICKEN_ID].ToString() == match[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString()) {
+				bets[0] += int.Parse(i[Constants.DB_KEYWORD_BET_AMOUNT].ToString());
+			}
+			else {
+				bets[1] += int.Parse(i[Constants.DB_KEYWORD_BET_AMOUNT].ToString());
+			}
+		}
+		if(bets[0] > bets[1]) {
+			match[Constants.DB_KEYWORD_LLAMADO] = match[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString();
+		}
+		else {
+			match[Constants.DB_KEYWORD_LLAMADO] = match[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString();
+		}
+		DatabaseManager.Instance.EditMatch(match);
 	}
 
 	// MATCHES END

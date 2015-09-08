@@ -163,9 +163,6 @@ public class DatabaseManager : MonoBehaviour {
 				emit(doc[Constants.DB_KEYWORD_MATCH_ID], doc[Constants.DB_KEYWORD_PLAYER_ID]);
 		}, "1");
 
-		// delete functions, use caution
-		//DeleteBuildingsOwnedByPlayer (null);
-
 		// initialize database, use Unity inspector to change value in GameManager
 		if (GameManager.Instance.initializeDatabase) {
 			InitializeDatabase();
@@ -173,16 +170,16 @@ public class DatabaseManager : MonoBehaviour {
 	}
 
 	private void InitializeDatabase() {
-		SaveFightingMove (GameManager.Instance.GenerateFightingMove (
+		SaveEntry (GameManager.Instance.GenerateFightingMove (
 			Constants.FIGHT_MOVE_DASH
 		));
-		SaveFightingMove (GameManager.Instance.GenerateFightingMove (
+		SaveEntry (GameManager.Instance.GenerateFightingMove (
 			Constants.FIGHT_MOVE_FLYING_TALON
 		));
-		SaveFightingMove (GameManager.Instance.GenerateFightingMove (
+		SaveEntry (GameManager.Instance.GenerateFightingMove (
 			Constants.FIGHT_MOVE_SIDESTEP
 		));
-		SaveFightingMove (GameManager.Instance.GenerateFightingMove (
+		SaveEntry (GameManager.Instance.GenerateFightingMove (
 			Constants.FIGHT_MOVE_PECK
 		));
 
@@ -214,59 +211,59 @@ public class DatabaseManager : MonoBehaviour {
 			10, -20, 10, -10, 10, 10,
 			"Hen Coop"
 		);
-		SaveItemOwnedByPlayer(GameManager.Instance.GenerateItemOwnedByPlayer(
+		SaveEntry(GameManager.Instance.GenerateItemOwnedByPlayer(
 			LoadPlayer("test")[Constants.DB_COUCHBASE_ID].ToString (),
 			LoadFeeds("Uber Feeds")[Constants.DB_COUCHBASE_ID].ToString (),
 			"50"
 		));
 
-		SaveMatchmakingCategory (GameManager.Instance.GenerateMatchmakingCategory (
+		SaveEntry (GameManager.Instance.GenerateMatchmakingCategory (
 			"Beginner", false, false
 		));
-		SaveMatchmakingCategory (GameManager.Instance.GenerateMatchmakingCategory (
+		SaveEntry (GameManager.Instance.GenerateMatchmakingCategory (
 			"Player vs. Player", true, true
 		));
-		SaveMatchmakingCategory (GameManager.Instance.GenerateMatchmakingCategory (
+		SaveEntry (GameManager.Instance.GenerateMatchmakingCategory (
 			"Event", true, false
 		));
 
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Even Odds", 10, 10, 0
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Ten-Nine", 10, 9, 1
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Nine-Eight", 9, 8, 2
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Ten-Eight", 10, 8, 3
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Eight-Six", 8, 6, 4
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Eleven-Eight", 11, 8, 5
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Three-Two", 3, 2, 6
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Ten-Six", 10, 6, 7
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Double Odds", 10, 5, 8
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Ten-Four", 10, 4, 9
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Ten-Three", 10, 3, 10
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Ten-Two", 10, 2, 11
 		));
-		SaveBettingOdds(GameManager.Instance.GenerateBettingOdds(
+		SaveEntry(GameManager.Instance.GenerateBettingOdds(
 			"Ten-One", 10, 1, 12
 		));
 
@@ -289,6 +286,16 @@ public class DatabaseManager : MonoBehaviour {
 
 	public Database GetDatabase() {
 		return db;
+	}
+
+	public IDictionary<string,object> SaveEntry(Dictionary<string, object> dic) {
+		Document d = db.CreateDocument();
+		var properties = dic;
+		var rev = d.PutProperties(properties);
+		if (rev != null) {
+			return rev.Properties;
+		}
+		return null;
 	}
 
 	public List<IDictionary<string,object>> LoadBuildings() {
@@ -318,18 +325,18 @@ public class DatabaseManager : MonoBehaviour {
 		var rev = d.PutProperties(properties);
 
 		List<IDictionary<string,object>> chicken = new List<IDictionary<string,object>>();
-		chicken.Add (GenerateChicken(GameManager.Instance.GenerateChicken ("Larry", 
+		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Larry", 
 		                                      dic [Constants.DB_KEYWORD_USERNAME].ToString(), 
 		                                      Constants.GENDER_MALE, 
 		                                      "Kelso", 
 		                                      Constants.LIFE_STAGE_COCK)));
 
-		chicken.Add (GenerateChicken(GameManager.Instance.GenerateChicken ("Gary", 
+		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Gary", 
 		                                      dic [Constants.DB_KEYWORD_USERNAME].ToString(), 
 		                                      Constants.GENDER_MALE, 
 		                                      "Kelso", 
 		                                      Constants.LIFE_STAGE_COCK)));
-		chicken.Add (GenerateChicken(GameManager.Instance.GenerateChicken ("Mary", 
+		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Mary", 
 		                                      dic [Constants.DB_KEYWORD_USERNAME].ToString(), 
 		                                      Constants.GENDER_FEMALE, 
 		                                      "Kelso", 
@@ -337,19 +344,19 @@ public class DatabaseManager : MonoBehaviour {
 
 		foreach(IDictionary<string,object> id in chicken) {
 			if(id[Constants.DB_KEYWORD_LIFE_STAGE].ToString() != Constants.LIFE_STAGE_HEN) {
-				SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+				SaveEntry (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
 					id[Constants.DB_COUCHBASE_ID].ToString(),
 					LoadFightingMove(Constants.FIGHT_MOVE_DASH)[Constants.DB_COUCHBASE_ID].ToString()
 					));
-				SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+				SaveEntry (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
 					id[Constants.DB_COUCHBASE_ID].ToString(),
 					LoadFightingMove(Constants.FIGHT_MOVE_FLYING_TALON)[Constants.DB_COUCHBASE_ID].ToString()
 					));
-				SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+				SaveEntry (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
 					id[Constants.DB_COUCHBASE_ID].ToString(),
 					LoadFightingMove(Constants.FIGHT_MOVE_SIDESTEP)[Constants.DB_COUCHBASE_ID].ToString()
 					));
-				SaveFightingMoveOwned (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
+				SaveEntry (GameManager.Instance.GenerateFightingMoveOwnedByChicken (
 					id[Constants.DB_COUCHBASE_ID].ToString(),
 					LoadFightingMove(Constants.FIGHT_MOVE_PECK)[Constants.DB_COUCHBASE_ID].ToString()
 					));
@@ -357,7 +364,6 @@ public class DatabaseManager : MonoBehaviour {
 		}
 
 		if (rev != null) {
-			print ("Account registry complete!");
 			return rev.Properties;
 		}
 		return null;
@@ -387,7 +393,6 @@ public class DatabaseManager : MonoBehaviour {
 	}
 
 	public void EditAccount(IDictionary<string, object> dic) {
-		Utility.PrintDictionary(dic);
 		Document d = db.GetDocument(dic[Constants.DB_COUCHBASE_ID].ToString());
 		d.Update((UnsavedRevision newRevision) => {
 			var properties = newRevision.Properties;
@@ -408,17 +413,6 @@ public class DatabaseManager : MonoBehaviour {
 		PlayerManager.Instance.playerChickens = LoadChickens (username);
 		PlayerManager.Instance.playerBuildings = LoadBuildingsOwnedByPlayer (username);
 		PlayerManager.Instance.playerOccupiedTiles = LoadPlayerOccupiedTiles (username);
-	}
-
-	public IDictionary<string,object> GenerateChicken(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Chicken generation complete!");
-			return rev.Properties;
-		}
-		return null;
 	}
 
 	public void EditChicken(IDictionary<string, object> dic) {
@@ -480,17 +474,6 @@ public class DatabaseManager : MonoBehaviour {
 		return null;
 	}
 
-	public IDictionary<string,object> SaveBuildingOwnedByPlayer(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Building owned is saved!");
-			return rev.Properties;
-		}
-		return null;
-	}
-
 	public List<IDictionary<string,object>> LoadBuildingsOwnedByPlayer(string username) {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
 		var query = db.GetView (Constants.DB_TYPE_BUILDING_OWNED).CreateQuery();
@@ -531,17 +514,6 @@ public class DatabaseManager : MonoBehaviour {
 		return null;
 	}
 
-	public IDictionary<string,object> SaveFeedsSchedule(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Feeds schedule is saved!");
-			return rev.Properties;
-		}
-		return null;
-	}
-
 	public void EditFeedsSchedule(IDictionary<string, object> dic) {
 		Document d = db.GetDocument(dic[Constants.DB_COUCHBASE_ID].ToString());
 		d.Update((UnsavedRevision newRevision) => {
@@ -574,17 +546,6 @@ public class DatabaseManager : MonoBehaviour {
 		}
 		return null;
 	}
-
-	public IDictionary<string,object> SaveBreedsSchedule(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Breeds schedule is saved!");
-			return rev.Properties;
-		}
-		return null;
-	}
 	
 	public void EditBreedsSchedule(IDictionary<string, object> dic) {
 		Document d = db.GetDocument(dic[Constants.DB_COUCHBASE_ID].ToString());
@@ -607,17 +568,6 @@ public class DatabaseManager : MonoBehaviour {
 		}
 		return l;
 	}
-
-	public IDictionary<string,object> SaveFightingMove(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Fighting move is saved!");
-			return rev.Properties;
-		}
-		return null;
-	}
 	
 	public IDictionary<string, object> LoadFightingMove(string name) {
 		var query = db.GetView (Constants.DB_TYPE_FIGHTING_MOVE).CreateQuery();
@@ -626,17 +576,6 @@ public class DatabaseManager : MonoBehaviour {
 			if(row.Key.ToString() == name || row.DocumentId == name) {
 				return db.GetDocument (row.DocumentId).Properties;
 			}
-		}
-		return null;
-	}
-
-	public IDictionary<string,object> SaveFightingMoveOwned(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Fighting move owned is saved!");
-			return rev.Properties;
 		}
 		return null;
 	}
@@ -651,17 +590,6 @@ public class DatabaseManager : MonoBehaviour {
 			}
 		}
 		return l;
-	}
-
-	public IDictionary<string,object> SaveReplay(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Replay is saved!");
-			return rev.Properties;
-		}
-		return null;
 	}
 
 	public List<IDictionary<string, object>> LoadReplayList(string chickenId1, string chickenId2) {
@@ -699,17 +627,6 @@ public class DatabaseManager : MonoBehaviour {
 		}
 		return null;
 	}
-
-	public IDictionary<string,object> SaveItemOwnedByPlayer(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Item owned is saved!");
-			return rev.Properties;
-		}
-		return null;
-	}
 	
 	public List<IDictionary<string,object>> LoadItemsOwnedByPlayer(string playerId) {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
@@ -722,17 +639,6 @@ public class DatabaseManager : MonoBehaviour {
 		}
 		return l;
 	}
-
-	public IDictionary<string,object> SaveMatchmakingCategory(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Matchmaking category is saved!");
-			return rev.Properties;
-		}
-		return null;
-	}
 	
 	public List<IDictionary<string,object>> LoadMatchmakingCategories() {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
@@ -742,17 +648,6 @@ public class DatabaseManager : MonoBehaviour {
 			l.Add (db.GetDocument (row.DocumentId).Properties);
 		}
 		return l;
-	}
-
-	public IDictionary<string,object> SaveMatch(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Match is saved!");
-			return rev.Properties;
-		}
-		return null;
 	}
 
 	public void EditMatch(IDictionary<string, object> dic) {
@@ -798,6 +693,17 @@ public class DatabaseManager : MonoBehaviour {
 		return l;
 	}
 
+	public IDictionary<string,object> LoadMatchById(string matchId) {
+		var query = db.GetView (Constants.DB_TYPE_MATCH).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.DocumentId == matchId) {
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
+	}
+
 	public List<IDictionary<string,object>> LoadMatchesByCategory(string categoryId) {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
 		foreach(IDictionary<string,object> id in LoadMatch(null)) {
@@ -806,17 +712,6 @@ public class DatabaseManager : MonoBehaviour {
 			}
 		}
 		return l;
-	}
-
-	public IDictionary<string,object> SaveBettingOdds(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Betting odds is saved!");
-			return rev.Properties;
-		}
-		return null;
 	}
 
 	public List<IDictionary<string,object>> LoadBettingOdds() {
@@ -851,17 +746,6 @@ public class DatabaseManager : MonoBehaviour {
 		return null;
 	}
 
-	public IDictionary<string,object> SaveBet(Dictionary<string, object> dic) {
-		Document d = db.CreateDocument();
-		var properties = dic;
-		var rev = d.PutProperties(properties);
-		if (rev != null) {
-			print ("Bet is saved!");
-			return rev.Properties;
-		}
-		return null;
-	}
-
 	public IDictionary<string, object> LoadBet(string matchId, string playerId) {
 		var query = db.GetView (Constants.DB_TYPE_BET).CreateQuery();
 		var rows = query.Run ();
@@ -884,22 +768,5 @@ public class DatabaseManager : MonoBehaviour {
 		}
 		return l;
 	}
-
-	// delete functions, use sparingly!
-	public void DeleteBuildingsOwnedByPlayer(string username) {
-		var query = db.GetView (Constants.DB_TYPE_BUILDING_OWNED).CreateQuery();
-		var rows = query.Run ();
-		foreach(var row in rows) {
-			if(username != null) {
-				if(row.Value.ToString() == username) {
-					db.GetDocument(row.DocumentId).Delete();
-				}
-			}
-			else {
-				db.GetDocument(row.DocumentId).Delete();
-			}
-		}
-	}
-	// end delete functions
 
 }

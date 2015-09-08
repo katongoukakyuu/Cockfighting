@@ -224,7 +224,7 @@ public class FarmManager : MonoBehaviour {
 			pos[1],
 			orientation
 		);
-		DatabaseManager.Instance.SaveBuildingOwnedByPlayer (dic);
+		DatabaseManager.Instance.SaveEntry (dic);
 	}
 
 	private void SwitchToFreeCamera() {

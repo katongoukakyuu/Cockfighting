@@ -68,15 +68,19 @@ public class Constants : MonoBehaviour {
 	public const string MESSAGE_MATCH_CREATE_NOT_ENOUGH_COINS = "You do not have enough Coins to make the minimum bet.";
 	public const string MESSAGE_MATCH_CREATE_CONFIRM_TITLE = "Confirm Fight";
 	public const string MESSAGE_MATCH_CREATE_CONFIRM = "Are you sure you want to fight with this cock?";
+	public const string MESSAGE_MATCH_CREATE_INCORRECT_PASSWORD_TITLE = "Incorrect Password";
+	public const string MESSAGE_MATCH_CREATE_INCORRECT_PASSWORD = "The password is incorrect.";
 	// end match create messages
 
 	// match view fight messages
-	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_TITLE = "Confirm Fight";
-	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM = "Are you sure you want to fight this cock?";
-	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SINGLE_BET_1 = "Are you sure you want to bet ";
-	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SINGLE_BET_2 = " Coins to fight this cock?";
-	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SPECTATOR_BET_1 = "Are you sure you want to bet at least ";
-	public const string MESSAGE_MATCH_VIEW_FIGHT_CONFIRM_SPECTATOR_BET_2 = " Coins to fight this cock?";
+	public const string MESSAGE_MATCH_VIEW_CONFIRM_FIGHT_TITLE = "Confirm Fight";
+	public const string MESSAGE_MATCH_VIEW_CONFIRM_FIGHT = "Are you sure you want to fight this cock?";
+	public const string MESSAGE_MATCH_VIEW_CANCEL_FIGHT_TITLE = "Cancel Fight";
+	public const string MESSAGE_MATCH_VIEW_CANCEL_FIGHT = "Are you sure you want to cancel this fight? All bets will be refunded.";
+	public const string MESSAGE_MATCH_VIEW_CONFIRM_SINGLE_BET_1 = "Are you sure you want to bet ";
+	public const string MESSAGE_MATCH_VIEW_CONFIRM_SINGLE_BET_2 = " Coins to fight this cock?";
+	public const string MESSAGE_MATCH_VIEW_CONFIRM_SPECTATOR_BET_1 = "Are you sure you want to bet at least ";
+	public const string MESSAGE_MATCH_VIEW_CONFIRM_SPECTATOR_BET_2 = " Coins to fight this cock?";
 	// end match view fight messages
 
 	// match bet fight messages

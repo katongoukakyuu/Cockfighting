@@ -78,7 +78,7 @@ public class ServerFightManager : MonoBehaviour {
 			new string[] {c1[Constants.DB_COUCHBASE_ID].ToString(), c2[Constants.DB_COUCHBASE_ID].ToString()},
 			l
 		);
-		var savedReplay = DatabaseManager.Instance.SaveReplay (d);
+		var savedReplay = DatabaseManager.Instance.SaveEntry (d);
 
 		var loadedReplay = DatabaseManager.Instance.LoadReplay (savedReplay [Constants.DB_COUCHBASE_ID].ToString ());
 		foreach(KeyValuePair<string,object> kv in loadedReplay) {

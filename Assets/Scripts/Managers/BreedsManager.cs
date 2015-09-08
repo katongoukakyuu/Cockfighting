@@ -134,7 +134,7 @@ public class BreedsManager : MonoBehaviour {
 		dt = dt.AddMinutes (Constants.BREED_DURATION_DEFAULT_MINUTES);
 		dt = dt.AddSeconds (Constants.BREED_DURATION_DEFAULT_SECONDS);
 
-		DatabaseManager.Instance.SaveBreedsSchedule (
+		DatabaseManager.Instance.SaveEntry (
 			GameManager.Instance.GenerateBreedsSchedule(
 				selectedChicken[Constants.DB_COUCHBASE_ID].ToString(),
 				selectedMate[Constants.DB_COUCHBASE_ID].ToString(),

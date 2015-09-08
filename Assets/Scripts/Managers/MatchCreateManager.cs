@@ -118,8 +118,11 @@ public class MatchCreateManager : MonoBehaviour {
 			}
 			if(match[Constants.DB_KEYWORD_PASSWORD].ToString() != "") {				
 				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_BUTTON).GetComponent<Toggle>().isOn = true;
-				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_PASSWORD).GetComponent<InputField>().interactable = false;
-				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_PASSWORD).GetComponent<InputField>().text = match[Constants.DB_KEYWORD_PASSWORD].ToString();
+				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_PASSWORD).GetComponent<InputField>().interactable = true;
+				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_PASSWORD).GetComponent<InputField>().text = "";
+			}
+			else {
+				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_BUTTON).GetComponent<Toggle>().isOn = false;
 			}
 		}
 		else {
@@ -202,12 +205,12 @@ public class MatchCreateManager : MonoBehaviour {
 		}
 		
 		if(selectedMatch == null) {
-			IDictionary<string,object> savedMatch = DatabaseManager.Instance.SaveMatch(
+			IDictionary<string,object> savedMatch = DatabaseManager.Instance.SaveEntry(
 				GameManager.Instance.GenerateMatch(chickenId, "", playerId, "", categoryId, bettingOption, 
 			                                   DatabaseManager.Instance.LoadBettingOdds(0)[Constants.DB_COUCHBASE_ID].ToString(), password, dt.ToString())
 				);
 			if(bettingOption != Constants.BETTING_OPTION_NONE) {
-				DatabaseManager.Instance.SaveBet(GameManager.Instance.GenerateBet(savedMatch[Constants.DB_COUCHBASE_ID].ToString(), playerId, 
+				DatabaseManager.Instance.SaveEntry(GameManager.Instance.GenerateBet(savedMatch[Constants.DB_COUCHBASE_ID].ToString(), playerId, 
 				                                                                  DatabaseManager.Instance.LoadBettingOdds(0)[Constants.DB_COUCHBASE_ID].ToString(), chickenId, Constants.BETTED_CHICKEN_STATUS_LLAMADO,
 				                                                                  bettingAmount));
 				IDictionary<string,object> player = PlayerManager.Instance.player;
@@ -217,7 +220,7 @@ public class MatchCreateManager : MonoBehaviour {
 		}
 		else {
 			if(bettingOption != Constants.BETTING_OPTION_NONE) {
-				DatabaseManager.Instance.SaveBet(GameManager.Instance.GenerateBet(selectedMatch[Constants.DB_COUCHBASE_ID].ToString(), playerId, 
+				DatabaseManager.Instance.SaveEntry(GameManager.Instance.GenerateBet(selectedMatch[Constants.DB_COUCHBASE_ID].ToString(), playerId, 
 				                                                                  DatabaseManager.Instance.LoadBettingOdds(0)[Constants.DB_COUCHBASE_ID].ToString(), chickenId, Constants.DB_KEYWORD_DEHADO,
 				                                                                  bettingAmount));
 				IDictionary<string,object> player = PlayerManager.Instance.player;
@@ -236,9 +239,17 @@ public class MatchCreateManager : MonoBehaviour {
 	}
 
 	public void ButtonOk() {
-		MessageManager.Instance.DisplayMessage(Constants.MESSAGE_MATCH_CREATE_CONFIRM_TITLE,
-		                                       Constants.MESSAGE_MATCH_CREATE_CONFIRM,
-		                                       ConfirmOk, true);
+		if(selectedMatch != null &&
+		   optionsPanel.transform.FindChild(Constants.CREATE_MATCH_PRIVATE_PASSWORD).GetComponent<InputField>().text != selectedMatch[Constants.DB_KEYWORD_PASSWORD].ToString()) {
+			MessageManager.Instance.DisplayMessage(Constants.MESSAGE_MATCH_CREATE_INCORRECT_PASSWORD_TITLE,
+			                                       Constants.MESSAGE_MATCH_CREATE_INCORRECT_PASSWORD,
+			                                       null, false);
+		}
+		else {
+			MessageManager.Instance.DisplayMessage(Constants.MESSAGE_MATCH_CREATE_CONFIRM_TITLE,
+			                                       Constants.MESSAGE_MATCH_CREATE_CONFIRM,
+			                                       ConfirmOk, true);
+		}
 	}
 
 	public void ButtonBack() {
