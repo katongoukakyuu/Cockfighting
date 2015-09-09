@@ -51,7 +51,7 @@ public class ServerFightManager : MonoBehaviour {
 		agi[1] = int.Parse (c2[Constants.DB_KEYWORD_AGILITY].ToString());
 		gam[1] = int.Parse (c2[Constants.DB_KEYWORD_GAMENESS].ToString());
 		agg[1] = int.Parse (c2[Constants.DB_KEYWORD_AGGRESSION].ToString());
-
+		
 		pos[0] = new Vector3(Random.Range(0,ringSize.x), Random.Range (0, ringSize.y));
 		pos[1] = new Vector3(Random.Range(0,ringSize.x), Random.Range (0, ringSize.y));
 		UpdateDistance();
