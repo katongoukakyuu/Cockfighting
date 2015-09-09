@@ -1,13 +1,13 @@
 fileFormatVersion: 2
 guid: 5758f0fbae852f4448df665f67b9b696
-timeCreated: 1441506173
+timeCreated: 1441795773
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
     100000: chest
-    100002: Cylinder_000
-    100004: Cylinder_016
+    100002: ChickenBody
+    100004: ChickenLeg
     100006: f_index_01_L
     100008: f_index_01_R
     100010: f_index_02_L
@@ -54,30 +54,28 @@ ModelImporter:
     100092: palm_03_R
     100094: palm_04_L
     100096: palm_04_R
-    100098: shin_L
-    100100: shin_R
-    100102: shoulder_L
-    100104: shoulder_R
-    100106: //RootNode
-    100108: spine
-    100110: thigh_L
-    100112: thigh_R
-    100114: thumb_01_L
-    100116: thumb_01_R
-    100118: thumb_02_L
-    100120: thumb_02_R
-    100122: thumb_03_L
-    100124: thumb_03_R
-    100126: toe_L
-    100128: toe_R
-    100130: upper_arm_L
-    100132: upper_arm_R
-    100134: ChickenBody
-    100136: ChickenLeg
-    100138: Rooster_Apparel
+    100098: Rooster_Apparel
+    100100: shin_L
+    100102: shin_R
+    100104: shoulder_L
+    100106: shoulder_R
+    100108: //RootNode
+    100110: spine
+    100112: thigh_L
+    100114: thigh_R
+    100116: thumb_01_L
+    100118: thumb_01_R
+    100120: thumb_02_L
+    100122: thumb_02_R
+    100124: thumb_03_L
+    100126: thumb_03_R
+    100128: toe_L
+    100130: toe_R
+    100132: upper_arm_L
+    100134: upper_arm_R
     400000: chest
-    400002: Cylinder_000
-    400004: Cylinder_016
+    400002: ChickenBody
+    400004: ChickenLeg
     400006: f_index_01_L
     400008: f_index_01_R
     400010: f_index_02_L
@@ -124,41 +122,34 @@ ModelImporter:
     400092: palm_03_R
     400094: palm_04_L
     400096: palm_04_R
-    400098: shin_L
-    400100: shin_R
-    400102: shoulder_L
-    400104: shoulder_R
-    400106: //RootNode
-    400108: spine
-    400110: thigh_L
-    400112: thigh_R
-    400114: thumb_01_L
-    400116: thumb_01_R
-    400118: thumb_02_L
-    400120: thumb_02_R
-    400122: thumb_03_L
-    400124: thumb_03_R
-    400126: toe_L
-    400128: toe_R
-    400130: upper_arm_L
-    400132: upper_arm_R
-    400134: ChickenBody
-    400136: ChickenLeg
-    400138: Rooster_Apparel
-    2300000: Rooster_Apparel
-    3300000: Rooster_Apparel
-    4300000: Cylinder_000
-    4300002: Cylinder_016
+    400098: Rooster_Apparel
+    400100: shin_L
+    400102: shin_R
+    400104: shoulder_L
+    400106: shoulder_R
+    400108: //RootNode
+    400110: spine
+    400112: thigh_L
+    400114: thigh_R
+    400116: thumb_01_L
+    400118: thumb_01_R
+    400120: thumb_02_L
+    400122: thumb_02_R
+    400124: thumb_03_L
+    400126: thumb_03_R
+    400128: toe_L
+    400130: toe_R
+    400132: upper_arm_L
+    400134: upper_arm_R
+    4300000: ChickenLeg
+    4300002: ChickenBody
     4300004: Rooster_Apparel
-    4300006: ChickenLeg
-    4300008: ChickenBody
     7400000: Default Take
+    7400002: metarigAction
     9500000: //RootNode
-    13700000: Cylinder_000
-    13700002: Cylinder_016
-    13700004: ChickenBody
-    13700006: ChickenLeg
-    13700008: Rooster_Apparel
+    13700000: ChickenBody
+    13700002: ChickenLeg
+    13700004: Rooster_Apparel
   materials:
     importMaterials: 1
     materialName: 0
@@ -172,7 +163,7 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
@@ -214,7 +205,7 @@ ModelImporter:
     armStretch: .0500000007
     legStretch: .0500000007
     feetSpacing: 0
-    rootMotionBoneName: metarig
+    rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 402b450aa8a0f3c4098c4d2ea84d89ce,
     type: 3}
   animationType: 2
