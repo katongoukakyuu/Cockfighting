@@ -8,8 +8,10 @@ public class ServerFightManager : MonoBehaviour {
 
 	private List<string> moveName = new List<string>();
 	private int[] atk = new int[2], def = new int[2], hp = new int[2], agi = new int[2], gam = new int[2], agg = new int[2];
-	private Vector3[] pos = new Vector3[2];
+	private Vector2[] pos = new Vector2[2];
 	private float dist;
+
+	private Vector2 ringSize = new Vector2(10,10);
 
 	private static ServerFightManager instance;
 	private ServerFightManager() {}
@@ -50,11 +52,9 @@ public class ServerFightManager : MonoBehaviour {
 		gam[1] = int.Parse (c2[Constants.DB_KEYWORD_GAMENESS].ToString());
 		agg[1] = int.Parse (c2[Constants.DB_KEYWORD_AGGRESSION].ToString());
 
-		pos[0] = new Vector3(Random.Range(0,11), 0, Random.Range (0, 11));
-		pos[1] = new Vector3(Random.Range(0,11), 0, Random.Range (0, 11));
+		pos[0] = new Vector3(Random.Range(0,ringSize.x), Random.Range (0, ringSize.y));
+		pos[1] = new Vector3(Random.Range(0,ringSize.x), Random.Range (0, ringSize.y));
 		UpdateDistance();
-		print (pos[0]);
-		print (pos[1]);
 
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>> ();
 		string[] move = new string[2];
@@ -72,6 +72,7 @@ public class ServerFightManager : MonoBehaviour {
 			move[eN] = AssignNextMove (c1Moves, eN);
 			ProcessMove(move[eN], eN);
 			l.Add (RecordTurn(move));
+			UpdateDistance ();
 		}
 
 		Dictionary<string, object> d = GameManager.Instance.GenerateReplay (
@@ -102,7 +103,7 @@ public class ServerFightManager : MonoBehaviour {
 			moveName.Add (DatabaseManager.Instance.LoadFightingMove (
 				id[Constants.DB_KEYWORD_FIGHTING_MOVE_ID].ToString()
 			) [Constants.DB_KEYWORD_NAME].ToString ());
-			moveStrength[moves.IndexOf(id)] = AnalyzeMoveStrength(moveName[moves.IndexOf(id)], 1);
+			moveStrength[moves.IndexOf(id)] = AnalyzeMoveStrength(moveName[moves.IndexOf(id)], playerNum);
 			moveStrengthTotal += moveStrength[moves.IndexOf(id)];
 			print ("move strength of " + moveName[moves.IndexOf(id)] + " is " + 
 			       moveStrength[moves.IndexOf(id)]);
@@ -128,30 +129,43 @@ public class ServerFightManager : MonoBehaviour {
 
 	private float AnalyzeMoveStrength(string moveName, int playerNum) {
 		float strength = 0f;
-		float prefDist = 0f;
+		float minDist = 0f;
+		float maxDist = 0f;
 		switch (moveName) {
 		case Constants.FIGHT_MOVE_DASH:
-			prefDist = Mathf.Pow (3f,2);
-			if(dist > prefDist) {
-				strength += (dist);
+			minDist = Vector2.Distance(new Vector2(0,0), 
+			                           new Vector2(0,2));
+			maxDist = Vector2.Distance(new Vector2(0,0), 
+			                           new Vector2(10,10));
+			if(maxDist >= dist && dist >= minDist) {
+				strength += dist;
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_FLYING_TALON:
-			prefDist = Mathf.Pow (5f,2);
-			if(dist < prefDist) {
+			minDist = Vector2.Distance(new Vector2(0,0), 
+			                           new Vector2(0,0));
+			maxDist = Vector2.Distance(new Vector2(0,0), 
+			                           new Vector2(0,4));
+			if(maxDist >= dist && dist >= minDist) {
 				strength += 5f;
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_SIDESTEP:
-			prefDist = Mathf.Pow (7f,2);
-			if(dist < prefDist) {
+			minDist = Vector2.Distance(new Vector2(0,0), 
+			                           new Vector2(0,5));
+			maxDist = Vector2.Distance(new Vector2(0,0), 
+			                           new Vector2(10,10));
+			if(maxDist >= dist && dist >= minDist) {
 				strength += 2.5f;
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_PECK:
-			prefDist = Mathf.Pow (3f,2);
-			if(dist < prefDist) {
-				strength += 10f;
+			minDist = Vector2.Distance(new Vector2(0,0), 
+			                           new Vector2(0,0));
+			maxDist = Vector2.Distance(new Vector2(0,0), 
+			                           new Vector2(0,2));
+			if(maxDist >= dist && dist >= minDist) {
+				strength += 5f;
 			}
 			return strength;
 		default:
@@ -164,16 +178,18 @@ public class ServerFightManager : MonoBehaviour {
 		int eN = Mathf.Abs(pN-1);
 		switch (moveName) {
 		case Constants.FIGHT_MOVE_DASH:
-			pos[pN] = Vector3.MoveTowards(pos[pN],pos[eN],5.0f);
-			UpdateDistance ();
+			pos[pN] = Vector2.MoveTowards(pos[pN],pos[eN],2.0f);
+			//UpdateDistance ();
 			break;
 		case Constants.FIGHT_MOVE_FLYING_TALON:
-			pos[pN] = Vector3.MoveTowards(pos[pN],pos[eN],2.0f);
-			UpdateDistance ();
-			hp[eN] -= (int)(atk[pN] * 1.1f);
+			pos[pN] = Vector2.MoveTowards(pos[pN],pos[eN],1.0f);
+			//UpdateDistance ();
+			hp[eN] -= (int)(atk[pN] * 0.7f);
 			print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		case Constants.FIGHT_MOVE_SIDESTEP:
+			pos[pN] = Vector2.MoveTowards(pos[pN],pos[eN] + new Vector2(Random.Range(-2,3), 0),1.0f);
+			//UpdateDistance ();
 			print ("Sidestep!");
 			break;
 		case Constants.FIGHT_MOVE_PECK:
@@ -186,8 +202,8 @@ public class ServerFightManager : MonoBehaviour {
 	}
 
 	private void UpdateDistance() {
-		dist = Vector3.Distance(pos[0], pos[1]);
-		print ("Distance of 2 chickens between each other is " + dist);
+		dist = Vector2.Distance(pos[0], pos[1]);
+		print ("Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 	}
 
 	private Dictionary<string, object> RecordTurn(string[] move) {

@@ -6,8 +6,6 @@ using System.Linq;
 
 public class GameManager : MonoBehaviour {
 
-	public bool initializeDatabase = false;
-
 	private static GameManager instance;
 	private GameManager() {}
 

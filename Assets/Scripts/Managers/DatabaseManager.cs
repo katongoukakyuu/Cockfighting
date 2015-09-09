@@ -162,11 +162,13 @@ public class DatabaseManager : MonoBehaviour {
 			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_BET)
 				emit(doc[Constants.DB_KEYWORD_MATCH_ID], doc[Constants.DB_KEYWORD_PLAYER_ID]);
 		}, "1");
-
-		// initialize database, use Unity inspector to change value in GameManager
-		if (GameManager.Instance.initializeDatabase) {
-			InitializeDatabase();
-		}
+		
+		ServerFightManager.Instance.AutomateFight (
+			LoadChicken("Gary", "test"),
+			LoadChicken("Larry", "test2"),
+			LoadFightingMovesOwned (LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
+			LoadFightingMovesOwned (LoadChicken("Larry", "test2")[Constants.DB_COUCHBASE_ID].ToString())
+			);
 	}
 
 	private void InitializeDatabase() {

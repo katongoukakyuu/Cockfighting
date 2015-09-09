@@ -26,7 +26,6 @@ public class MouseHandler : MonoBehaviour {
 			RaycastHit hit;
 			if (Physics.Raycast(screenRay, out hit))
 			{
-				OnMouseClick(hit.collider.transform.root.gameObject);
 				OnMouseClick(hit.collider.transform.gameObject);
 			}
 		}

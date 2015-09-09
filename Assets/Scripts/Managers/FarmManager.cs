@@ -90,17 +90,18 @@ public class FarmManager : MonoBehaviour {
 			Destroy (g);
 		}
 
-		int xMax = TileMap.Instance.tiles.GetLength (0);
-		int yMax = TileMap.Instance.tiles.GetLength (1);
-
-		foreach(IDictionary<string,object> i in PlayerManager.Instance.playerChickens) {
-			GameObject g = Instantiate (chicken) as GameObject;
-			g.AddComponent<Chicken>();
-			g.GetComponent<Chicken>().chicken = i;
-			g.transform.position = new Vector3(Random.Range (0,xMax),
-			                                   0,
-			                                   Random.Range (0,yMax));
-			listChickens.Add (g);
+		if(TileMap.Instance.tiles != null) {
+			int xMax = TileMap.Instance.tiles.GetLength (0);
+			int yMax = TileMap.Instance.tiles.GetLength (1);
+			foreach(IDictionary<string,object> i in PlayerManager.Instance.playerChickens) {
+				GameObject g = Instantiate (chicken) as GameObject;
+				g.AddComponent<Chicken>();
+				g.GetComponent<Chicken>().chicken = i;
+				g.transform.position = new Vector3(Random.Range (0,xMax),
+				                                   0,
+				                                   Random.Range (0,yMax));
+				listChickens.Add (g);
+			}
 		}
 	}
 
