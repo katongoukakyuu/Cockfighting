@@ -1,24 +1,15 @@
 fileFormatVersion: 2
-guid: 40ca93ebf163873498fb54dba5397225
-timeCreated: 1441006354
+guid: a0f4f61b5e901c744903fcf1688de59b
+timeCreated: 1441888528
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
     100000: //RootNode
-    100002: Cylinder
-    100004: Cylinder_001
     400000: //RootNode
-    400002: Cylinder
-    400004: Cylinder_001
     2300000: //RootNode
-    2300002: Cylinder
-    2300004: Cylinder_001
     3300000: //RootNode
-    3300002: Cylinder
-    3300004: Cylinder_001
-    4300000: Cylinder
-    4300002: Cylinder_001
+    4300000: Plane
     7400000: Default Take
     9500000: //RootNode
   materials:
@@ -44,7 +35,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: .300000012
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
