@@ -162,13 +162,15 @@ public class DatabaseManager : MonoBehaviour {
 			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_BET)
 				emit(doc[Constants.DB_KEYWORD_MATCH_ID], doc[Constants.DB_KEYWORD_PLAYER_ID]);
 		}, "1");
-		
-		ServerFightManager.Instance.AutomateFight (
-			LoadChicken("Gary", "test"),
-			LoadChicken("Larry", "test2"),
-			LoadFightingMovesOwned (LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
-			LoadFightingMovesOwned (LoadChicken("Larry", "test2")[Constants.DB_COUCHBASE_ID].ToString())
-			);
+
+		if(ReplayManager.Instance != null) {
+			ServerFightManager.Instance.AutomateFight (
+				LoadChicken("Gary", "test"),
+				LoadChicken("Larry", "test2"),
+				LoadFightingMovesOwned (LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
+				LoadFightingMovesOwned (LoadChicken("Larry", "test2")[Constants.DB_COUCHBASE_ID].ToString())
+				);
+		}
 	}
 
 	private void InitializeDatabase() {

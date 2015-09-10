@@ -6,6 +6,8 @@ using System.Linq;
 
 public class ServerFightManager : MonoBehaviour {
 
+	public bool debug;
+
 	private List<string> moveName = new List<string>();
 	private int[] atk = new int[2], def = new int[2], hp = new int[2], agi = new int[2], gam = new int[2], agg = new int[2];
 	private Vector2[] pos = new Vector2[2];
@@ -82,9 +84,7 @@ public class ServerFightManager : MonoBehaviour {
 		var savedReplay = DatabaseManager.Instance.SaveEntry (d);
 
 		var loadedReplay = DatabaseManager.Instance.LoadReplay (savedReplay [Constants.DB_COUCHBASE_ID].ToString ());
-		foreach(KeyValuePair<string,object> kv in loadedReplay) {
-			print (kv.Key + ": " + kv.Value);
-		}
+		StartCoroutine(ReplayManager.Instance.PlayReplay(loadedReplay));
 		
 		if(hp[0] <= 0) return 0;
 		else return 1;
@@ -105,7 +105,7 @@ public class ServerFightManager : MonoBehaviour {
 			) [Constants.DB_KEYWORD_NAME].ToString ());
 			moveStrength[moves.IndexOf(id)] = AnalyzeMoveStrength(moveName[moves.IndexOf(id)], playerNum);
 			moveStrengthTotal += moveStrength[moves.IndexOf(id)];
-			print ("move strength of " + moveName[moves.IndexOf(id)] + " is " + 
+			if(debug) print ("move strength of " + moveName[moves.IndexOf(id)] + " is " + 
 			       moveStrength[moves.IndexOf(id)]);
 		}
 
@@ -113,11 +113,11 @@ public class ServerFightManager : MonoBehaviour {
 		float r = Random.Range(0.0f, 1.0f);
 		float lowLim;
 		float hiLim = 0.0f;
-		print ("randomizer is " + r);
+		if(debug) print ("randomizer is " + r);
 		for (int i = 0; i < movePercent.Length; i++)
 		{
 			movePercent[i] = moveStrength[i] / moveStrengthTotal;
-			print ("move percent of " + moveName[i] + " is " + movePercent[i]);
+			if(debug) print ("move percent of " + moveName[i] + " is " + movePercent[i]);
 			lowLim = hiLim;
 			hiLim += movePercent[i];
 			if (r >= lowLim && r < hiLim) {
@@ -152,11 +152,11 @@ public class ServerFightManager : MonoBehaviour {
 			return strength;
 		case Constants.FIGHT_MOVE_SIDESTEP:
 			minDist = Vector2.Distance(new Vector2(0,0), 
-			                           new Vector2(0,5));
+			                           new Vector2(0,2));
 			maxDist = Vector2.Distance(new Vector2(0,0), 
 			                           new Vector2(10,10));
 			if(maxDist >= dist && dist >= minDist) {
-				strength += 2.5f;
+				strength += 5f;
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_PECK:
@@ -174,27 +174,33 @@ public class ServerFightManager : MonoBehaviour {
 	}
 
 	private void ProcessMove(string moveName, int pN) {
-		print ("move used by chicken " + pN + " is " + moveName);
+		if(debug) print ("move used by chicken " + pN + " is " + moveName);
 		int eN = Mathf.Abs(pN-1);
 		switch (moveName) {
 		case Constants.FIGHT_MOVE_DASH:
-			pos[pN] = Vector2.MoveTowards(pos[pN],pos[eN],2.0f);
-			//UpdateDistance ();
+			if(Vector3.Distance(pos[pN],pos[eN]) > 2.0f) {
+				pos[pN] = Vector2.MoveTowards(pos[pN],pos[eN],2.0f);
+				UpdateDistance ();
+			}
 			break;
 		case Constants.FIGHT_MOVE_FLYING_TALON:
-			pos[pN] = Vector2.MoveTowards(pos[pN],pos[eN],1.0f);
-			//UpdateDistance ();
+			if(Vector3.Distance(pos[pN],pos[eN]) > 1.0f) {
+				pos[pN] = Vector2.MoveTowards(pos[pN],pos[eN],1.0f);
+				UpdateDistance ();
+			}
 			hp[eN] -= (int)(atk[pN] * 0.7f);
-			print ("updated hp of chicken " + eN + " is " + hp[eN]);
+			if(debug) print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		case Constants.FIGHT_MOVE_SIDESTEP:
-			pos[pN] = Vector2.MoveTowards(pos[pN],pos[eN] + new Vector2(Random.Range(-2,3), 0),1.0f);
-			//UpdateDistance ();
-			print ("Sidestep!");
+			if(Vector3.Distance(pos[pN],pos[eN]) > 1.0f) {
+				pos[pN] = Vector2.MoveTowards(pos[pN],pos[eN] + new Vector2(Random.Range(-4,5), 0),1.0f);
+				UpdateDistance ();
+			}
+			if(debug) print ("Sidestep!");
 			break;
 		case Constants.FIGHT_MOVE_PECK:
 			hp[eN] -= (int)(atk[pN] * 0.4f);
-			print ("updated hp of chicken " + eN + " is " + hp[eN]);
+			if(debug) print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		default:
 			break;
@@ -203,7 +209,7 @@ public class ServerFightManager : MonoBehaviour {
 
 	private void UpdateDistance() {
 		dist = Vector2.Distance(pos[0], pos[1]);
-		print ("Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+		if(debug) print ("Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 	}
 
 	private Dictionary<string, object> RecordTurn(string[] move) {

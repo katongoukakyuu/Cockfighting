@@ -198,8 +198,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 5212483}
-  m_LocalRotation: {x: .369644433, y: -.239117235, z: .0990457982, w: .892399013}
-  m_LocalPosition: {x: 5.78999996, y: 5.09000015, z: -4.82999992}
+  m_LocalRotation: {x: .348228663, y: -.362827241, z: .148379222, w: .851514459}
+  m_LocalPosition: {x: 5.170681, y: 5.18270016, z: -5.39570904}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -565,6 +565,7 @@ GameObject:
   - 114: {fileID: 1917364851}
   - 114: {fileID: 1917364850}
   - 114: {fileID: 1917364852}
+  - 114: {fileID: 1917364853}
   m_Layer: 0
   m_Name: SceneScripts
   m_TagString: Untagged
@@ -606,6 +607,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a63c62a269ff6744f8dd3a1694899b8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debug: 0
 --- !u!114 &1917364851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -628,3 +630,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 681bb619e06f2c5478bb78ebd525330c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1917364853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1917364847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2387ca229c6aab41bbcc10cb1b91ad4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chicken: {fileID: 164442, guid: 97c73e530c4188c4386102e94cc8a5b9, type: 2}
+  gridOverlay: {fileID: 5212484}
+  moveSpeed: 1
+  yOffset: -.0299999993
