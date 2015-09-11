@@ -11,7 +11,7 @@ public class ServerFightManager : MonoBehaviour {
 	private List<string> moveName = new List<string>();
 	private int[] atk = new int[2], def = new int[2], hp = new int[2], agi = new int[2], gam = new int[2], agg = new int[2];
 	private Vector2[] pos = new Vector2[2];
-	private int dist;
+	private float dist;
 
 	private Vector2 ringSize = new Vector2(10,6);
 
@@ -64,8 +64,8 @@ public class ServerFightManager : MonoBehaviour {
 		move[1] = AssignNextMove (null, 1);
 		l.Add (RecordTurn(move));
 
-		while(hp[0] > 0 && hp[1] > 0) {
-		//for(int i = 0; i < 2; i++) {
+		//while(hp[0] > 0 && hp[1] > 0) {
+		for(int i = 0; i < 2; i++) {
 			int pN, eN;
 			if (agi[0] > agi[1]) pN = 0;
 			else pN = 1;
@@ -130,40 +130,40 @@ public class ServerFightManager : MonoBehaviour {
 
 	private float AnalyzeMoveStrength(string moveName, int playerNum) {
 		float strength = 0f;
-		int minDist = 0;
-		int maxDist = 0;
+		float minDist = 0f;
+		float maxDist = 0f;
 		switch (moveName) {
 		case Constants.FIGHT_MOVE_DASH:
-			minDist = FindGridDistance(new Vector2(0,0), 
+			minDist = Vector2.Distance(new Vector2(0,0), 
 			                           new Vector2(0,2));
-			maxDist = FindGridDistance(new Vector2(0,0), 
+			maxDist = Vector2.Distance(new Vector2(0,0), 
 			                           new Vector2(ringSize.x,ringSize.y));
 			if(maxDist >= dist && dist >= minDist) {
 				strength += dist;
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_FLYING_TALON:
-			minDist = FindGridDistance(new Vector2(0,0), 
+			minDist = Vector2.Distance(new Vector2(0,0), 
 			                           new Vector2(0,0));
-			maxDist = FindGridDistance(new Vector2(0,0), 
+			maxDist = Vector2.Distance(new Vector2(0,0), 
 			                           new Vector2(0,2));
 			if(maxDist >= dist && dist >= minDist) {
 				strength += 5f;
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_SIDESTEP:
-			minDist = FindGridDistance(new Vector2(0,0), 
+			minDist = Vector2.Distance(new Vector2(0,0), 
 			                           new Vector2(0,2));
-			maxDist = FindGridDistance(new Vector2(0,0), 
+			maxDist = Vector2.Distance(new Vector2(0,0), 
 			                           new Vector2(ringSize.x,ringSize.y));
 			if(maxDist >= dist && dist >= minDist) {
 				strength += 5f;
 			}
 			return strength;
 		case Constants.FIGHT_MOVE_PECK:
-			minDist = FindGridDistance(new Vector2(0,0), 
+			minDist = Vector2.Distance(new Vector2(0,0), 
 			                           new Vector2(0,0));
-			maxDist = FindGridDistance(new Vector2(0,0), 
+			maxDist = Vector2.Distance(new Vector2(0,0), 
 			                           new Vector2(0,1));
 			if(maxDist >= dist && dist >= minDist) {
 				strength += 5f;
@@ -179,17 +179,29 @@ public class ServerFightManager : MonoBehaviour {
 		int eN = Mathf.Abs(pN-1);
 		switch (moveName) {
 		case Constants.FIGHT_MOVE_DASH:
-			pos[pN] = StepTo(pos[pN], pos[eN], 2, 2);
+			print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+			pos[pN] = Utility.AStar(pos[pN],pos[eN],ringSize,2,false);
+			print ("new pos: " + pos[pN]);
 			UpdateDistance ();
 			break;
 		case Constants.FIGHT_MOVE_FLYING_TALON:
-			pos[pN] = StepTo(pos[pN], pos[eN], 1, 1);
+			print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+			pos[pN] = Utility.AStar(pos[pN],pos[eN],ringSize,1,false);
+			print ("new pos: " + pos[pN]);
 			UpdateDistance ();
 			hp[eN] -= (int)(atk[pN] * 0.7f);
 			if(debug) print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		case Constants.FIGHT_MOVE_SIDESTEP:
-			pos[pN] = StepTo(pos[pN], pos[eN] + new Vector2(Random.Range(-4,5), 0), 5, 1);
+			print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+
+			Vector2 sidestepPosition;
+			do {
+				sidestepPosition = new Vector2(Mathf.Clamp ((int)(pos[eN].x + Random.Range(-4,5)),0,(int)ringSize.x-1),
+				                               pos[eN].y);
+			} while(sidestepPosition == pos[eN]);
+			pos[pN] = Utility.AStar(pos[pN],sidestepPosition,ringSize,5,true);
+			print ("new pos: " + pos[pN]);
 			UpdateDistance ();
 			if(debug) print ("Sidestep!");
 			break;
@@ -203,42 +215,8 @@ public class ServerFightManager : MonoBehaviour {
 	}
 
 	private void UpdateDistance() {
-		dist = FindGridDistance(pos[0], pos[1]);
+		dist = Vector2.Distance(pos[0], pos[1]);
 		print ("Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
-	}
-
-	private Vector2 StepTo(Vector2 start, Vector2 dest, int numSteps, int minDistSpacing) {
-		Vector2 newPos = start;
-		print ("old pos is " + start + ", dest is " + dest + ", min dist spacing is " + minDistSpacing);
-		for(int i = 0; i < numSteps; i++) {
-			if(FindGridDistance(newPos, dest) <= minDistSpacing) {
-				break;
-			}
-			if((int)dest.x > (int)newPos.x) {
-				print ("dest x is greater than start x");
-				newPos += new Vector2(1, 0);
-			}
-			else {
-				print ("dest x is less than start x");
-				newPos -= new Vector2(1, 0);
-			}
-			if((int)dest.y > (int)newPos.y) {
-				print ("dest y is greater than start y");
-				newPos += new Vector2(0, 1);
-			}
-			else {
-				print ("dest y is less than start y");
-				newPos -= new Vector2(0, 1);
-			}
-
-		}
-		print ("new pos is " + newPos);
-		return newPos;
-	}
-
-	private int FindGridDistance(Vector2 start, Vector2 end) {
-		return Mathf.Max(Mathf.Abs((int)start.x - (int)end.x),
-		                 Mathf.Abs((int)start.y - (int)end.y));
 	}
 
 	private Dictionary<string, object> RecordTurn(string[] move) {

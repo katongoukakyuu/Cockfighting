@@ -26,6 +26,7 @@ public class GridOverlay : MonoBehaviour {
 	private float lastScroll = 0f;
 
 	private GameObject[,] tiles;
+	private int xSize, zSize;
 	private float tileOriginalScale = 0.1f;
 	private Vector2 position = Vector2.zero;
 	
@@ -40,8 +41,8 @@ public class GridOverlay : MonoBehaviour {
 	
 	void Start () 
 	{
-		int xSize = (int) (gridSizeX / largeStep);
-		int zSize = (int) (gridSizeZ / largeStep);
+		xSize = (int) (gridSizeX / largeStep);
+		zSize = (int) (gridSizeZ / largeStep);
 		tiles = new GameObject[xSize, zSize];
 		GameObject board = new GameObject();
 		board.name = "Board";
@@ -223,5 +224,16 @@ public class GridOverlay : MonoBehaviour {
 		
 		
 		GL.End();
+	}
+
+	public Vector2[] GetBoardCorners() {
+		Vector2[] boardCorners = new Vector2[2];
+		boardCorners [0] = new Vector2 (tiles [0, 0].transform.position.x, tiles [0, 0].transform.position.z);
+		boardCorners [1] = new Vector2 (tiles [xSize-1, zSize-1].transform.position.x, tiles [xSize-1, zSize-1].transform.position.z);
+		return boardCorners;
+	}
+
+	public GameObject[,] GetTiles() {
+		return tiles;
 	}
 }

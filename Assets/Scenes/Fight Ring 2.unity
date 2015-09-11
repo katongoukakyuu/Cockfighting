@@ -124,7 +124,7 @@ MonoBehaviour:
   showSub: 0
   gridSizeX: 5
   gridSizeY: 0
-  gridSizeZ: 5
+  gridSizeZ: 3
   smallStep: .5
   largeStep: .5
   startX: -2.5
