@@ -122,14 +122,14 @@ MonoBehaviour:
   tile: {fileID: 182252, guid: bdd171122063fba4db715241554738fc, type: 2}
   showMain: 1
   showSub: 0
-  gridSizeX: 10
+  gridSizeX: 5
   gridSizeY: 0
-  gridSizeZ: 10
+  gridSizeZ: 5
   smallStep: .5
-  largeStep: 1
-  startX: -5
+  largeStep: .5
+  startX: -2.5
   startY: 0
-  startZ: -5
+  startZ: -1.5
   mainColor: {r: 0, g: 1, b: 0, a: 1}
   subColor: {r: 0, g: .5, b: 0, a: 1}
   selectedTileColors:
@@ -198,7 +198,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 5212483}
-  m_LocalRotation: {x: .0923350677, y: -.390015423, z: .0393438563, w: .915321887}
+  m_LocalRotation: {x: .0923350751, y: -.390015453, z: .03934386, w: .915321946}
   m_LocalPosition: {x: 2.48799992, y: .709999979, z: -2.17400002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

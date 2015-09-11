@@ -103,7 +103,6 @@ public class ReplayManager : MonoBehaviour {
 			chickens[i].transform.LookAt(chickens[Mathf.Abs(i-1)].transform.position);
 		}
 		else {
-			print("Updating distance!");
 			posOld[i] = chickens[i].transform.position;
 			pos[i] = newPos + new Vector3(gridOverlay.startX, gridOverlay.startY + yOffset, gridOverlay.startZ);
 			posDistance[i] = Vector3.Distance(pos[i], posOld[i]);
