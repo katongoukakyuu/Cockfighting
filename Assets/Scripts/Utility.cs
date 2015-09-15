@@ -22,9 +22,9 @@ public class Utility : MonoBehaviour {
 
 	public static Vector2 AStar(Vector2 start, Vector2 goal, Vector2 setSize, int step, bool canStepToGoal) {
 		List<Vector2> cameFrom = AStar (start, goal, setSize);
-		foreach(Vector2 v in cameFrom) {
+		/*foreach(Vector2 v in cameFrom) {
 			print("came from: " + v);
-		}
+		}*/
 		if (step >= cameFrom.Count-1) {
 			if(cameFrom.Last () == goal && !canStepToGoal && cameFrom.Count > 1) {
 				//print ("cannot step to goal, step over limit!");
@@ -66,8 +66,8 @@ public class Utility : MonoBehaviour {
 					current = v;
 				}
 			}
-			print ("current node is : " + current + ", goal node is : " + goal + ". Equal? " + 
-			       (current == goal));
+			/*print ("current node is : " + current + ", goal node is : " + goal + ". Equal? " + 
+			       (current == goal));*/
 
 			if(current == goal) {
 				return AStarReconstructPath(cameFrom, goal);

@@ -214,6 +214,26 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
+	public Dictionary<string, object> GenerateMail(string playerIdFrom, string playerIdTo,
+	                                               string title, string message,
+	                                               List<string> mailType,
+	                                               string replayId) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_MAIL},
+			{Constants.DB_KEYWORD_FROM, playerIdFrom},
+			{Constants.DB_KEYWORD_TO, playerIdTo},
+			{Constants.DB_KEYWORD_TITLE, title},
+			{Constants.DB_KEYWORD_MESSAGE, message},
+			{Constants.DB_KEYWORD_MAIL_TYPE, mailType},
+			{Constants.DB_KEYWORD_STATUS, Constants.MAIL_STATUS_UNREAD},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
+		};
+		if(replayId != null) {
+			d.Add (Constants.DB_KEYWORD_REPLAY_ID, replayId);
+		}
+		return d;
+	}
+
 	public List<Vector2> GetBuildingTiles(int[] pos, int[] center, int[] size, string orientation) {
 		List<Vector2> bldgTiles = new List<Vector2> ();
 		int[] posZero = new int[] {

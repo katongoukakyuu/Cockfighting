@@ -10,6 +10,8 @@ public class PlayerManager : MonoBehaviour {
 	public List<IDictionary<string,object>> playerBuildings;
 	public List<Vector2> playerOccupiedTiles;
 
+	public IDictionary<string,object> selectedReplay;
+
 	private static PlayerManager instance;
 	private PlayerManager() {}
 

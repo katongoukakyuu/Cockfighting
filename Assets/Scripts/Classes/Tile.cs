@@ -12,7 +12,9 @@ public class Tile : MonoBehaviour {
 		if(MouseHandler.Instance != null) {
 			MouseHandler.Instance.OnMouseClick += OnClick;
 		}
-		GetComponent<Renderer>().material = matDeselected;
+		if(matDeselected != null) {
+			GetComponent<Renderer>().material = matDeselected;
+		}
 	}
 
 	private void OnClick(GameObject g) {

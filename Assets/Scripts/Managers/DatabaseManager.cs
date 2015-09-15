@@ -163,14 +163,21 @@ public class DatabaseManager : MonoBehaviour {
 				emit(doc[Constants.DB_KEYWORD_MATCH_ID], doc[Constants.DB_KEYWORD_PLAYER_ID]);
 		}, "1");
 
-		if(ReplayManager.Instance != null) {
+		// mail
+		View viewMail = db.GetView(Constants.DB_TYPE_MAIL);
+		viewMail.SetMap ((doc, emit) => {
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_MAIL)
+				emit(doc[Constants.DB_KEYWORD_FROM], doc[Constants.DB_KEYWORD_TO]);
+		}, "1");
+
+		/*if(ReplayManager.Instance != null) {
 			ServerFightManager.Instance.AutomateFight (
 				LoadChicken("Gary", "test"),
 				LoadChicken("Larry", "test2"),
 				LoadFightingMovesOwned (LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
 				LoadFightingMovesOwned (LoadChicken("Larry", "test2")[Constants.DB_COUCHBASE_ID].ToString())
 				);
-		}
+		}*/
 	}
 
 	private void InitializeDatabase() {
@@ -767,6 +774,29 @@ public class DatabaseManager : MonoBehaviour {
 		var rows = query.Run ();
 		foreach(var row in rows) {
 			if(row.Key.ToString() == id || row.Value.ToString() == id) {
+				l.Add (db.GetDocument (row.DocumentId).Properties);
+			}
+		}
+		return l;
+	}
+
+	public IDictionary<string, object> LoadMail(string mailId) {
+		var query = db.GetView (Constants.DB_TYPE_MAIL).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.DocumentId == mailId) {
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
+	}
+
+	public List<IDictionary<string,object>> LoadMails(string playerId) {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_MAIL).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.Value.ToString() == playerId) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
 		}

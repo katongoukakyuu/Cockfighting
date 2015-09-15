@@ -48,6 +48,13 @@ public class ReplayManager : MonoBehaviour {
 		for(int i = 0; i < 2; i++) {
 			startTime[i] = Time.time;
 		}
+
+		print ("player instance null? " + (PlayerManager.Instance == null) +
+		       " selected replay null? " + (PlayerManager.Instance.selectedReplay == null));
+		if(PlayerManager.Instance != null &&
+		   PlayerManager.Instance.selectedReplay != null) {
+			StartCoroutine(PlayReplay(PlayerManager.Instance.selectedReplay));
+		}
 	}
 
 	void Update() {
@@ -57,7 +64,9 @@ public class ReplayManager : MonoBehaviour {
 			if(chickens[i] != null && chickens[i].transform.position != pos[i]) {
 				isAnimating[i] = true;
 				Vector3 posPrev = chickens[i].transform.position;
-				chickens[i].transform.position = Vector3.Lerp(posOld[i], pos[i], ((Time.time - startTime[i]) * moveSpeed));
+				chickens[i].transform.position = Vector3.Lerp(posOld[i], 
+				                                              pos[i], 
+				                                              ((Time.time - startTime[i]) * moveSpeed));
 				//print ("pos old " + i + " is: " + posOld[i] + ", pos " + i + " is: " + pos[i] + ", start time is " + startTime[i] + ", distance is: " + posDistance[i]);
 				if(animators[i] != null) {
 					animators[i].SetFloat("Velocity X",(chickens[i].transform.position.x - posPrev.x) * 10);
@@ -95,6 +104,8 @@ public class ReplayManager : MonoBehaviour {
 			}
 			UpdateDistance(new Vector3(float.Parse (id[Constants.REPLAY_X1].ToString()),0,float.Parse (id[Constants.REPLAY_Y1].ToString())), 0, isImmediate);
 			UpdateDistance(new Vector3(float.Parse (id[Constants.REPLAY_X2].ToString()),0,float.Parse (id[Constants.REPLAY_Y2].ToString())), 1, isImmediate);
+			SetMoveAnimTrigger(0, id[Constants.REPLAY_MOVE1].ToString());
+			SetMoveAnimTrigger(1, id[Constants.REPLAY_MOVE2].ToString());
 			while(isAnimating[0] && isAnimating[1]) {
 				yield return new WaitForSeconds(0.2f);
 			}
@@ -117,8 +128,23 @@ public class ReplayManager : MonoBehaviour {
 		}
 	}
 
+	private void SetMoveAnimTrigger(int index, string move) {
+		if(animators[index] != null) {
+			switch (move) {
+			case Constants.FIGHT_MOVE_FLYING_TALON:
+				animators[index].SetTrigger(move);
+				break;
+			case Constants.FIGHT_MOVE_PECK:
+				animators[index].SetTrigger(move);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
 	private Vector3 TransposeToBoard(Vector3 pos) {
-		print (pos + " transposed to " + gridOverlay.GetTiles () [(int)pos.x, (int)pos.z].transform.position);
+		// print (pos + " transposed to " + gridOverlay.GetTiles () [(int)pos.x, (int)pos.z].transform.position);
 		return gridOverlay.GetTiles()[(int)pos.x,(int)pos.z].transform.position;
 	}
 }

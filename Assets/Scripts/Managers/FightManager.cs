@@ -183,46 +183,6 @@ public class FightManager : MonoBehaviour {
 		}
 	}
 
-	public void AddMatchToList(GameObject g, IDictionary<string, object> match) {
-		listMatchButtons.Add (g);
-		/*g.GetComponentInChildren<FeedsScreenScheduleCancelButton>().index = scheduleListItems.IndexOf(g);
-		if (schedule != null) {
-			IDictionary<string,object> feeds = DatabaseManager.Instance.LoadFeeds(schedule[Constants.DB_KEYWORD_FEEDS_ID].ToString());
-			g.transform.FindChild (Constants.SCHEDULE_PANEL_ICON).GetComponent<Image> ().sprite = 
-				Resources.Load<Sprite>(Constants.PATH_SPRITES + feeds [Constants.DB_KEYWORD_IMAGE_NAME].ToString ());
-			foreach (IDictionary<string, object> i in inventory) {
-				if(feeds[Constants.DB_COUCHBASE_ID].ToString() == 
-				   i[Constants.DB_KEYWORD_ITEM_ID].ToString()) {
-					g.transform.FindChild(Constants.SCHEDULE_PANEL_ICON_COUNT).GetComponent<Text>().text = i[Constants.DB_KEYWORD_QUANTITY].ToString();
-					g.transform.FindChild(Constants.SCHEDULE_PANEL_NAME).GetComponent<Text>().text = feeds[Constants.DB_KEYWORD_NAME].ToString();
-					g.transform.FindChild(Constants.SCHEDULE_PANEL_STATS).GetComponent<Text>().text = GenerateStatsString(feeds);
-					System.DateTime dt1 = TrimMilli(System.DateTime.Now.ToUniversalTime());
-					System.DateTime dt2 = TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()));
-					g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>().text = "" + (dt2 - dt1);
-					IEnumerator ie = DisplayCountdown(g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>(),
-					                                  dt2);
-					StartCoroutine(ie);
-					countdowns.Add (ie);
-					break;
-				}
-			}
-			g.transform.FindChild(Constants.SCHEDULE_PANEL_ICON).GetComponent<Button>().enabled = false;
-		} else {
-			g.transform.FindChild(Constants.SCHEDULE_PANEL_ICON).GetComponent<Image> ().sprite = null;
-			g.transform.FindChild(Constants.SCHEDULE_PANEL_ICON_COUNT).GetComponent<Text>().text = "";
-			g.transform.FindChild(Constants.SCHEDULE_PANEL_NAME).GetComponent<Text>().text = Constants.MESSAGE_SCHEDULE_PANEL_1;
-			g.transform.FindChild(Constants.SCHEDULE_PANEL_STATS).GetComponent<Text>().text = "";
-			g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>().text = Constants.TIMER_DEFAULT;
-			addScheduleButton.interactable = false;
-		}
-		g.transform.SetParent(scheduleListPanel.transform,false);
-		if (g.transform.GetSiblingIndex() != 0) {
-			g.transform.SetSiblingIndex (g.transform.GetSiblingIndex() - 1);
-		}
-		g.SetActive(true);
-		*/
-	}
-
 	public void ButtonBack() {
 		switch(state) {
 		case Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT:

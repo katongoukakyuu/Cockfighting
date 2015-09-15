@@ -39,7 +39,7 @@ public class GridOverlay : MonoBehaviour {
 	public Material[] selectedTileColors;
 	public Material[] deselectedTileColors;
 	
-	void Start () 
+	void Awake () 
 	{
 		xSize = (int) (gridSizeX / largeStep);
 		zSize = (int) (gridSizeZ / largeStep);
@@ -59,13 +59,29 @@ public class GridOverlay : MonoBehaviour {
 				g.transform.parent = board.transform;
 				g.AddComponent<Tile>();
 				g.GetComponent<Tile>().position = new Vector2(x, z);
-				if(x < (int)(xSize/2)) {
-					g.GetComponent<Tile>().matSelected = selectedTileColors[0];
-					g.GetComponent<Tile>().matDeselected = deselectedTileColors[0];
+				if(selectedTileColors.Length > 0 && deselectedTileColors.Length > 0) {
+					if(x < (int)(xSize/2)) {
+						g.GetComponent<Tile>().matSelected = selectedTileColors[0];
+						g.GetComponent<Tile>().matDeselected = deselectedTileColors[0];
+					}
+					else {
+						g.GetComponent<Tile>().matSelected = selectedTileColors[1];
+						g.GetComponent<Tile>().matDeselected = deselectedTileColors[1];
+					}
 				}
 				else {
-					g.GetComponent<Tile>().matSelected = selectedTileColors[1];
-					g.GetComponent<Tile>().matDeselected = deselectedTileColors[1];
+					// Set material alpha to 0 and render it in Fade mode
+					Material m = g.GetComponent<Renderer>().material;
+					Color c = m.color;
+					c.a = 0;
+					m.color = c;
+					m.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+					m.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+					m.SetInt("_ZWrite", 0);
+					m.DisableKeyword("_ALPHATEST_ON");
+					m.EnableKeyword("_ALPHABLEND_ON");
+					m.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+					m.renderQueue = 3000;
 				}
 				tiles[x,z] = g;
 			}

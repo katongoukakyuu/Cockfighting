@@ -8,6 +8,7 @@ public class Constants : MonoBehaviour {
 
 	public const string SCENE_LOGIN = "Login";
 	public const string SCENE_FARM = "Farm";
+	public const string SCENE_FIGHT_RING = "Fight Ring 2";
 	public const string SCENE_CONTROL_PANEL = "Control Panel";
 	public const string SCENE_CONTROL_PANEL_BREEDS = "Control Panel - Breeds";
 	public const string SCENE_CONTROL_PANEL_BUILDINGS = "Control Panel - Buildings";
@@ -26,6 +27,9 @@ public class Constants : MonoBehaviour {
 
 	public const string FIGHT_MANAGER_STATE_CATEGORY_SELECT = "Category Select";
 	public const string FIGHT_MANAGER_STATE_MATCH_SELECT = "Match Select";
+
+	public const string MAILBOX_MANAGER_STATE_VIEW_LIST = "Viewing List";
+	public const string MAILBOX_MANAGER_STATE_VIEW_MAIL = "Viewing Mail";
 
 	public const string ORIENTATION_NORTH = "north";
 	public const string ORIENTATION_SOUTH = "south";
@@ -92,6 +96,14 @@ public class Constants : MonoBehaviour {
 	public const string MESSAGE_MATCH_BET_MESSAGE_3 = " Coins.";
 	// end match bet fight messages
 
+	// automated mail messages
+	public const string MAIL_FIGHT_CONCLUDED_TITLE = "Fight Concluded";
+	public const string MAIL_FIGHT_CONCLUDED_MESSAGE_1 = "The fight between ";
+	public const string MAIL_FIGHT_CONCLUDED_MESSAGE_2 = " of your farm and ";
+	public const string MAIL_FIGHT_CONCLUDED_MESSAGE_3 = " of the ";
+	public const string MAIL_FIGHT_CONCLUDED_MESSAGE_4 = " farm has concluded! Fight rewards has been distributed. Press \"View Replay\" to view the replay.";
+	// end automated mail messages
+
 	public const int COIN_START = 10000;
 	public const int CASH_START = 200;
 
@@ -130,6 +142,7 @@ public class Constants : MonoBehaviour {
 	public const string DB_TYPE_BREED_SCHEDULE = "breed schedule";
 	public const string DB_TYPE_FIGHTING_MOVE = "fighting move";
 	public const string DB_TYPE_FIGHTING_MOVE_OWNED = "fighting move owned";
+	public const string DB_TYPE_MAIL = "mail";
 	public const string DB_TYPE_MATCH = "match";
 	public const string DB_TYPE_MATCHMAKING_CATEGORY = "matchmaking category";
 	public const string DB_TYPE_ITEM = "item";
@@ -304,6 +317,27 @@ public class Constants : MonoBehaviour {
 	public const string BETTED_CHICKEN_STATUS_DEHADO = "dehado";
 	// end bet document keywords
 
+	// mail document keywords
+	public const string DB_KEYWORD_TITLE = "title";
+	public const string DB_KEYWORD_FROM = "from";
+	public const string DB_KEYWORD_TO = "to";
+	public const string DB_KEYWORD_MESSAGE = "message";
+	public const string DB_KEYWORD_MAIL_TYPE = "mail type";
+	public const string DB_KEYWORD_REPLAY_ID = "replay id";
+	// end mail document keywords
+
+	// mail status
+	public const string MAIL_STATUS_UNREAD = "unread";
+	public const string MAIL_STATUS_READ = "read";
+	public const string MAIL_STATUS_DELETED = "deleted";
+	// end mail status
+
+	// mail types
+	public const string MAIL_TYPE_NOTIFICATION = "notification";
+	public const string MAIL_TYPE_MESSAGE = "message";
+	public const string MAIL_TYPE_REPLAY = "replay";
+	// end mail types
+
 	public const int BETTING_ODDS_COUNT = 7;
 
 	public const string GENDER_MALE = "male";
@@ -414,6 +448,17 @@ public class Constants : MonoBehaviour {
 	public const string BET_MATCH_BET_SLIDER = "Bet Panel/Bet/Slider";
 	public const string BET_MATCH_MESSAGE = "Message Panel/Message";
 	// match bet children
+
+	// mail panel children
+	public const string MAIL_PANEL_LIST_TOGGLE = "Toggle/Toggle";
+	public const string MAIL_PANEL_LIST_TITLE = "Content/Title/Text/Text";
+	public const string MAIL_PANEL_LIST_MESSAGE = "Content/Message/Text/Text";
+
+	public const string MAIL_PANEL_MAIL_TITLE = "Title Panel/Title";
+	public const string MAIL_PANEL_MAIL_FROM = "Title Panel/From";
+	public const string MAIL_PANEL_MAIL_TO = "Title Panel/To";
+	public const string MAIL_PANEL_MAIL_MESSAGE = "Message Panel/Scroll Panel/Panel/Text";
+	// end mail panel children
 
 	// fight move list
 	public const string FIGHT_MOVE_NONE = "None";

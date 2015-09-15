@@ -8,6 +8,7 @@ using Couchbase.Lite;
 
 public class FarmManager : MonoBehaviour {
 
+	public GridOverlay gridOverlay;
 	public Text coinText;
 	public Text cashText;
 	public GameObject chicken;
@@ -89,17 +90,17 @@ public class FarmManager : MonoBehaviour {
 		foreach(GameObject g in listChickens) {
 			Destroy (g);
 		}
-
-		if(TileMap.Instance.tiles != null) {
-			int xMax = TileMap.Instance.tiles.GetLength (0);
-			int yMax = TileMap.Instance.tiles.GetLength (1);
+		
+		if(gridOverlay != null) {
+			print("Grid overlay get tiles: " + gridOverlay.GetTiles());
+			int xMax = gridOverlay.GetTiles().GetLength(0);
+			int yMax = gridOverlay.GetTiles().GetLength(1);
+			print ("Grid overlay xy: " + xMax + ", " + yMax);
 			foreach(IDictionary<string,object> i in PlayerManager.Instance.playerChickens) {
 				GameObject g = Instantiate (chicken) as GameObject;
 				g.AddComponent<Chicken>();
 				g.GetComponent<Chicken>().chicken = i;
-				g.transform.position = new Vector3(Random.Range (0,xMax),
-				                                   0,
-				                                   Random.Range (0,yMax));
+				g.transform.position = gridOverlay.GetTiles()[Random.Range (0,xMax), Random.Range (0,yMax)].transform.position;
 				listChickens.Add (g);
 			}
 		}

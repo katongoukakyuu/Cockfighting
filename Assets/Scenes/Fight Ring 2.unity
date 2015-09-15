@@ -736,6 +736,10 @@ Prefab:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: a86b32fc6458a984383858ed44216ded, type: 2}
+    - target: {fileID: 100098, guid: 402b450aa8a0f3c4098c4d2ea84d89ce, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 402b450aa8a0f3c4098c4d2ea84d89ce, type: 3}
   m_IsPrefabParent: 0
@@ -1196,6 +1200,10 @@ Prefab:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: a86b32fc6458a984383858ed44216ded, type: 2}
+    - target: {fileID: 100098, guid: 402b450aa8a0f3c4098c4d2ea84d89ce, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 402b450aa8a0f3c4098c4d2ea84d89ce, type: 3}
   m_IsPrefabParent: 0
@@ -2847,7 +2855,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1917364847}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ea09cd6c63084b4a82aa020d07524d3, type: 3}
   m_Name: 
@@ -2858,7 +2866,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1917364847}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a63c62a269ff6744f8dd3a1694899b8a, type: 3}
   m_Name: 
@@ -2870,7 +2878,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1917364847}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fce89c345e68ed645a1d5882ddbcfaf4, type: 3}
   m_Name: 
@@ -2881,7 +2889,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1917364847}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 681bb619e06f2c5478bb78ebd525330c, type: 3}
   m_Name: 
