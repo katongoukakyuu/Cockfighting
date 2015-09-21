@@ -15,6 +15,8 @@ public class Constants : MonoBehaviour {
 	public const string SCENE_CONTROL_PANEL_FEEDS = "Control Panel - Feeds";
 
 	public const string PATH_SPRITES = "Sprites/";
+	public const string PATH_SPRITES_BUILDINGS = "Sprites/Buildings/";
+	public const string PATH_PREFABS_BUILDINGS = "Prefabs/Buildings/";
 
 	public const string FARM_MANAGER_STATE_FREE_SELECT = "Free Select";
 	public const string FARM_MANAGER_STATE_BUILD_STRUCTURE = "Build Structure";

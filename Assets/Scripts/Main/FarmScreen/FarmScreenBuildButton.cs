@@ -16,6 +16,7 @@ public class FarmScreenBuildButton : MonoBehaviour {
 
 		mainCanvas.gameObject.SetActive (false);
 		buildStructuresCanvas.gameObject.SetActive (true);
+		Camera.main.GetComponent<GridOverlay>().ToggleCanHoverOnMap(false);
 	}
 	
 }

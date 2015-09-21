@@ -8,7 +8,6 @@ using Couchbase.Lite;
 
 public class FarmManager : MonoBehaviour {
 
-	public GridOverlay gridOverlay;
 	public Text coinText;
 	public Text cashText;
 	public GameObject chicken;
@@ -19,6 +18,8 @@ public class FarmManager : MonoBehaviour {
 	public Text[] chickenStatsFields;
 	
 	private System.EventHandler<DatabaseChangeEventArgs> eventHandler;
+
+	private GridOverlay gridOverlay;
 
 	private string state = Constants.FARM_MANAGER_STATE_FREE_SELECT;
 	private bool isAnimating = false;
@@ -41,6 +42,8 @@ public class FarmManager : MonoBehaviour {
 	}
 
 	void Start() {
+		gridOverlay = Camera.main.GetComponent<GridOverlay>();
+
 		eventHandler = (sender, e) => {
 			var changes = e.Changes.ToList();
 			foreach (DocumentChange change in changes) {
@@ -92,7 +95,6 @@ public class FarmManager : MonoBehaviour {
 		}
 		
 		if(gridOverlay != null) {
-			print("Grid overlay get tiles: " + gridOverlay.GetTiles());
 			int xMax = gridOverlay.GetTiles().GetLength(0);
 			int yMax = gridOverlay.GetTiles().GetLength(1);
 			print ("Grid overlay xy: " + xMax + ", " + yMax);
@@ -113,22 +115,27 @@ public class FarmManager : MonoBehaviour {
 
 		foreach(IDictionary<string,object> i in PlayerManager.Instance.playerBuildings) {
 			IDictionary<string,object> bldg = DatabaseManager.Instance.LoadBuilding(i[Constants.DB_KEYWORD_NAME].ToString());
-			GameObject g = Instantiate (Resources.Load ("Prefabs/" + bldg[Constants.DB_KEYWORD_PREFAB_NAME])) as GameObject;
-			g.transform.position = new Vector3(int.Parse(i[Constants.DB_KEYWORD_X_POSITION].ToString()),
-			                                   0,
-			                                   int.Parse(i[Constants.DB_KEYWORD_Y_POSITION].ToString()));
+			GameObject g = Instantiate (Resources.Load (Constants.PATH_PREFABS_BUILDINGS + bldg[Constants.DB_KEYWORD_PREFAB_NAME])) as GameObject;
+			Tile t = gridOverlay.GetTiles()[int.Parse(i[Constants.DB_KEYWORD_X_POSITION].ToString()), int.Parse(i[Constants.DB_KEYWORD_Y_POSITION].ToString())].GetComponent<Tile>();
+			g.transform.position = new Vector3(t.transform.position.x,
+			                                   g.transform.position.y,
+			                                   t.transform.position.z);
+			NavMeshObstacle nvo = g.GetComponent<NavMeshObstacle>();
+			if(nvo != null) {
+				nvo.enabled = true;
+			}
 			switch(i[Constants.DB_KEYWORD_ORIENTATION].ToString()) {
 			case Constants.ORIENTATION_NORTH:
-				g.transform.Rotate (new Vector3(0.0f,0.0f,0.0f));
+				g.transform.Rotate (new Vector3(0.0f,0.0f,0.0f), Space.World);
 				break;
 			case Constants.ORIENTATION_EAST:
-				g.transform.Rotate (new Vector3(0.0f,90.0f,0.0f));
+				g.transform.Rotate (new Vector3(0.0f,90.0f,0.0f), Space.World);
 				break;
 			case Constants.ORIENTATION_SOUTH:
-				g.transform.Rotate (new Vector3(0.0f,180.0f,0.0f));
+				g.transform.Rotate (new Vector3(0.0f,180.0f,0.0f), Space.World);
 				break;
 			case Constants.ORIENTATION_WEST:
-				g.transform.Rotate (new Vector3(0.0f,270.0f,0.0f));
+				g.transform.Rotate (new Vector3(0.0f,270.0f,0.0f), Space.World);
 				break;
 			default:
 				break;
@@ -174,8 +181,8 @@ public class FarmManager : MonoBehaviour {
 	}
 
 	public bool CheckBuildable(IDictionary<string,object> building, int[] pos, string orientation) {
-		int xMax = TileMap.Instance.tiles.GetLength (0);
-		int yMax = TileMap.Instance.tiles.GetLength (1);
+		int xMax = gridOverlay.GetTiles().GetLength(0);
+		int yMax = gridOverlay.GetTiles().GetLength(1);
 		int[] bldgCenter = new int[] {
 			int.Parse(building [Constants.DB_KEYWORD_X_CENTER].ToString()),
 			int.Parse(building [Constants.DB_KEYWORD_Y_CENTER].ToString())

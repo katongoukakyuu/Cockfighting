@@ -2,12 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent (typeof(TileMap))]
-[RequireComponent (typeof(TileMapMouse))]
 public class BuildingPlacementManager : MonoBehaviour {
 
 	public Canvas mainCanvas;
+	public GameObject mainCanvasLeft;
+	public GameObject mainCanvasRight;
 	public Canvas buildingPlacementCanvas;
+
+	private GridOverlay gridOverlay;
 
 	private bool isInitialized = false;
 	private IDictionary<string,object> building;
@@ -27,15 +29,17 @@ public class BuildingPlacementManager : MonoBehaviour {
 	}
 
 	void Start() {
+		gridOverlay = Camera.main.GetComponent<GridOverlay>();
+
 		MouseHandler.Instance.OnMouseClick += OnClick;
-		TileMapMouse.Instance.OnTileHoverChange += OnTileHoverChange;
+		gridOverlay.OnTileHoverChange += OnTileHoverChange;
 	}
 	
 	private void OnClick(GameObject g) {
 		if (isInitialized && FarmManager.Instance.State() == Constants.FARM_MANAGER_STATE_BUILD_STRUCTURE) {
 			int[] pos = new int[] {
-				(int)TileMapMouse.Instance.position.x,
-				(int)TileMapMouse.Instance.position.z
+				(int)gridOverlay.GetSelectedTile().position.x,
+				(int)gridOverlay.GetSelectedTile().position.y
 			};
 			if(FarmManager.Instance.CheckBuildable(building, pos, orientation)) {
 				FarmManager.Instance.BuildStructure(building, pos, orientation);
@@ -49,10 +53,13 @@ public class BuildingPlacementManager : MonoBehaviour {
 
 	private void OnTileHoverChange() {
 		if (isInitialized && FarmManager.Instance.State () == Constants.FARM_MANAGER_STATE_BUILD_STRUCTURE) {
-			bldgObject.transform.position = TileMapMouse.Instance.position;
+			Tile hoveredTile = gridOverlay.GetSelectedTile();
+			bldgObject.transform.position = new Vector3 (hoveredTile.gameObject.transform.position.x,
+			                                             bldgObject.gameObject.transform.position.y,
+			                                             hoveredTile.gameObject.transform.position.z);
 			int[] pos = new int[] {
-				(int)TileMapMouse.Instance.position.x,
-				(int)TileMapMouse.Instance.position.z
+				(int)gridOverlay.GetSelectedTile().position.x,
+				(int)gridOverlay.GetSelectedTile().position.y
 			};
 			if(FarmManager.Instance.CheckBuildable(building, pos, orientation)) {
 				bldgObject.GetComponentInChildren<Renderer>().material.color = Color.green;
@@ -68,8 +75,11 @@ public class BuildingPlacementManager : MonoBehaviour {
 
 		this.building = building;
 		orientation = Constants.ORIENTATION_NORTH;
-		TileMapMouse.Instance.enabled = true;
-		bldgObject = Instantiate (Resources.Load ("Prefabs/"+building[Constants.DB_KEYWORD_PREFAB_NAME],typeof(GameObject))) as GameObject;
+		gridOverlay.ToggleCanRenderLines(true);
+		gridOverlay.ToggleCanHoverOnMap(true);
+		gridOverlay.ToggleCanClickOnMap(true);
+		MouseHandler.Instance.enabled = true;
+		bldgObject = Instantiate (Resources.Load (Constants.PATH_PREFABS_BUILDINGS + building[Constants.DB_KEYWORD_PREFAB_NAME],typeof(GameObject))) as GameObject;
 		OnTileHoverChange ();
 		isInitialized = true;
 	}
@@ -117,13 +127,18 @@ public class BuildingPlacementManager : MonoBehaviour {
 
 		Destroy (bldgObject);
 		mainCanvas.gameObject.SetActive (true);
+		mainCanvasLeft.gameObject.SetActive (true);
+		mainCanvasRight.gameObject.SetActive (true);
 		buildingPlacementCanvas.gameObject.SetActive (false);
-		TileMapMouse.Instance.enabled = false;
+		gridOverlay.ToggleCanRenderLines(false);
+		gridOverlay.ToggleCanHoverOnMap(false);
+		gridOverlay.ToggleCanClickOnMap(false);
+		MouseHandler.Instance.enabled = false;
 		isInitialized = false;
 	}
 
 	public void ButtonRotateCCW() {
-		bldgObject.transform.Rotate (new Vector3(0.0f,-90.0f,0.0f));
+		bldgObject.transform.Rotate (new Vector3(0.0f,-90.0f,0.0f), Space.World);
 		if (bldgObject.transform.eulerAngles.y <= -360.0f)
 			bldgObject.transform.eulerAngles = new Vector3(bldgObject.transform.eulerAngles.x,
 			                                               0,
@@ -133,7 +148,7 @@ public class BuildingPlacementManager : MonoBehaviour {
 	}
 
 	public void ButtonRotateCW() {
-		bldgObject.transform.Rotate (new Vector3(0.0f,90.0f,0.0f));
+		bldgObject.transform.Rotate (new Vector3(0.0f,90.0f,0.0f), Space.World);
 		if (bldgObject.transform.eulerAngles.y >= 360.0f)
 			bldgObject.transform.eulerAngles = new Vector3(bldgObject.transform.eulerAngles.x,
 			                                               0,

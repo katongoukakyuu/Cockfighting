@@ -6,6 +6,8 @@ using System.Collections.Generic;
 public class BuildScreenBuildBldgButton : MonoBehaviour {
 
 	public Canvas mainCanvas;
+	public GameObject mainCanvasLeft;
+	public GameObject mainCanvasRight;
 	public Canvas buildStructuresCanvas;
 	public Canvas buildingPlacementCanvas;
 	public BuildScreenImagePanel imagePanel;
@@ -17,6 +19,8 @@ public class BuildScreenBuildBldgButton : MonoBehaviour {
 		building = imagePanel.GetSelectedBuilding ();
 		buildingPlacementManager.Initialize (building);
 		mainCanvas.gameObject.SetActive (true);
+		mainCanvasLeft.gameObject.SetActive (false);
+		mainCanvasRight.gameObject.SetActive (false);
 		buildStructuresCanvas.gameObject.SetActive (false);
 		buildingPlacementCanvas.gameObject.SetActive (true);
 	}

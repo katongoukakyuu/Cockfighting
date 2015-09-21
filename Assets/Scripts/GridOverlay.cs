@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -38,6 +39,14 @@ public class GridOverlay : MonoBehaviour {
 
 	public Material[] selectedTileColors;
 	public Material[] deselectedTileColors;
+
+	public delegate void OnTileHoverChangeEvent();
+	public event OnTileHoverChangeEvent OnTileHoverChange;
+
+	private bool canHoverOnMap = false;
+	private bool canClickOnMap = false;
+	private bool canRenderLines = false;
+	private Tile selectedTile;
 	
 	void Awake () 
 	{
@@ -108,32 +117,37 @@ public class GridOverlay : MonoBehaviour {
 			}
 		}
 
-		Ray screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-		
-		RaycastHit hit;
-		if (Physics.Raycast(screenRay, out hit))
-		{
-			if(hit.collider.gameObject.tag == "Map") {
-				Vector2 newPos;
-				if(hit.collider.gameObject.GetComponent<Tile>() != null) {
-					newPos = hit.collider.gameObject.GetComponent<Tile>().position;
-				}
-				else {
-					print ("Tile component is null! Returning world position");
-					Vector3 pos = hit.collider.gameObject.transform.position;
-					newPos = new Vector2(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.z));
-				}
-
-				if(position != newPos) {
-					position = newPos;
-					//OnTileHoverChange();
-					Debug.Log ("map tile is " + position);
+		if(canHoverOnMap) {
+			Ray screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+			
+			RaycastHit hit;
+			if (Physics.Raycast(screenRay, out hit))
+			{
+				if(hit.collider.gameObject.tag == "Map") {
+					Vector2 newPos;
+					if(hit.collider.gameObject.GetComponent<Tile>() != null) {
+						newPos = hit.collider.gameObject.GetComponent<Tile>().position;
+						selectedTile = hit.collider.gameObject.GetComponent<Tile>();
+					}
+					else {
+						print ("Tile component is null! Returning world position");
+						Vector3 pos = hit.collider.gameObject.transform.position;
+						newPos = new Vector2(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.z));
+					}
+					
+					if(position != newPos) {
+						position = newPos;
+						OnTileHoverChange();
+						Debug.Log ("map tile is " + position);
+					}
 				}
 			}
 		}
-		
-		if(Input.GetMouseButton(0)) {
-			//Debug.Log ("clicked on " + TileMapManager.Instance.GetPosition());
+
+		if(canClickOnMap) {
+			if(Input.GetMouseButton(0)) {
+				//Debug.Log ("clicked on " + TileMapManager.Instance.GetPosition());
+			}
 		}
 	}
 	
@@ -162,6 +176,8 @@ public class GridOverlay : MonoBehaviour {
 	
 	void OnPostRender() 
 	{        
+		if(!canRenderLines)	return;
+
 		GL.Begin( GL.LINES );
 		
 		if(showSub)
@@ -251,5 +267,21 @@ public class GridOverlay : MonoBehaviour {
 
 	public GameObject[,] GetTiles() {
 		return tiles;
+	}
+
+	public void ToggleCanHoverOnMap(bool b) {
+		this.canHoverOnMap = b;
+	}
+
+	public void ToggleCanClickOnMap(bool b) {
+		this.canClickOnMap = b;
+	}
+
+	public void ToggleCanRenderLines(bool b) {
+		this.canRenderLines = b;
+	}
+
+	public Tile GetSelectedTile() {
+		return selectedTile;
 	}
 }

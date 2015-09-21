@@ -8,6 +8,7 @@ public class BuildScreenImagePanel : MonoBehaviour {
 	public Image[] images;
 	public float animDuration = 0.1f;
 	public int animSteps = 10;
+	public Text text;
 
 	private List<IDictionary<string, object>> bldgList;
 	private int bldgIndex = 0;
@@ -50,7 +51,13 @@ public class BuildScreenImagePanel : MonoBehaviour {
 	private void UpdateSelection() {
 		int x = bldgIndex;
 		print (bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME]);
-		images [2].sprite = Resources.Load ("Sprites/" + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
+		text.text = bldgList[x][Constants.DB_KEYWORD_NAME].ToString() + "\n" + 
+				bldgList[x][Constants.DB_KEYWORD_DESCRIPTION].ToString() + "\n" + 
+				"Cost: " + bldgList[x][Constants.DB_KEYWORD_COIN_COST].ToString() + " Coins / " + 
+				bldgList[x][Constants.DB_KEYWORD_CASH_COST].ToString() + " Cash";
+
+		images [2].sprite = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
+		print (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME]);
 
 		if (bldgIndex-1 > 0)
 			x = bldgIndex - 1;
@@ -58,25 +65,25 @@ public class BuildScreenImagePanel : MonoBehaviour {
 			x = bldgList.Count - 2;
 		else
 			x = bldgList.Count - 1;
-		images [0].sprite = Resources.Load ("Sprites/" + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
+		images [0].sprite = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
 
 		if (bldgIndex > 0)
 			x = bldgIndex - 1;
 		else
 			x = bldgList.Count - 1;
-		images [1].sprite = Resources.Load ("Sprites/" + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
+		images [1].sprite = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
 
 		if (bldgIndex + 1 < bldgList.Count)
 			x = bldgIndex + 1;
 		else
 			x = 0;
-		images [3].sprite = Resources.Load ("Sprites/" + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
+		images [3].sprite = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
 
 		if (bldgIndex + 2 < bldgList.Count)
 			x = bldgIndex + 2;
 		else
 			x = 0;
-		images [3].sprite = Resources.Load ("Sprites/" + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
+		images [3].sprite = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
 	}
 
 	public void AnimateLeft() {

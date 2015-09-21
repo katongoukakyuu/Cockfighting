@@ -12,6 +12,7 @@ public class FarmScreenBreedButton : MonoBehaviour {
 	public void ButtonPressed() {
 		mainCanvas.gameObject.SetActive (false);
 		breedCanvas.gameObject.SetActive (true);
+		Camera.main.GetComponent<GridOverlay>().ToggleCanHoverOnMap(false);
 		BreedsManager.Instance.Initialize ();
 	}
 	

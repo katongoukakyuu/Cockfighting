@@ -7,6 +7,7 @@ public class Tile : MonoBehaviour {
 	public Vector2 position;
 	public Material matSelected;
 	public Material matDeselected;
+	public bool isSelectable = false;
 
 	void Start() {
 		if(MouseHandler.Instance != null) {
@@ -18,8 +19,9 @@ public class Tile : MonoBehaviour {
 	}
 
 	private void OnClick(GameObject g) {
+		if(!isSelectable) return;
 		if (g == this.gameObject) {
-			print ("i am selected");
+			//print ("i am selected");
 			GetComponent<Renderer>().material = matSelected;
 			if(FarmManager.Instance != null) {
 				FarmManager.Instance.UpdateSelectedObject(this.gameObject);

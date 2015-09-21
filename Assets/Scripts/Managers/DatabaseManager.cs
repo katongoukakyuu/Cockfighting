@@ -202,12 +202,61 @@ public class DatabaseManager : MonoBehaviour {
 			1.3f, 1.2f, 1.0f, 0.9f, 1.1f, 1.0f
 		);
 		ControlPanelBuildingsManager.Instance.SaveBuilding (
-			"Hen Coop", "A coop to house hens with.",
+			"Chicken House - Net", "A chicken house made of net.",
 			200, 1000,
+			1, 1,
+			0, 0,
+			"Chicken House Net", "Chicken House Net"
+		);
+		ControlPanelBuildingsManager.Instance.SaveBuilding (
+			"Hen House - Basic", "A basic hen house made of net.",
+			50, 250,
 			2, 1,
 			0, 0,
-			"Hen Coop", "Hen Coop"
+			"Hen House Basic", "Hen House Basic"
 		);
+		ControlPanelBuildingsManager.Instance.SaveBuilding (
+			"Hen House - Wood", "Simple and cost-effective.",
+			50, 250,
+			1, 1,
+			0, 0,
+			"Hen House Wood", "Hen House Wood"
+			);
+		ControlPanelBuildingsManager.Instance.SaveBuilding (
+			"Teepee - Cement", "A simple teepee made from cement. Hot to the touch.",
+			50, 250,
+			1, 1,
+			0, 0,
+			"Teepee Cement", "Teepee Cement"
+			);
+		ControlPanelBuildingsManager.Instance.SaveBuilding (
+			"Teepee - Corrugated Iron", "Cheap, and effective as shelter.",
+			50, 250,
+			1, 1,
+			0, 0,
+			"Teepee Corrugated Steel", "Teepee Corrugated Steel"
+			);
+		ControlPanelBuildingsManager.Instance.SaveBuilding (
+			"Teepee - Drum", "A makeshift teepee carved from a water drum.",
+			50, 250,
+			1, 1,
+			0, 0,
+			"Teepee Drum", "Teepee Drum"
+			);
+		ControlPanelBuildingsManager.Instance.SaveBuilding (
+			"Teepee - Tire", "Nothing beats recycled parts.",
+			50, 250,
+			1, 1,
+			0, 0,
+			"Teepee Tire", "Teepee Tire"
+			);
+		ControlPanelBuildingsManager.Instance.SaveBuilding (
+			"Teepee - Wood", "An improved teepee made from wood.",
+			50, 250,
+			1, 1,
+			0, 0,
+			"Teepee Wood", "Teepee Wood"
+			);
 		ControlPanelFeedsManager.Instance.SaveFeeds (
 			"Uber Feeds", "Feeds for uber chickens.",
 			10, 10,
