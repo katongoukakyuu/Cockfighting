@@ -8,6 +8,7 @@ public class MailboxManager : MonoBehaviour {
 
 	public Canvas mainCanvas;
 	public Canvas mailboxCanvas;
+	public Animator MailAnimator;
 
 	public GameObject mailboxPanelMain;
 	public GameObject mailPanel;
@@ -95,6 +96,12 @@ public class MailboxManager : MonoBehaviour {
 	}
 
 	public void ButtonBack() {
+		MailAnimator.SetBool ("isHidden",true);
+		Invoke ("MainButtonFunction", 0.2f);
+
+	}
+
+	void MainButtonFunction(){
 		switch(state) {
 		case Constants.MAILBOX_MANAGER_STATE_VIEW_LIST:
 			mainCanvas.gameObject.SetActive (true);
@@ -104,7 +111,7 @@ public class MailboxManager : MonoBehaviour {
 			state = Constants.MAILBOX_MANAGER_STATE_VIEW_LIST;
 			mailboxPanelMain.gameObject.SetActive (true);
 			mailPanel.gameObject.SetActive (false);
-
+			
 			CheckDeleteCount();
 			replayButton.gameObject.SetActive(false);
 			break;

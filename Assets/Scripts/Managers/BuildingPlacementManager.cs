@@ -8,6 +8,7 @@ public class BuildingPlacementManager : MonoBehaviour {
 	public GameObject mainCanvasLeft;
 	public GameObject mainCanvasRight;
 	public Canvas buildingPlacementCanvas;
+	public Animator BuildPlacementAnimator;
 
 	private GridOverlay gridOverlay;
 

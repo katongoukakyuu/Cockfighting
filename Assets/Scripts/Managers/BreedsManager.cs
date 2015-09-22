@@ -8,6 +8,7 @@ public class BreedsManager : MonoBehaviour {
 
 	public Canvas mainCanvas;
 	public Canvas breedsCanvas;
+	public Animator BreedAnimator;
 
 	public Button addScheduleButton;
 	public Button confirmButton;
@@ -253,7 +254,15 @@ public class BreedsManager : MonoBehaviour {
 		SetSelected(selectedChicken[Constants.DB_KEYWORD_NAME].ToString());
 	}
 
-	public void ButtonBack() {
+	public void ButtonBack()
+	{
+		BreedAnimator.SetBool("isHidden", true);
+		Invoke ("BreedButtonFunction", 0.2f);
+	
+	}
+
+	void BreedButtonFunction()
+	{
 		if(state == Constants.BREEDS_MANAGER_STATE_FREE_SELECT) {
 			mainCanvas.gameObject.SetActive (true);
 			breedsCanvas.gameObject.SetActive (false);

@@ -8,7 +8,8 @@ public class FightManager : MonoBehaviour {
 
 	public Canvas mainCanvas;
 	public Canvas fightCanvas;
-	public CanvasGroup fightCanvasGroup;
+
+	public Animator FightCanvasAnimation;
 
 	public GameObject listPanel;
 	public GameObject matchmakingPanel;
@@ -188,30 +189,13 @@ public class FightManager : MonoBehaviour {
 
 	public void ButtonBack() {
 
-		StartCoroutine (DoFadeOutFight());
-//		switch(state) {
-//		case Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT:
-//			mainCanvas.gameObject.SetActive (true);
-//			listPanel.gameObject.SetActive (true);
-//			matchmakingPanel.gameObject.SetActive (false);
-//			fightCanvas.gameObject.SetActive (false);
-//			break;
-//		case Constants.FIGHT_MANAGER_STATE_MATCH_SELECT:
-//			state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
-//			listPanel.gameObject.SetActive (true);
-//			matchmakingPanel.gameObject.SetActive (false);
-//			break;
-//		default:
-//			break;
-//		}
-
+		FightCanvasAnimation.SetBool("isHidden", true);
+		Invoke ("FightButtonFunction",0.2f);
 	}
 
-	//Just gonna try if it works here. Return to ButtonBack() if it causes too much load
-	void Update()
+	void FightButtonFunction()
 	{
-		if(fightCanvasGroup.alpha == 0)
-		{
+
 			switch(state) {
 			case Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT:
 				mainCanvas.gameObject.SetActive (true);
@@ -227,7 +211,7 @@ public class FightManager : MonoBehaviour {
 			default:
 				break;
 			}
-		}
+
 	}
 
 
@@ -247,15 +231,4 @@ public class FightManager : MonoBehaviour {
 			yield return new WaitForSeconds(1f);
 		}
 	}
-
-	IEnumerator DoFadeOutFight()
-	{
-		while(fightCanvasGroup.alpha > 0)
-		{
-			fightCanvasGroup.alpha -= Time.deltaTime / 0.2f;
-			yield return null;
-		}
-		yield return null;
-	}
-
 }

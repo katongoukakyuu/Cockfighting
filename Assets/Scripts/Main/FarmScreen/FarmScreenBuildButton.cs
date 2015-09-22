@@ -9,11 +9,20 @@ public class FarmScreenBuildButton : MonoBehaviour {
 	public Canvas mainCanvas;
 	public Canvas buildStructuresCanvas;
 
+	public Animator mainCanvasAnimation;
+
 	public BuildScreenImagePanel imagePanel;
 
 	public void ButtonPressed() {
-		imagePanel.SetBuildings (DatabaseManager.Instance.LoadBuildings());
+		mainCanvasAnimation.SetBool("IsHidden", true);
+		Invoke ("BuildFunctions", 0.2f);
 
+	}
+
+	void BuildFunctions()
+	{
+		imagePanel.SetBuildings (DatabaseManager.Instance.LoadBuildings());
+		
 		mainCanvas.gameObject.SetActive (false);
 		buildStructuresCanvas.gameObject.SetActive (true);
 		Camera.main.GetComponent<GridOverlay>().ToggleCanHoverOnMap(false);

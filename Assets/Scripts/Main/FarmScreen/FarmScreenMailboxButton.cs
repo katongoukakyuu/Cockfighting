@@ -8,8 +8,16 @@ public class FarmScreenMailboxButton : MonoBehaviour {
 	
 	public Canvas mainCanvas;
 	public Canvas mailboxCanvas;
+
+	public Animator mainCanvasAnimation;
 	
 	public void ButtonPressed() {
+		mainCanvasAnimation.SetBool("IsHidden", true);
+		Invoke ("MailFunctions", 0.2f);
+	}
+
+	void MailFunctions()
+	{
 		mainCanvas.gameObject.SetActive (false);
 		mailboxCanvas.gameObject.SetActive (true);
 		Camera.main.GetComponent<GridOverlay>().ToggleCanHoverOnMap(false);

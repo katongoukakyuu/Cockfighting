@@ -9,47 +9,22 @@ public class FarmScreenFightButton : MonoBehaviour {
 	public Canvas mainCanvas;
 	public Canvas fightCanvas;
 
-	public CanvasGroup mainCanvasGroup;
-	public CanvasGroup FightCanvasGroup;
 
-	public float fadeTimeOne = 0.5f ;
+	public Animator mainCanvasAnimation;
+	
 
-
-	void Update()
-	{
-		if ( mainCanvasGroup.alpha == 0)
-		{
-
-			mainCanvas.gameObject.SetActive (false);
-			mainCanvasGroup.alpha = 1;
-		}
-	}
 	public void ButtonPressed() {
 
-		StartCoroutine(DoFadeOutOne());
+		mainCanvasAnimation.SetBool("IsHidden", true);
+		Invoke ("FightFunctions", 0.2f);
+	}
 
-		StartCoroutine(DoFadeInTwo());
-
+	void FightFunctions()
+	{
 		fightCanvas.gameObject.SetActive (true);
+		mainCanvas.gameObject.SetActive (false);
 		FightManager.Instance.Initialize ();
 	}
 
-	IEnumerator DoFadeOutOne(){
-		//		CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
-		while (mainCanvasGroup.alpha > 0){
-			mainCanvasGroup.alpha -= Time.deltaTime / fadeTimeOne;
-			yield return null;
-		}
-		yield return null;
-	}
-
-
-	IEnumerator DoFadeInTwo(){
-		while (FightCanvasGroup.alpha < 1){
-			FightCanvasGroup.alpha += Time.deltaTime / fadeTimeOne;
-			yield return null;
-		}
-		yield return null;
-	}
 }
 

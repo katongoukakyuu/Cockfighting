@@ -8,6 +8,7 @@ public class FeedsManager : MonoBehaviour {
 
 	public Canvas mainCanvas;
 	public Canvas feedsCanvas;
+	public Animator FeedAnimator;
 
 	public Button addScheduleButton;
 
@@ -239,6 +240,12 @@ public class FeedsManager : MonoBehaviour {
 	}
 
 	public void ButtonBack() {
+		FeedAnimator.SetBool("isHidden", true);
+		Invoke ("FeedButtonFunction",0.2f);
+	}
+
+	void FeedButtonFunction()
+	{
 		mainCanvas.gameObject.SetActive (true);
 		feedsCanvas.gameObject.SetActive (false);
 	}

@@ -8,8 +8,18 @@ public class FarmScreenBreedButton : MonoBehaviour {
 	
 	public Canvas mainCanvas;
 	public Canvas breedCanvas;
+
+	public Animator mainCanvasAnimation;
 	
 	public void ButtonPressed() {
+
+		mainCanvasAnimation.SetBool("IsHidden", true);
+		Invoke ("BreedFunctions", 0.2f);
+
+	}
+
+	void BreedFunctions()
+	{
 		mainCanvas.gameObject.SetActive (false);
 		breedCanvas.gameObject.SetActive (true);
 		Camera.main.GetComponent<GridOverlay>().ToggleCanHoverOnMap(false);
