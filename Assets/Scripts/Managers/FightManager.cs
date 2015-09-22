@@ -8,11 +8,13 @@ public class FightManager : MonoBehaviour {
 
 	public Canvas mainCanvas;
 	public Canvas fightCanvas;
+	public CanvasGroup fightCanvasGroup;
 
 	public GameObject listPanel;
 	public GameObject matchmakingPanel;
 	public GameObject matchmakingListPanel;
 	public GameObject queueButton;
+
 
 	private string state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
 
@@ -30,6 +32,7 @@ public class FightManager : MonoBehaviour {
 
 	private static FightManager instance;
 	private FightManager() {}
+
 	
 	public static FightManager Instance {
 		get {
@@ -184,23 +187,49 @@ public class FightManager : MonoBehaviour {
 	}
 
 	public void ButtonBack() {
-		switch(state) {
-		case Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT:
-			mainCanvas.gameObject.SetActive (true);
-			listPanel.gameObject.SetActive (true);
-			matchmakingPanel.gameObject.SetActive (false);
-			fightCanvas.gameObject.SetActive (false);
-			break;
-		case Constants.FIGHT_MANAGER_STATE_MATCH_SELECT:
-			state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
-			listPanel.gameObject.SetActive (true);
-			matchmakingPanel.gameObject.SetActive (false);
-			break;
-		default:
-			break;
-		}
+
+		StartCoroutine (DoFadeOutFight());
+//		switch(state) {
+//		case Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT:
+//			mainCanvas.gameObject.SetActive (true);
+//			listPanel.gameObject.SetActive (true);
+//			matchmakingPanel.gameObject.SetActive (false);
+//			fightCanvas.gameObject.SetActive (false);
+//			break;
+//		case Constants.FIGHT_MANAGER_STATE_MATCH_SELECT:
+//			state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
+//			listPanel.gameObject.SetActive (true);
+//			matchmakingPanel.gameObject.SetActive (false);
+//			break;
+//		default:
+//			break;
+//		}
 
 	}
+
+	//Just gonna try if it works here. Return to ButtonBack() if it causes too much load
+	void Update()
+	{
+		if(fightCanvasGroup.alpha == 0)
+		{
+			switch(state) {
+			case Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT:
+				mainCanvas.gameObject.SetActive (true);
+				listPanel.gameObject.SetActive (true);
+				matchmakingPanel.gameObject.SetActive (false);
+				fightCanvas.gameObject.SetActive (false);
+				break;
+			case Constants.FIGHT_MANAGER_STATE_MATCH_SELECT:
+				state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
+				listPanel.gameObject.SetActive (true);
+				matchmakingPanel.gameObject.SetActive (false);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
 
 	private System.DateTime TrimMilli(System.DateTime dt)
 	{
@@ -218,4 +247,15 @@ public class FightManager : MonoBehaviour {
 			yield return new WaitForSeconds(1f);
 		}
 	}
+
+	IEnumerator DoFadeOutFight()
+	{
+		while(fightCanvasGroup.alpha > 0)
+		{
+			fightCanvasGroup.alpha -= Time.deltaTime / 0.2f;
+			yield return null;
+		}
+		yield return null;
+	}
+
 }
