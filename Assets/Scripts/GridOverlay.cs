@@ -37,6 +37,7 @@ public class GridOverlay : MonoBehaviour {
 	public Color mainColor = new Color(0f,1f,0f,1f);
 	public Color subColor = new Color(0f,0.5f,0f,1f);
 
+	public bool tilesSelectable = false;
 	public Material[] selectedTileColors;
 	public Material[] deselectedTileColors;
 
@@ -68,7 +69,7 @@ public class GridOverlay : MonoBehaviour {
 				g.transform.parent = board.transform;
 				g.AddComponent<Tile>();
 				g.GetComponent<Tile>().position = new Vector2(x, z);
-				if(selectedTileColors.Length > 0 && deselectedTileColors.Length > 0) {
+				if(tilesSelectable && selectedTileColors.Length > 0 && deselectedTileColors.Length > 0) {
 					if(x < (int)(xSize/2)) {
 						g.GetComponent<Tile>().matSelected = selectedTileColors[0];
 						g.GetComponent<Tile>().matDeselected = deselectedTileColors[0];

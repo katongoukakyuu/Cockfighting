@@ -64,8 +64,8 @@ public class ServerFightManager : MonoBehaviour {
 		move[1] = AssignNextMove (null, 1);
 		l.Add (RecordTurn(move));
 
-		//while(hp[0] > 0 && hp[1] > 0) {
-		for(int i = 0; i < 2; i++) {
+		while(hp[0] > 0 && hp[1] > 0) {
+		//for(int i = 0; i < 2; i++) {
 			int pN, eN;
 			if (agi[0] > agi[1]) pN = 0;
 			else pN = 1;
@@ -100,8 +100,10 @@ public class ServerFightManager : MonoBehaviour {
 			DatabaseManager.Instance.SaveEntry(mail);
 		}
 
+		// DEBUG FOR QUICK MATCH
 		var loadedReplay = DatabaseManager.Instance.LoadReplay (savedReplay [Constants.DB_COUCHBASE_ID].ToString ());
-		//StartCoroutine(ReplayManager.Instance.PlayReplay(loadedReplay));
+		StartCoroutine(ReplayManager.Instance.PlayReplay(loadedReplay));
+		// END DEBUG FOR QUICK MATCH
 		
 		if(hp[0] <= 0) return 0;
 		else return 1;

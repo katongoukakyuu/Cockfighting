@@ -446,6 +446,17 @@ public class Constants : MonoBehaviour {
 	public const string VIEW_MATCH_INFO_ODDS = "Panel/Main Panel/Odds/Text 2";
 	// end view match children
 
+	// fight ring ui
+	public const string FIGHT_RING_UI_HP_1_SLIDER = "HP Panel/HP 1";
+	public const string FIGHT_RING_UI_HP_2_SLIDER = "HP Panel/HP 2";
+	public const string FIGHT_RING_UI_HP_1_FILL_SLIDER = "HP Panel/HP 1/Fill Area/Fill";
+	public const string FIGHT_RING_UI_HP_2_FILL_SLIDER = "HP Panel/HP 2/Fill Area/Fill";
+	public const string FIGHT_RING_UI_CHICKEN_1 = "Name Panel/Name 1";
+	public const string FIGHT_RING_UI_CHICKEN_2 = "Name Panel/Name 2";
+	public const string FIGHT_RING_UI_FARM_1 = "Farm Panel/Name 1";
+	public const string FIGHT_RING_UI_FARM_2 = "Farm Panel/Name 2";
+	// end fight ring ui
+
 	// match bet children	
 	public const string BET_MATCH_BET_SLIDER = "Bet Panel/Bet/Slider";
 	public const string BET_MATCH_MESSAGE = "Message Panel/Message";

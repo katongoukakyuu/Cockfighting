@@ -79,7 +79,7 @@ public class BuildingPlacementManager : MonoBehaviour {
 		gridOverlay.ToggleCanRenderLines(true);
 		gridOverlay.ToggleCanHoverOnMap(true);
 		gridOverlay.ToggleCanClickOnMap(true);
-		MouseHandler.Instance.enabled = true;
+		//MouseHandler.Instance.enabled = true;
 		bldgObject = Instantiate (Resources.Load (Constants.PATH_PREFABS_BUILDINGS + building[Constants.DB_KEYWORD_PREFAB_NAME],typeof(GameObject))) as GameObject;
 		OnTileHoverChange ();
 		isInitialized = true;
@@ -134,7 +134,7 @@ public class BuildingPlacementManager : MonoBehaviour {
 		gridOverlay.ToggleCanRenderLines(false);
 		gridOverlay.ToggleCanHoverOnMap(false);
 		gridOverlay.ToggleCanClickOnMap(false);
-		MouseHandler.Instance.enabled = false;
+		//MouseHandler.Instance.enabled = false;
 		isInitialized = false;
 	}
 

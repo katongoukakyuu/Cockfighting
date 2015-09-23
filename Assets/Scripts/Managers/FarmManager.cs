@@ -149,18 +149,24 @@ public class FarmManager : MonoBehaviour {
 		if (state == Constants.FARM_MANAGER_STATE_FREE_SELECT) {
 			if (g.tag == "Chicken" && state == Constants.FARM_MANAGER_STATE_FREE_SELECT) {
 				selectedObject = g;
-				mainCameraDummy = Instantiate(Camera.main.gameObject);
-				mainCameraDummy.SetActive(false);
-				CameraControls.Instance.freeCamera = false;
+				//mainCameraDummy = Instantiate(Camera.main.gameObject);
+				//mainCameraDummy.SetActive(false);
+				//CameraControls.Instance.freeCamera = false;
 				UpdateChickenStats(selectedObject.GetComponent<Chicken>().chicken);
 				chickenStatsCanvas.SetActive(true);
-				StartCoroutine(SwitchCamera(Camera.main, Camera.main.transform, g.transform.Find("Camera Stand/Camera").transform,
-				                            g.transform.FindChild("Camera Stand"), false, 0.5f, 20));
+				/*StartCoroutine(SwitchCamera(Camera.main, Camera.main.transform, g.transform.Find("Camera Stand/Camera").transform,
+				                            g.transform.FindChild("Camera Stand"), false, 0.5f, 20));*/
 			}
 			else {
 				selectedObject = null;
 				SwitchToFreeCamera();
 			}
+		}
+	}
+
+	public void UpdateClick(GameObject g) {
+		if(g.tag != "Chicken" && chickenStatsCanvas.activeSelf) {
+			chickenStatsCanvas.SetActive(false);
 		}
 	}
 
@@ -237,12 +243,13 @@ public class FarmManager : MonoBehaviour {
 	}
 
 	private void SwitchToFreeCamera() {
-		if(!CameraControls.Instance.freeCamera) {
+		chickenStatsCanvas.SetActive(false);
+		/*if(!CameraControls.Instance.freeCamera) {
 			CameraControls.Instance.freeCamera = true;
 			chickenStatsCanvas.SetActive(false);
 			StartCoroutine(SwitchCamera(Camera.main, Camera.main.transform, mainCameraDummy.transform,
 			                            null, true, 0.5f, 20));
-		}
+		}*/
 	}
 
 	private IEnumerator SwitchCamera(Camera camera, Transform cameraFrom, Transform cameraTo,

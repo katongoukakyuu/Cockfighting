@@ -12,7 +12,7 @@ public class Chicken : MonoBehaviour {
 
 	private void OnClick(GameObject g) {
 		if (g == this.gameObject) {
-			FarmManager.Instance.UpdateSelectedObject(this.gameObject);
+			FarmManager.Instance.UpdateSelectedObject(this.transform.root.gameObject);
 		}
 	}
 

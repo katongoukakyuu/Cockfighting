@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -11,8 +12,16 @@ public class ReplayManager : MonoBehaviour {
 	public float moveSpeed;
 	public float yOffset;
 
+	public GameObject topPanel;
+	public Color healthColorFull;
+	public Color healthColorEmpty;
+
 	private GameObject[] chickens = new GameObject[2];
 	private Animator[] animators = new Animator[2];
+	private ChickenFightAI[] agents = new ChickenFightAI[2];
+
+	private IDictionary<string,object> currentRoundInfo;
+	private int[] hpMax = new int[2];
 	
 	private Vector3[] pos = new Vector3[2];
 	private Vector3[] posOld = new Vector3[2];
@@ -48,25 +57,35 @@ public class ReplayManager : MonoBehaviour {
 		for(int i = 0; i < 2; i++) {
 			startTime[i] = Time.time;
 		}
-
-		print ("player instance null? " + (PlayerManager.Instance == null) +
-		       " selected replay null? " + (PlayerManager.Instance.selectedReplay == null));
-		if(PlayerManager.Instance != null &&
+		
+		/*if(PlayerManager.Instance != null &&
 		   PlayerManager.Instance.selectedReplay != null) {
 			StartCoroutine(PlayReplay(PlayerManager.Instance.selectedReplay));
-		}
+		}*/
+
+		// DEBUG FOR QUICK MATCH
+		ServerFightManager.Instance.AutomateFight (
+			DatabaseManager.Instance.LoadChicken("Gary", "test"),
+			DatabaseManager.Instance.LoadChicken("Larry", "test2"),
+			DatabaseManager.Instance.LoadFightingMovesOwned (DatabaseManager.Instance.LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
+			DatabaseManager.Instance.LoadFightingMovesOwned (DatabaseManager.Instance.LoadChicken("Larry", "test2")[Constants.DB_COUCHBASE_ID].ToString())
+		);
+		// END DEBUG FOR QUICK MATCH
 	}
 
 	void Update() {
+		UpdateUI();
 		for(int i = 0; i < 2; i++) {
-			chickens[i].transform.LookAt(chickens[Mathf.Abs(i-1)].transform.position);
-			animators[i].SetFloat("Rotation Y",chickens[i].transform.rotation.eulerAngles.y);
+			if(!agents[i].hasFainted) {
+				chickens[i].transform.LookAt(chickens[Mathf.Abs(i-1)].transform.position);
+				animators[i].SetFloat("Rotation Y",chickens[i].transform.rotation.eulerAngles.y);
+			}
 			if(chickens[i] != null && chickens[i].transform.position != pos[i]) {
-				isAnimating[i] = true;
+				//isAnimating[i] = true;
 				Vector3 posPrev = chickens[i].transform.position;
-				chickens[i].transform.position = Vector3.Lerp(posOld[i], 
+				/*chickens[i].transform.position = Vector3.Lerp(posOld[i], 
 				                                              pos[i], 
-				                                              ((Time.time - startTime[i]) * moveSpeed));
+				                                              ((Time.time - startTime[i]) * moveSpeed));*/
 				//print ("pos old " + i + " is: " + posOld[i] + ", pos " + i + " is: " + pos[i] + ", start time is " + startTime[i] + ", distance is: " + posDistance[i]);
 				if(animators[i] != null) {
 					animators[i].SetFloat("Velocity X",(chickens[i].transform.position.x - posPrev.x) * 10);
@@ -75,39 +94,76 @@ public class ReplayManager : MonoBehaviour {
 				}
 			}
 			else {
-				startTime[i] = Time.time;
+				//startTime[i] = Time.time;
 				if(animators[i] != null) {
 					animators[i].SetFloat("Velocity X",0f);
 					animators[i].SetFloat("Velocity Z",0f);
 					animators[i].SetFloat("Velocity Angle", Mathf.Atan2(animators[i].GetFloat("Velocity X"), animators[i].GetFloat("Velocity Z")) * Mathf.Rad2Deg);
 				}
-				isAnimating[i] = false;
+				//isAnimating[i] = false;
 			}
 		}
 	}
 
 	public IEnumerator PlayReplay(IDictionary<string,object> replay) {
-		chickens[0] = (GameObject) Instantiate(chicken, pos[0], Quaternion.identity);
-		chickens[1] = (GameObject) Instantiate(chicken, pos[1], Quaternion.identity);
+		chickens[0] = (GameObject) Instantiate(chicken);
+		chickens[1] = (GameObject) Instantiate(chicken);
 		for(int i = 0; i < 2; i++) {
 			animators[i] = chickens[i].GetComponent<Animator>();
+			agents[i] = chickens[i].GetComponent<ChickenFightAI>();
+			agents[i].enabled = true;
+			chickens[i].GetComponent<ChickenAI>().enabled = false;
 			posOld[i] = pos[i];
 		}
 
 		bool isImmediate = true;
+
+		topPanel.transform.FindChild(Constants.FIGHT_RING_UI_CHICKEN_1).GetComponent<Text>().text = 
+			DatabaseManager.Instance.LoadChicken(replay[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString())[Constants.DB_KEYWORD_NAME].ToString();
+		topPanel.transform.FindChild(Constants.FIGHT_RING_UI_CHICKEN_2).GetComponent<Text>().text = 
+			DatabaseManager.Instance.LoadChicken(replay[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString())[Constants.DB_KEYWORD_NAME].ToString();
+
 		List<IDictionary<string,object>> moves = (replay [Constants.DB_KEYWORD_REPLAY] as Newtonsoft.Json.Linq.JArray).ToObject<List<IDictionary<string,object>>> ();
 		foreach(IDictionary<string,object> id in moves) {
 			//Utility.PrintDictionary(id);
 			//print ("----- NEWLINE -----");
+			currentRoundInfo = id;
+
 			if(moves.IndexOf(id) != 0) {
 				isImmediate = false;
 			}
-			UpdateDistance(new Vector3(float.Parse (id[Constants.REPLAY_X1].ToString()),0,float.Parse (id[Constants.REPLAY_Y1].ToString())), 0, isImmediate);
-			UpdateDistance(new Vector3(float.Parse (id[Constants.REPLAY_X2].ToString()),0,float.Parse (id[Constants.REPLAY_Y2].ToString())), 1, isImmediate);
-			SetMoveAnimTrigger(0, id[Constants.REPLAY_MOVE1].ToString());
-			SetMoveAnimTrigger(1, id[Constants.REPLAY_MOVE2].ToString());
-			while(isAnimating[0] && isAnimating[1]) {
+			else {
+				topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_1_SLIDER).GetComponent<Slider>().maxValue = int.Parse(id[Constants.REPLAY_HP1].ToString());
+				topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_2_SLIDER).GetComponent<Slider>().maxValue = int.Parse(id[Constants.REPLAY_HP2].ToString());
+				topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_1_SLIDER).GetComponent<Slider>().value = int.Parse(id[Constants.REPLAY_HP1].ToString());
+				topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_2_SLIDER).GetComponent<Slider>().value = int.Parse(id[Constants.REPLAY_HP2].ToString());
+				hpMax[0] = int.Parse(id[Constants.REPLAY_HP1].ToString());
+				hpMax[1] = int.Parse(id[Constants.REPLAY_HP2].ToString());
+			}
+
+			for(int i = 0; i < 2; i++) {
+				//int hp = (i == 0) ? int.Parse(id[Constants.REPLAY_HP1].ToString()) : int.Parse(id[Constants.REPLAY_HP2].ToString());
+				int[] newDest = new int[2];
+				newDest[0] = (i == 0) ? int.Parse (id[Constants.REPLAY_X1].ToString()) : int.Parse (id[Constants.REPLAY_X2].ToString());
+				newDest[1] = (i == 0) ? int.Parse (id[Constants.REPLAY_Y1].ToString()) : int.Parse (id[Constants.REPLAY_Y2].ToString());
+
+				agents[i].moveImmediately = isImmediate;
+				agents[i].newDestination = newDest;
+			}
+
+			do {
 				yield return new WaitForSeconds(0.2f);
+			} while(agents[0].isCurrentlyMoving && agents[1].isCurrentlyMoving);
+
+			for(int i = 0; i < 2; i++) {
+				int hp = (i == 0) ? int.Parse(id[Constants.REPLAY_HP1].ToString()) : int.Parse(id[Constants.REPLAY_HP2].ToString());
+				if(hp <= 0) {
+					animators[i].SetTrigger("Faint");
+				}
+				else {
+					string move = (i == 0) ? id[Constants.REPLAY_MOVE1].ToString() : id[Constants.REPLAY_MOVE2].ToString();
+					SetMoveAnimTrigger(i, move);
+				}
 			}
 		}
 		print ("end");
@@ -146,5 +202,20 @@ public class ReplayManager : MonoBehaviour {
 	private Vector3 TransposeToBoard(Vector3 pos) {
 		// print (pos + " transposed to " + gridOverlay.GetTiles () [(int)pos.x, (int)pos.z].transform.position);
 		return gridOverlay.GetTiles()[(int)pos.x,(int)pos.z].transform.position;
+	}
+
+	public void ButtonBack() {
+		Application.LoadLevel(Constants.SCENE_FARM);
+	}
+
+	public void UpdateUI() {
+		if(currentRoundInfo != null) {
+			Color c = Color.Lerp (healthColorEmpty,healthColorFull,int.Parse(currentRoundInfo[Constants.REPLAY_HP1].ToString())/hpMax[0]);
+			topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_1_FILL_SLIDER).GetComponent<Image>().color = c;
+			c = Color.Lerp (healthColorEmpty,healthColorFull,int.Parse(currentRoundInfo[Constants.REPLAY_HP2].ToString())/hpMax[1]);
+			topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_2_FILL_SLIDER).GetComponent<Image>().color = c;
+			topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_1_SLIDER).GetComponent<Slider>().value = int.Parse(currentRoundInfo[Constants.REPLAY_HP1].ToString());
+			topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_2_SLIDER).GetComponent<Slider>().value = int.Parse(currentRoundInfo[Constants.REPLAY_HP2].ToString());
+		}
 	}
 }
