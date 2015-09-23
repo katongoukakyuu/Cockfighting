@@ -197,21 +197,21 @@ public class ServerFightManager : MonoBehaviour {
 		int eN = Mathf.Abs(pN-1);
 		switch (moveName) {
 		case Constants.FIGHT_MOVE_DASH:
-			print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+			if(debug) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 			pos[pN] = Utility.AStar(pos[pN],pos[eN],ringSize,2,false);
-			print ("new pos: " + pos[pN]);
+			if(debug) print ("new pos: " + pos[pN]);
 			UpdateDistance ();
 			break;
 		case Constants.FIGHT_MOVE_FLYING_TALON:
-			print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+			if(debug) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 			pos[pN] = Utility.AStar(pos[pN],pos[eN],ringSize,1,false);
-			print ("new pos: " + pos[pN]);
+			if(debug) print ("new pos: " + pos[pN]);
 			UpdateDistance ();
 			hp[eN] -= (int)(atk[pN] * 0.7f);
 			if(debug) print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		case Constants.FIGHT_MOVE_SIDESTEP:
-			print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+			if(debug) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 
 			Vector2 sidestepPosition;
 			do {
@@ -219,7 +219,7 @@ public class ServerFightManager : MonoBehaviour {
 				                               pos[eN].y);
 			} while(sidestepPosition == pos[eN]);
 			pos[pN] = Utility.AStar(pos[pN],sidestepPosition,ringSize,5,true);
-			print ("new pos: " + pos[pN]);
+			if(debug) print ("new pos: " + pos[pN]);
 			UpdateDistance ();
 			if(debug) print ("Sidestep!");
 			break;
@@ -234,7 +234,7 @@ public class ServerFightManager : MonoBehaviour {
 
 	private void UpdateDistance() {
 		dist = Vector2.Distance(pos[0], pos[1]);
-		print ("Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+		if(debug) print ("Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 	}
 
 	private Dictionary<string, object> RecordTurn(string[] move) {

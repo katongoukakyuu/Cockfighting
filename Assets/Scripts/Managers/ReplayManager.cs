@@ -22,6 +22,9 @@ public class ReplayManager : MonoBehaviour {
 
 	private IDictionary<string,object> currentRoundInfo;
 	private int[] hpMax = new int[2];
+	private List<int>[] hpQueue = new List<int>[2];
+	private List<bool>[] hpQueueChangedByMove = new List<bool>[2];
+	private bool[] hpQueueWaitingForMoveProc = new bool[2] {false, false};
 	
 	private Vector3[] pos = new Vector3[2];
 	private Vector3[] posOld = new Vector3[2];
@@ -56,6 +59,8 @@ public class ReplayManager : MonoBehaviour {
 
 		for(int i = 0; i < 2; i++) {
 			startTime[i] = Time.time;
+			hpQueue[i] = new List<int>();
+			hpQueueChangedByMove[i] = new List<bool>();
 		}
 		
 		/*if(PlayerManager.Instance != null &&
@@ -74,7 +79,7 @@ public class ReplayManager : MonoBehaviour {
 	}
 
 	void Update() {
-		UpdateUI();
+
 		for(int i = 0; i < 2; i++) {
 			if(!agents[i].hasFainted) {
 				chickens[i].transform.LookAt(chickens[Mathf.Abs(i-1)].transform.position);
@@ -112,6 +117,7 @@ public class ReplayManager : MonoBehaviour {
 			animators[i] = chickens[i].GetComponent<Animator>();
 			agents[i] = chickens[i].GetComponent<ChickenFightAI>();
 			agents[i].enabled = true;
+			agents[i].index = i;
 			chickens[i].GetComponent<ChickenAI>().enabled = false;
 			posOld[i] = pos[i];
 		}
@@ -142,7 +148,12 @@ public class ReplayManager : MonoBehaviour {
 			}
 
 			for(int i = 0; i < 2; i++) {
-				//int hp = (i == 0) ? int.Parse(id[Constants.REPLAY_HP1].ToString()) : int.Parse(id[Constants.REPLAY_HP2].ToString());
+				int hp = (i == 0) ? int.Parse(id[Constants.REPLAY_HP1].ToString()) : int.Parse(id[Constants.REPLAY_HP2].ToString());
+				hpQueue[i].Add(hp);
+				hpQueueChangedByMove[i].Add(false);
+				if(isImmediate) {
+					UpdateUI(i, false, false);
+				}
 				int[] newDest = new int[2];
 				newDest[0] = (i == 0) ? int.Parse (id[Constants.REPLAY_X1].ToString()) : int.Parse (id[Constants.REPLAY_X2].ToString());
 				newDest[1] = (i == 0) ? int.Parse (id[Constants.REPLAY_Y1].ToString()) : int.Parse (id[Constants.REPLAY_Y2].ToString());
@@ -152,18 +163,25 @@ public class ReplayManager : MonoBehaviour {
 			}
 
 			do {
-				yield return new WaitForSeconds(0.2f);
+				yield return new WaitForSeconds(1f);
 			} while(agents[0].isCurrentlyMoving && agents[1].isCurrentlyMoving);
 
 			for(int i = 0; i < 2; i++) {
 				int hp = (i == 0) ? int.Parse(id[Constants.REPLAY_HP1].ToString()) : int.Parse(id[Constants.REPLAY_HP2].ToString());
+				hpQueue[i].Add(hp);
 				if(hp <= 0) {
 					animators[i].SetTrigger("Faint");
+					hpQueue[i].Clear();
+					hpQueueChangedByMove[i].Clear();
+					hpQueue[i].Add(hp);
+					hpQueueChangedByMove[i].Add(false);
 				}
 				else {
 					string move = (i == 0) ? id[Constants.REPLAY_MOVE1].ToString() : id[Constants.REPLAY_MOVE2].ToString();
 					SetMoveAnimTrigger(i, move);
+					//print ("move for " + i + " is " + move + ", hp to display is " + hpQueue[i][0]);
 				}
+				UpdateUI(i, false, false);
 			}
 		}
 		print ("end");
@@ -189,11 +207,14 @@ public class ReplayManager : MonoBehaviour {
 			switch (move) {
 			case Constants.FIGHT_MOVE_FLYING_TALON:
 				animators[index].SetTrigger(move);
+				hpQueueChangedByMove[index].Add(true);
 				break;
 			case Constants.FIGHT_MOVE_PECK:
 				animators[index].SetTrigger(move);
+				hpQueueChangedByMove[index].Add(true);
 				break;
 			default:
+				hpQueueChangedByMove[index].Add(false);
 				break;
 			}
 		}
@@ -208,14 +229,33 @@ public class ReplayManager : MonoBehaviour {
 		Application.LoadLevel(Constants.SCENE_FARM);
 	}
 
-	public void UpdateUI() {
-		if(currentRoundInfo != null) {
-			Color c = Color.Lerp (healthColorEmpty,healthColorFull,int.Parse(currentRoundInfo[Constants.REPLAY_HP1].ToString())/hpMax[0]);
-			topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_1_FILL_SLIDER).GetComponent<Image>().color = c;
-			c = Color.Lerp (healthColorEmpty,healthColorFull,int.Parse(currentRoundInfo[Constants.REPLAY_HP2].ToString())/hpMax[1]);
-			topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_2_FILL_SLIDER).GetComponent<Image>().color = c;
-			topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_1_SLIDER).GetComponent<Slider>().value = int.Parse(currentRoundInfo[Constants.REPLAY_HP1].ToString());
-			topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_2_SLIDER).GetComponent<Slider>().value = int.Parse(currentRoundInfo[Constants.REPLAY_HP2].ToString());
+	public void UpdateUI(int i, bool isImmediate, bool calledFromMoveProc) {
+		//print (i + " queue count: " + hpQueue[i].Count + ", change queue count: " + hpQueueChangedByMove[i].Count);
+		if(hpQueue[i].Count > 0 && hpQueueChangedByMove[i].Count > 0) {
+			if(hpQueueWaitingForMoveProc[i] && calledFromMoveProc) {
+				print (i + " has been called by a move proc!");
+				hpQueueWaitingForMoveProc[i] = false;
+			}
+			else if(hpQueueChangedByMove[i][0]) {
+				hpQueueWaitingForMoveProc[i] = true;
+				//print (i + " is now waiting for a move proc");
+				return;
+			}
+
+			int currentHP = hpQueue[i][0];
+			if(!isImmediate) {
+				hpQueue[i].RemoveAt(0);
+				hpQueueChangedByMove[i].RemoveAt(0);
+			}
+			Color c = Color.Lerp (healthColorEmpty,healthColorFull,currentHP/hpMax[i]);
+			if(i == 0) {
+				topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_1_FILL_SLIDER).GetComponent<Image>().color = c;
+				topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_1_SLIDER).GetComponent<Slider>().value = currentHP;
+			}
+			else {
+				topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_2_FILL_SLIDER).GetComponent<Image>().color = c;
+				topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_2_SLIDER).GetComponent<Slider>().value = currentHP;
+			}
 		}
 	}
 }

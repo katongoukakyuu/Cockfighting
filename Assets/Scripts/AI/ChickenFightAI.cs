@@ -3,6 +3,7 @@ using System.Collections;
 
 public class ChickenFightAI : MonoBehaviour {
 
+	public int index = -1;
 	public int[] newDestination;
 	public bool moveImmediately = false;
 	public bool isCurrentlyMoving = true;
@@ -59,5 +60,10 @@ public class ChickenFightAI : MonoBehaviour {
 		}
 
 		anim.SetFloat("Velocity Z", navMeshAgent.velocity.magnitude);
+	}
+
+	public void HitConfirm() {
+		print ("hit confirm!");
+		ReplayManager.Instance.UpdateUI((index+1)%2, false, true);
 	}
 }
