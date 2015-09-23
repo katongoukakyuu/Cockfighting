@@ -189,8 +189,21 @@ public class FightManager : MonoBehaviour {
 
 	public void ButtonBack() {
 
-		FightCanvasAnimation.SetBool("isHidden", true);
-		Invoke ("FightButtonFunction",0.2f);
+
+
+		switch(state) {
+		case Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT:
+				FightCanvasAnimation.SetBool("isHidden", true);
+				Invoke ("FightButtonFunction",0.2f);
+			break;
+		case Constants.FIGHT_MANAGER_STATE_MATCH_SELECT:
+			state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
+			listPanel.gameObject.SetActive (true);
+			matchmakingPanel.gameObject.SetActive (false);
+			break;
+		default:
+			break;
+		}
 	}
 
 	void FightButtonFunction()

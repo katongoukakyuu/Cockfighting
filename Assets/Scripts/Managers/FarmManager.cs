@@ -11,6 +11,7 @@ public class FarmManager : MonoBehaviour {
 	public Text coinText;
 	public Text cashText;
 	public GameObject chicken;
+	public Animator ChickenStatAnim;
 
 	public Canvas messageCanvas;
 
@@ -166,8 +167,14 @@ public class FarmManager : MonoBehaviour {
 
 	public void UpdateClick(GameObject g) {
 		if(g.tag != "Chicken" && chickenStatsCanvas.activeSelf) {
-			chickenStatsCanvas.SetActive(false);
+			ChickenStatAnim.SetBool("isHidden", true);
+			Invoke ("ChickenStatCloseFunction", 0.2f);
 		}
+	}
+
+	void ChickenStatCloseFunction()
+	{
+		chickenStatsCanvas.SetActive(false);
 	}
 
 	private void UpdateChickenStats(IDictionary<string,object> dic) {
