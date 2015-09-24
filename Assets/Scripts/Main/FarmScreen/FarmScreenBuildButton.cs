@@ -14,7 +14,7 @@ public class FarmScreenBuildButton : MonoBehaviour {
 	public BuildScreenImagePanel imagePanel;
 
 	public void ButtonPressed() {
-		mainCanvasAnimation.SetBool("IsHidden", true);
+		mainCanvasAnimation.SetBool("isHidden", true);
 		Invoke ("BuildFunctions", 0.2f);
 
 	}

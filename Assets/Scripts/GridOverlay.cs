@@ -81,7 +81,7 @@ public class GridOverlay : MonoBehaviour {
 				}
 				else {
 					// Set material alpha to 0 and render it in Fade mode
-					Material m = g.GetComponent<Renderer>().material;
+					/*Material m = g.GetComponent<Renderer>().material;
 					Color c = m.color;
 					c.a = 0;
 					m.color = c;
@@ -91,7 +91,7 @@ public class GridOverlay : MonoBehaviour {
 					m.DisableKeyword("_ALPHATEST_ON");
 					m.EnableKeyword("_ALPHABLEND_ON");
 					m.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-					m.renderQueue = 3000;
+					m.renderQueue = 3000;*/
 				}
 				tiles[x,z] = g;
 			}

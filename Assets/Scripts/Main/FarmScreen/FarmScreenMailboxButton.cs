@@ -12,7 +12,7 @@ public class FarmScreenMailboxButton : MonoBehaviour {
 	public Animator mainCanvasAnimation;
 	
 	public void ButtonPressed() {
-		mainCanvasAnimation.SetBool("IsHidden", true);
+		mainCanvasAnimation.SetBool("isHidden", true);
 		Invoke ("MailFunctions", 0.2f);
 	}
 

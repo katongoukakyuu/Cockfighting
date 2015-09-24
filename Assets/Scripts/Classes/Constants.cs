@@ -451,8 +451,8 @@ public class Constants : MonoBehaviour {
 	public const string FIGHT_RING_UI_HP_2_SLIDER = "HP Panel/HP 2";
 	public const string FIGHT_RING_UI_HP_1_FILL_SLIDER = "HP Panel/HP 1/Fill Area/Fill";
 	public const string FIGHT_RING_UI_HP_2_FILL_SLIDER = "HP Panel/HP 2/Fill Area/Fill";
-	public const string FIGHT_RING_UI_CHICKEN_1 = "Name Panel/Name 1";
-	public const string FIGHT_RING_UI_CHICKEN_2 = "Name Panel/Name 2";
+	public const string FIGHT_RING_UI_CHICKEN_1 = "Name Panel/Image/Name 1";
+	public const string FIGHT_RING_UI_CHICKEN_2 = "Name Panel/Image/Name 2";
 	public const string FIGHT_RING_UI_FARM_1 = "Farm Panel/Name 1";
 	public const string FIGHT_RING_UI_FARM_2 = "Farm Panel/Name 2";
 	// end fight ring ui

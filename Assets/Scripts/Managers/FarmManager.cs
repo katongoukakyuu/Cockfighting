@@ -11,10 +11,12 @@ public class FarmManager : MonoBehaviour {
 	public Text coinText;
 	public Text cashText;
 	public GameObject chicken;
+	public Animator mainAnim;
 	public Animator ChickenStatAnim;
 
 	public Canvas messageCanvas;
 
+	public GameObject mainCanvas;
 	public GameObject chickenStatsCanvas;
 	public Text[] chickenStatsFields;
 	
@@ -100,10 +102,11 @@ public class FarmManager : MonoBehaviour {
 			int yMax = gridOverlay.GetTiles().GetLength(1);
 			print ("Grid overlay xy: " + xMax + ", " + yMax);
 			foreach(IDictionary<string,object> i in PlayerManager.Instance.playerChickens) {
-				GameObject g = Instantiate (chicken) as GameObject;
+				GameObject g = Instantiate (chicken,
+				                            gridOverlay.GetTiles()[Random.Range (0,xMax), Random.Range (0,yMax)].transform.position,
+				                            Quaternion.identity) as GameObject;
 				g.AddComponent<Chicken>();
 				g.GetComponent<Chicken>().chicken = i;
-				g.transform.position = gridOverlay.GetTiles()[Random.Range (0,xMax), Random.Range (0,yMax)].transform.position;
 				listChickens.Add (g);
 			}
 		}
@@ -154,7 +157,9 @@ public class FarmManager : MonoBehaviour {
 				//mainCameraDummy.SetActive(false);
 				//CameraControls.Instance.freeCamera = false;
 				UpdateChickenStats(selectedObject.GetComponent<Chicken>().chicken);
+				mainAnim.SetBool("isHidden", true);
 				chickenStatsCanvas.SetActive(true);
+				Invoke ("ChickenStatOpenFunction", 0.2f);
 				/*StartCoroutine(SwitchCamera(Camera.main, Camera.main.transform, g.transform.Find("Camera Stand/Camera").transform,
 				                            g.transform.FindChild("Camera Stand"), false, 0.5f, 20));*/
 			}
@@ -167,14 +172,20 @@ public class FarmManager : MonoBehaviour {
 
 	public void UpdateClick(GameObject g) {
 		if(g.tag != "Chicken" && chickenStatsCanvas.activeSelf) {
-			ChickenStatAnim.SetBool("isHidden", true);
-			Invoke ("ChickenStatCloseFunction", 0.2f);
+			SwitchToFreeCamera();
 		}
 	}
 
 	void ChickenStatCloseFunction()
 	{
+		mainCanvas.SetActive(true);
 		chickenStatsCanvas.SetActive(false);
+	}
+
+	void ChickenStatOpenFunction()
+	{
+		mainCanvas.SetActive(false);
+		chickenStatsCanvas.SetActive(true);
 	}
 
 	private void UpdateChickenStats(IDictionary<string,object> dic) {
@@ -250,7 +261,9 @@ public class FarmManager : MonoBehaviour {
 	}
 
 	private void SwitchToFreeCamera() {
-		chickenStatsCanvas.SetActive(false);
+		mainCanvas.SetActive(true);
+		ChickenStatAnim.SetBool("isHidden", true);
+		Invoke ("ChickenStatCloseFunction", 0.2f);
 		/*if(!CameraControls.Instance.freeCamera) {
 			CameraControls.Instance.freeCamera = true;
 			chickenStatsCanvas.SetActive(false);
@@ -290,5 +303,9 @@ public class FarmManager : MonoBehaviour {
 		isAnimating = false;
 		if (destroyCameraTo)
 			Destroy (cameraTo.gameObject);
+	}
+
+	public void Logout() {
+		Application.LoadLevel(Constants.SCENE_LOGIN);
 	}
 }

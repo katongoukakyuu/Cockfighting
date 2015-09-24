@@ -13,7 +13,7 @@ public class FarmScreenBreedButton : MonoBehaviour {
 	
 	public void ButtonPressed() {
 
-		mainCanvasAnimation.SetBool("IsHidden", true);
+		mainCanvasAnimation.SetBool("isHidden", true);
 		Invoke ("BreedFunctions", 0.2f);
 
 	}

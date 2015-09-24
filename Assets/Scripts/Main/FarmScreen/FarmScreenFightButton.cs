@@ -15,7 +15,7 @@ public class FarmScreenFightButton : MonoBehaviour {
 
 	public void ButtonPressed() {
 
-		mainCanvasAnimation.SetBool("IsHidden", true);
+		mainCanvasAnimation.SetBool("isHidden", true);
 		Invoke ("FightFunctions", 0.2f);
 	}
 

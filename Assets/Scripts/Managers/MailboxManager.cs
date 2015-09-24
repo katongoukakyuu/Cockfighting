@@ -96,16 +96,10 @@ public class MailboxManager : MonoBehaviour {
 	}
 
 	public void ButtonBack() {
-		MailAnimator.SetBool ("isHidden",true);
-		Invoke ("MainButtonFunction", 0.2f);
-
-	}
-
-	void MainButtonFunction(){
 		switch(state) {
 		case Constants.MAILBOX_MANAGER_STATE_VIEW_LIST:
-			mainCanvas.gameObject.SetActive (true);
-			mailboxCanvas.gameObject.SetActive (false);
+			MailAnimator.SetBool ("isHidden",true);
+			Invoke ("MainButtonFunction", 0.2f);
 			break;
 		case Constants.MAILBOX_MANAGER_STATE_VIEW_MAIL:
 			state = Constants.MAILBOX_MANAGER_STATE_VIEW_LIST;
@@ -118,6 +112,11 @@ public class MailboxManager : MonoBehaviour {
 		default:
 			break;
 		}
+	}
+
+	void MainButtonFunction(){
+		mainCanvas.gameObject.SetActive (true);
+		mailboxCanvas.gameObject.SetActive (false);
 	}
 
 	public void ButtonReplay() {

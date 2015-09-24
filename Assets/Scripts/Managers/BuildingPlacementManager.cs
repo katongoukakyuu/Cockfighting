@@ -16,6 +16,7 @@ public class BuildingPlacementManager : MonoBehaviour {
 	private IDictionary<string,object> building;
 	private GameObject bldgObject;
 	private string orientation = Constants.ORIENTATION_NORTH;
+	private int[] curPos = new int[2] {-1,-1};
 
 	private static BuildingPlacementManager instance;
 	private BuildingPlacementManager() {}
@@ -43,11 +44,16 @@ public class BuildingPlacementManager : MonoBehaviour {
 				(int)gridOverlay.GetSelectedTile().position.y
 			};
 			if(FarmManager.Instance.CheckBuildable(building, pos, orientation)) {
-				FarmManager.Instance.BuildStructure(building, pos, orientation);
-				ButtonCancel();
-				DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString (),
-				                                      PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
-				FarmManager.Instance.UpdateBuildingsOwned();
+				if(curPos[0] == pos[0] && curPos[1] == pos[1]) {
+					FarmManager.Instance.BuildStructure(building, pos, orientation);
+					ButtonCancel();
+					DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString (),
+					                                      PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
+					FarmManager.Instance.UpdateBuildingsOwned();
+				}
+				else {
+					curPos = pos;
+				}
 			}
 		}
 	}
@@ -76,7 +82,7 @@ public class BuildingPlacementManager : MonoBehaviour {
 
 		this.building = building;
 		orientation = Constants.ORIENTATION_NORTH;
-		gridOverlay.ToggleCanRenderLines(true);
+		//gridOverlay.ToggleCanRenderLines(true);
 		gridOverlay.ToggleCanHoverOnMap(true);
 		gridOverlay.ToggleCanClickOnMap(true);
 		//MouseHandler.Instance.enabled = true;
@@ -131,7 +137,7 @@ public class BuildingPlacementManager : MonoBehaviour {
 		mainCanvasLeft.gameObject.SetActive (true);
 		mainCanvasRight.gameObject.SetActive (true);
 		buildingPlacementCanvas.gameObject.SetActive (false);
-		gridOverlay.ToggleCanRenderLines(false);
+		//gridOverlay.ToggleCanRenderLines(false);
 		gridOverlay.ToggleCanHoverOnMap(false);
 		gridOverlay.ToggleCanClickOnMap(false);
 		//MouseHandler.Instance.enabled = false;
