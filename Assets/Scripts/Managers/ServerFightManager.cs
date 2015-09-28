@@ -101,8 +101,8 @@ public class ServerFightManager : MonoBehaviour {
 		}
 
 		// DEBUG FOR QUICK MATCH
-		var loadedReplay = DatabaseManager.Instance.LoadReplay (savedReplay [Constants.DB_COUCHBASE_ID].ToString ());
-		StartCoroutine(ReplayManager.Instance.PlayReplay(loadedReplay));
+		/*var loadedReplay = DatabaseManager.Instance.LoadReplay (savedReplay [Constants.DB_COUCHBASE_ID].ToString ());
+		StartCoroutine(ReplayManager.Instance.PlayReplay(loadedReplay));*/
 		// END DEBUG FOR QUICK MATCH
 		
 		if(hp[0] <= 0) return 0;
@@ -197,25 +197,25 @@ public class ServerFightManager : MonoBehaviour {
 		int eN = Mathf.Abs(pN-1);
 		switch (moveName) {
 		case Constants.FIGHT_MOVE_DASH:
-			print ("DASH, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			if(Constants.DEBUG) print ("DASH, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 			if(Constants.DEBUG) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 			pos[pN] = Utility.AStar(pos[pN],pos[eN],ringSize,2,false);
 			if(Constants.DEBUG) print ("new pos: " + pos[pN]);
 			UpdateDistance ();
-			print ("AFTER DASH, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			if(Constants.DEBUG) print ("AFTER DASH, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 			break;
 		case Constants.FIGHT_MOVE_FLYING_TALON:
-			print ("FLYING TALON, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			if(Constants.DEBUG) print ("FLYING TALON, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 			if(Constants.DEBUG) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 			pos[pN] = Utility.AStar(pos[pN],pos[eN],ringSize,1,false);
 			if(Constants.DEBUG) print ("new pos: " + pos[pN]);
 			UpdateDistance ();
-			print ("AFTER FLYING TALON, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			if(Constants.DEBUG) print ("AFTER FLYING TALON, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 			hp[eN] -= (int)(atk[pN] * 0.7f);
 			if(Constants.DEBUG) print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		case Constants.FIGHT_MOVE_SIDESTEP:
-			print ("SIDESTEP, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			if(Constants.DEBUG) print ("SIDESTEP, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 			if(Constants.DEBUG) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 
 			Vector2 sidestepPosition;
@@ -226,11 +226,11 @@ public class ServerFightManager : MonoBehaviour {
 			pos[pN] = Utility.AStar(pos[pN],sidestepPosition,ringSize,5,true);
 			if(Constants.DEBUG) print ("new pos: " + pos[pN]);
 			UpdateDistance ();
-			print ("AFTER SIDESTEP, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			if(Constants.DEBUG) print ("AFTER SIDESTEP, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 			if(Constants.DEBUG) print ("Sidestep!");
 			break;
 		case Constants.FIGHT_MOVE_PECK:
-			print ("PECK, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			if(Constants.DEBUG) print ("PECK, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 			hp[eN] -= (int)(atk[pN] * 0.4f);
 			if(Constants.DEBUG) print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;

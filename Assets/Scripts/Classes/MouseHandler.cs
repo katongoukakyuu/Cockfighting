@@ -20,10 +20,20 @@ public class MouseHandler : MonoBehaviour {
 	public event OnMouseClickEvent OnMouseClick;
 
 	void Update() {
-		if(Input.GetMouseButtonDown(0)) {
-			if((Input.touchCount > 0 && !EventSystem.current.IsPointerOverGameObject(0)) ||
-			   !EventSystem.current.IsPointerOverGameObject()) {
-				Ray screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if(Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)) {
+			/*if((Input.touchCount > 0 && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) ||
+			   !EventSystem.current.IsPointerOverGameObject()) {*/
+			if(!EventSystem.current.IsPointerOverGameObject()) {
+				Ray screenRay;
+				if(Input.touchCount > 0) {
+					screenRay = Camera.main.ScreenPointToRay(new Vector3(Input.GetTouch (0).position.x,
+					                                                     Input.GetTouch (0).position.y,
+					                                                     0));
+				}
+				else {
+					screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+				}
+
 				
 				RaycastHit hit;
 				if (Physics.Raycast(screenRay, out hit))

@@ -38,7 +38,15 @@ public class ChickenMovement : MonoBehaviour
 	
 	void Turning()
 	{
-		Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+		Ray camRay;
+		if(Input.touchCount > 0) {
+			camRay = Camera.main.ScreenPointToRay(new Vector3(Input.GetTouch (0).position.x,
+			                                                     Input.GetTouch (0).position.y,
+			                                                     0));
+		}
+		else {
+			camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+		}
 		
 		RaycastHit floorHit;
 		

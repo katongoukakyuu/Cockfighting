@@ -20,7 +20,6 @@ public class FarmScreenMailboxButton : MonoBehaviour {
 	{
 		mainCanvas.gameObject.SetActive (false);
 		mailboxCanvas.gameObject.SetActive (true);
-		Camera.main.GetComponent<GridOverlay>().ToggleCanHoverOnMap(false);
 		MailboxManager.Instance.Initialize ();
 	}
 	

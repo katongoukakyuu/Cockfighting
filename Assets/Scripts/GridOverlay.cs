@@ -119,7 +119,15 @@ public class GridOverlay : MonoBehaviour {
 		}
 
 		if(canHoverOnMap) {
-			Ray screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+			Ray screenRay;
+			if(Input.touchCount > 0) {
+				screenRay = Camera.main.ScreenPointToRay(new Vector3(Input.GetTouch (0).position.x,
+				                                                     Input.GetTouch (0).position.y,
+				                                                     0));
+			}
+			else {
+				screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+			}
 			
 			RaycastHit hit;
 			if (Physics.Raycast(screenRay, out hit))

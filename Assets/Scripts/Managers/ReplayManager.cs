@@ -68,18 +68,18 @@ public class ReplayManager : MonoBehaviour {
 			hpQueueChangedByMove[i] = new List<bool>();
 		}
 		
-		/*if(PlayerManager.Instance != null &&
+		if(PlayerManager.Instance != null &&
 		   PlayerManager.Instance.selectedReplay != null) {
 			StartCoroutine(PlayReplay(PlayerManager.Instance.selectedReplay));
-		}*/
+		}
 
 		// DEBUG FOR QUICK MATCH
-		ServerFightManager.Instance.AutomateFight (
+		/*ServerFightManager.Instance.AutomateFight (
 			DatabaseManager.Instance.LoadChicken("Gary", "test"),
 			DatabaseManager.Instance.LoadChicken("Larry", "test2"),
 			DatabaseManager.Instance.LoadFightingMovesOwned (DatabaseManager.Instance.LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
 			DatabaseManager.Instance.LoadFightingMovesOwned (DatabaseManager.Instance.LoadChicken("Larry", "test2")[Constants.DB_COUCHBASE_ID].ToString())
-		);
+		);*/
 		// END DEBUG FOR QUICK MATCH
 	}
 
@@ -143,7 +143,7 @@ public class ReplayManager : MonoBehaviour {
 		List<IDictionary<string,object>> moves = (replay [Constants.DB_KEYWORD_REPLAY] as Newtonsoft.Json.Linq.JArray).ToObject<List<IDictionary<string,object>>> ();
 		foreach(IDictionary<string,object> id in moves) {
 			//Utility.PrintDictionary(id);
-			//print ("----- NEWLINE -----");
+			//if(Constants.DEBUG) print ("----- NEWLINE -----");
 			currentRoundInfo = id;
 
 			if(moves.IndexOf(id) != 0) {
@@ -217,7 +217,7 @@ public class ReplayManager : MonoBehaviour {
 		if(animators[index] != null) {
 			switch (move) {
 			case Constants.FIGHT_MOVE_FLYING_TALON:
-				print ("chicken " + index + " is now attacking!");
+				if(Constants.DEBUG) print ("chicken " + index + " is now attacking!");
 				animators[index].SetTrigger(move);
 				agents[index].isAttacking = true;
 				navMeshAgents[index].SetDestination(
@@ -231,7 +231,7 @@ public class ReplayManager : MonoBehaviour {
 				particleSystems[(index+1)%2].Play();
 				break;
 			case Constants.FIGHT_MOVE_PECK:
-				print ("chicken " + index + " is now attacking!");
+				if(Constants.DEBUG) print ("chicken " + index + " is now attacking!");
 				animators[index].SetTrigger(move);
 				agents[index].isAttacking = true;
 				navMeshAgents[index].SetDestination(
@@ -261,17 +261,17 @@ public class ReplayManager : MonoBehaviour {
 	}
 
 	public void UpdateUI(int i, bool isImmediate, bool calledFromMoveProc) {
-		/*print ("Update UI called (immediate? " + isImmediate + ", called from proc? " + calledFromMoveProc + "). HP list for chicken " + i + ":");
+		/*if(Constants.DEBUG) print ("Update UI called (immediate? " + isImmediate + ", called from proc? " + calledFromMoveProc + "). HP list for chicken " + i + ":");
 		string s = "HP:";
 		foreach(int hp in hpQueue[i]) {
 			s += " " + hp;
 		}
-		print (s);
+		if(Constants.DEBUG) print (s);
 		s = "To proc by move?:";
 		foreach(bool b in hpQueueChangedByMove[i]) {
 			s += " " + b;
 		}
-		print (s);*/
+		if(Constants.DEBUG) print (s);*/
 
 		if(Constants.DEBUG) print (i + " queue count: " + hpQueue[i].Count + ", change queue count: " + hpQueueChangedByMove[i].Count);
 		if(hpQueue[i].Count > 0 && hpQueueChangedByMove[i].Count > 0) {
