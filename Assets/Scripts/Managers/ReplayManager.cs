@@ -8,6 +8,7 @@ using System.Linq;
 public class ReplayManager : MonoBehaviour {
 
 	public GameObject chicken;
+	public GameObject hitParticle;
 	public GridOverlay gridOverlay;
 	public float moveSpeed;
 	public float yOffset;
@@ -19,6 +20,10 @@ public class ReplayManager : MonoBehaviour {
 	private GameObject[] chickens = new GameObject[2];
 	private Animator[] animators = new Animator[2];
 	private ChickenFightAI[] agents = new ChickenFightAI[2];
+	private NavMeshAgent[] navMeshAgents = new NavMeshAgent[2];
+
+	private GameObject[] hitParticles = new GameObject[2];
+	private ParticleSystem[] particleSystems = new ParticleSystem[2];
 
 	private IDictionary<string,object> currentRoundInfo;
 	private int[] hpMax = new int[2];
@@ -78,7 +83,7 @@ public class ReplayManager : MonoBehaviour {
 		// END DEBUG FOR QUICK MATCH
 	}
 
-	void Update() {
+	void FixedUpdate() {
 
 		for(int i = 0; i < 2; i++) {
 			if(!agents[i].hasFainted) {
@@ -91,7 +96,7 @@ public class ReplayManager : MonoBehaviour {
 				/*chickens[i].transform.position = Vector3.Lerp(posOld[i], 
 				                                              pos[i], 
 				                                              ((Time.time - startTime[i]) * moveSpeed));*/
-				//print ("pos old " + i + " is: " + posOld[i] + ", pos " + i + " is: " + pos[i] + ", start time is " + startTime[i] + ", distance is: " + posDistance[i]);
+				if(Constants.DEBUG) print ("pos old " + i + " is: " + posOld[i] + ", pos " + i + " is: " + pos[i] + ", start time is " + startTime[i] + ", distance is: " + posDistance[i]);
 				if(animators[i] != null) {
 					animators[i].SetFloat("Velocity X",(chickens[i].transform.position.x - posPrev.x) * 10);
 					animators[i].SetFloat("Velocity Z",(chickens[i].transform.position.z - posPrev.z) * 10);
@@ -111,16 +116,22 @@ public class ReplayManager : MonoBehaviour {
 	}
 
 	public IEnumerator PlayReplay(IDictionary<string,object> replay) {
-		chickens[0] = (GameObject) Instantiate(chicken);
-		chickens[1] = (GameObject) Instantiate(chicken);
 		for(int i = 0; i < 2; i++) {
+			chickens[i] = (GameObject) Instantiate(chicken);
+			chickens[i].name = "Chicken " + i;
+			chickens[i].GetComponent<ChickenAI>().enabled = false;
 			animators[i] = chickens[i].GetComponent<Animator>();
 			agents[i] = chickens[i].GetComponent<ChickenFightAI>();
 			agents[i].enabled = true;
 			agents[i].index = i;
-			chickens[i].GetComponent<ChickenAI>().enabled = false;
+			navMeshAgents[i] = chickens[i].GetComponent<NavMeshAgent>();
 			posOld[i] = pos[i];
+
+			hitParticles[i] = (GameObject) Instantiate(hitParticle);
+			particleSystems[i] = hitParticles[i].GetComponent<ParticleSystem>();
 		}
+
+
 
 		bool isImmediate = true;
 
@@ -163,8 +174,8 @@ public class ReplayManager : MonoBehaviour {
 			}
 
 			do {
-				yield return new WaitForSeconds(1f);
-			} while(agents[0].isCurrentlyMoving && agents[1].isCurrentlyMoving);
+				yield return new WaitForSeconds(0.5f);
+			} while(agents[0].isCurrentlyMoving || agents[1].isCurrentlyMoving);
 
 			for(int i = 0; i < 2; i++) {
 				int hp = (i == 0) ? int.Parse(id[Constants.REPLAY_HP1].ToString()) : int.Parse(id[Constants.REPLAY_HP2].ToString());
@@ -179,12 +190,12 @@ public class ReplayManager : MonoBehaviour {
 				else {
 					string move = (i == 0) ? id[Constants.REPLAY_MOVE1].ToString() : id[Constants.REPLAY_MOVE2].ToString();
 					SetMoveAnimTrigger(i, move);
-					//print ("move for " + i + " is " + move + ", hp to display is " + hpQueue[i][0]);
+					if(Constants.DEBUG) print ("move for " + i + " is " + move + ", hp to display is " + hpQueue[i][0]);
 				}
 				UpdateUI(i, false, false);
 			}
 		}
-		print ("end");
+		if(Constants.DEBUG) print ("end");
 
 		yield break;
 	}
@@ -206,12 +217,32 @@ public class ReplayManager : MonoBehaviour {
 		if(animators[index] != null) {
 			switch (move) {
 			case Constants.FIGHT_MOVE_FLYING_TALON:
+				print ("chicken " + index + " is now attacking!");
 				animators[index].SetTrigger(move);
+				agents[index].isAttacking = true;
+				navMeshAgents[index].SetDestination(
+					Vector3.Lerp(chickens[index].transform.position,
+				             chickens[(index+1)%2].transform.position,
+				             0.7f)
+				);
 				hpQueueChangedByMove[index].Add(true);
+
+				hitParticles[(index+1)%2].transform.position = chickens[(index+1)%2].transform.position;
+				particleSystems[(index+1)%2].Play();
 				break;
 			case Constants.FIGHT_MOVE_PECK:
+				print ("chicken " + index + " is now attacking!");
 				animators[index].SetTrigger(move);
+				agents[index].isAttacking = true;
+				navMeshAgents[index].SetDestination(
+					Vector3.Lerp(chickens[index].transform.position,
+				             chickens[(index+1)%2].transform.position,
+				             0.7f)
+				);
 				hpQueueChangedByMove[index].Add(true);
+
+				hitParticles[(index+1)%2].transform.position = chickens[(index+1)%2].transform.position;
+				particleSystems[(index+1)%2].Play();
 				break;
 			default:
 				hpQueueChangedByMove[index].Add(false);
@@ -221,7 +252,7 @@ public class ReplayManager : MonoBehaviour {
 	}
 
 	private Vector3 TransposeToBoard(Vector3 pos) {
-		// print (pos + " transposed to " + gridOverlay.GetTiles () [(int)pos.x, (int)pos.z].transform.position);
+		// if(Constants.DEBUG) print (pos + " transposed to " + gridOverlay.GetTiles () [(int)pos.x, (int)pos.z].transform.position);
 		return gridOverlay.GetTiles()[(int)pos.x,(int)pos.z].transform.position;
 	}
 
@@ -230,15 +261,27 @@ public class ReplayManager : MonoBehaviour {
 	}
 
 	public void UpdateUI(int i, bool isImmediate, bool calledFromMoveProc) {
-		//print (i + " queue count: " + hpQueue[i].Count + ", change queue count: " + hpQueueChangedByMove[i].Count);
+		/*print ("Update UI called (immediate? " + isImmediate + ", called from proc? " + calledFromMoveProc + "). HP list for chicken " + i + ":");
+		string s = "HP:";
+		foreach(int hp in hpQueue[i]) {
+			s += " " + hp;
+		}
+		print (s);
+		s = "To proc by move?:";
+		foreach(bool b in hpQueueChangedByMove[i]) {
+			s += " " + b;
+		}
+		print (s);*/
+
+		if(Constants.DEBUG) print (i + " queue count: " + hpQueue[i].Count + ", change queue count: " + hpQueueChangedByMove[i].Count);
 		if(hpQueue[i].Count > 0 && hpQueueChangedByMove[i].Count > 0) {
 			if(hpQueueWaitingForMoveProc[i] && calledFromMoveProc) {
-				print (i + " has been called by a move proc!");
+				if(Constants.DEBUG) print (i + " has been called by a move proc!");
 				hpQueueWaitingForMoveProc[i] = false;
 			}
 			else if(hpQueueChangedByMove[i][0]) {
 				hpQueueWaitingForMoveProc[i] = true;
-				//print (i + " is now waiting for a move proc");
+				if(Constants.DEBUG) print (i + " is now waiting for a move proc");
 				return;
 			}
 
@@ -257,5 +300,9 @@ public class ReplayManager : MonoBehaviour {
 				topPanel.transform.FindChild(Constants.FIGHT_RING_UI_HP_2_SLIDER).GetComponent<Slider>().value = currentHP;
 			}
 		}
+	}
+
+	public GameObject[] GetChickens() {
+		return chickens;
 	}
 }

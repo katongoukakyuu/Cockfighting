@@ -16,6 +16,9 @@ public class BuildScreenBuildBldgButton : MonoBehaviour {
 	private IDictionary<string,object> building;
 
 	public void ButtonPressed() {
+		CameraControls.Instance.freeCamera = false;
+		CameraControls.Instance.SwitchToCamera(1);
+
 		building = imagePanel.GetSelectedBuilding ();
 		buildingPlacementManager.Initialize (building);
 		mainCanvas.gameObject.SetActive (true);

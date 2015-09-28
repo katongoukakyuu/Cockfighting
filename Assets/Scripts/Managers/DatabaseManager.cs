@@ -34,12 +34,12 @@ public class DatabaseManager : MonoBehaviour {
 			return;
 		}
 		manager = Manager.SharedInstance;
-		print ("manager directory is " + manager.Directory);
+		if(Constants.DEBUG) print ("manager directory is " + manager.Directory);
 		db = manager.GetDatabase("cockfighting");
 		db.Changed += (sender, e) => {
 			var changes = e.Changes.ToList();
 			foreach (DocumentChange change in changes) {
-				print("Document " + change.DocumentId + " changed");
+				if(Constants.DEBUG) print("Document " + change.DocumentId + " changed");
 			}
 		};
 

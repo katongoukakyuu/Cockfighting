@@ -94,7 +94,7 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 	                      string bodyColor1, int bodyColor1Chance, string bodyColor2,
 	                      string wingColor1, int wingColor1Chance, string wingColor2,
 	                      string tailColor1, int tailColor1Chance, string tailColor2) {
-		print (db);
+		if(Constants.DEBUG) print (db);
 		Document d = db.CreateDocument ();
 		if (selectedBreed == "") {
 			var properties = new Dictionary<string, object> () {
@@ -152,7 +152,7 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_BREED).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			print (row.Key);
+			if(Constants.DEBUG) print (row.Key);
 			l.Add (row.Key.ToString ());
 		}
 		breedList = l;
@@ -162,7 +162,7 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_BREED).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			print (row.Key);
+			if(Constants.DEBUG) print (row.Key);
 			if(row.Key.ToString() == name) {
 				return row.DocumentId;
 			}
@@ -174,7 +174,7 @@ public class ControlPanelBreedsManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_BREED).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			print (row.Key);
+			if(Constants.DEBUG) print (row.Key);
 			if(row.Key.ToString() == name) {
 				return db.GetDocument (row.DocumentId).Properties;
 			}

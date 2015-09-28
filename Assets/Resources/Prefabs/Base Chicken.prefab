@@ -573,6 +573,7 @@ GameObject:
   - 114: {fileID: 11491998}
   - 195: {fileID: 19515924}
   - 65: {fileID: 6569640}
+  - 208: {fileID: 20897932}
   m_Layer: 0
   m_Name: Base Chicken
   m_TagString: Chicken
@@ -1995,7 +1996,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 164442}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bea3cc4df619bfb458ec8587b873509c, type: 3}
   m_Name: 
@@ -2026,6 +2027,7 @@ MonoBehaviour:
   newDestination: 
   moveImmediately: 0
   isCurrentlyMoving: 1
+  isAttacking: 0
   hasFainted: 0
 --- !u!137 &13712796
 SkinnedMeshRenderer:
@@ -2341,6 +2343,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!208 &20897932
+NavMeshObstacle:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 164442}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: .150000006, y: .25, z: .150000006}
+  m_MoveThreshold: .0500000007
+  m_Carve: 0
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0, y: .300000012, z: 0}
+  m_TimeToStationary: .5
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

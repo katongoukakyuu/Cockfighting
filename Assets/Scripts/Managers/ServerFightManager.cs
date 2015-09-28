@@ -124,7 +124,7 @@ public class ServerFightManager : MonoBehaviour {
 			) [Constants.DB_KEYWORD_NAME].ToString ());
 			moveStrength[moves.IndexOf(id)] = AnalyzeMoveStrength(moveName[moves.IndexOf(id)], playerNum);
 			moveStrengthTotal += moveStrength[moves.IndexOf(id)];
-			if(debug) print ("move strength of " + moveName[moves.IndexOf(id)] + " is " + 
+			if(Constants.DEBUG) print ("move strength of " + moveName[moves.IndexOf(id)] + " is " + 
 			       moveStrength[moves.IndexOf(id)]);
 		}
 
@@ -132,11 +132,11 @@ public class ServerFightManager : MonoBehaviour {
 		float r = Random.Range(0.0f, 1.0f);
 		float lowLim;
 		float hiLim = 0.0f;
-		if(debug) print ("randomizer is " + r);
+		if(Constants.DEBUG) print ("randomizer is " + r);
 		for (int i = 0; i < movePercent.Length; i++)
 		{
 			movePercent[i] = moveStrength[i] / moveStrengthTotal;
-			if(debug) print ("move percent of " + moveName[i] + " is " + movePercent[i]);
+			if(Constants.DEBUG) print ("move percent of " + moveName[i] + " is " + movePercent[i]);
 			lowLim = hiLim;
 			hiLim += movePercent[i];
 			if (r >= lowLim && r < hiLim) {
@@ -193,25 +193,30 @@ public class ServerFightManager : MonoBehaviour {
 	}
 
 	private void ProcessMove(string moveName, int pN) {
-		if(debug) print ("move used by chicken " + pN + " is " + moveName);
+		if(Constants.DEBUG) print ("move used by chicken " + pN + " is " + moveName);
 		int eN = Mathf.Abs(pN-1);
 		switch (moveName) {
 		case Constants.FIGHT_MOVE_DASH:
-			if(debug) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+			print ("DASH, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			if(Constants.DEBUG) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 			pos[pN] = Utility.AStar(pos[pN],pos[eN],ringSize,2,false);
-			if(debug) print ("new pos: " + pos[pN]);
+			if(Constants.DEBUG) print ("new pos: " + pos[pN]);
 			UpdateDistance ();
+			print ("AFTER DASH, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 			break;
 		case Constants.FIGHT_MOVE_FLYING_TALON:
-			if(debug) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+			print ("FLYING TALON, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			if(Constants.DEBUG) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 			pos[pN] = Utility.AStar(pos[pN],pos[eN],ringSize,1,false);
-			if(debug) print ("new pos: " + pos[pN]);
+			if(Constants.DEBUG) print ("new pos: " + pos[pN]);
 			UpdateDistance ();
+			print ("AFTER FLYING TALON, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 			hp[eN] -= (int)(atk[pN] * 0.7f);
-			if(debug) print ("updated hp of chicken " + eN + " is " + hp[eN]);
+			if(Constants.DEBUG) print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		case Constants.FIGHT_MOVE_SIDESTEP:
-			if(debug) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+			print ("SIDESTEP, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			if(Constants.DEBUG) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 
 			Vector2 sidestepPosition;
 			do {
@@ -219,13 +224,15 @@ public class ServerFightManager : MonoBehaviour {
 				                               pos[eN].y);
 			} while(sidestepPosition == pos[eN]);
 			pos[pN] = Utility.AStar(pos[pN],sidestepPosition,ringSize,5,true);
-			if(debug) print ("new pos: " + pos[pN]);
+			if(Constants.DEBUG) print ("new pos: " + pos[pN]);
 			UpdateDistance ();
-			if(debug) print ("Sidestep!");
+			print ("AFTER SIDESTEP, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			if(Constants.DEBUG) print ("Sidestep!");
 			break;
 		case Constants.FIGHT_MOVE_PECK:
+			print ("PECK, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 			hp[eN] -= (int)(atk[pN] * 0.4f);
-			if(debug) print ("updated hp of chicken " + eN + " is " + hp[eN]);
+			if(Constants.DEBUG) print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		default:
 			break;
@@ -234,7 +241,7 @@ public class ServerFightManager : MonoBehaviour {
 
 	private void UpdateDistance() {
 		dist = Vector2.Distance(pos[0], pos[1]);
-		if(debug) print ("Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+		if(Constants.DEBUG) print ("Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 	}
 
 	private Dictionary<string, object> RecordTurn(string[] move) {

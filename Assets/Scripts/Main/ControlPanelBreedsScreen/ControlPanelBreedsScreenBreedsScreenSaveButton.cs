@@ -32,7 +32,7 @@ public class ControlPanelBreedsScreenBreedsScreenSaveButton : MonoBehaviour {
 			);
 		}
 		else {
-			print ("Error in saving Breed, not enough fields to save.");
+			if(Constants.DEBUG) print ("Error in saving Breed, not enough fields to save.");
 		}
 	}
 

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class Constants : MonoBehaviour {
 
+	public const bool DEBUG = false;
+
 	public const string DB_NAME = "cockfighting";
 
 	public const string SCENE_LOGIN = "Login";

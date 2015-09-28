@@ -115,9 +115,9 @@ public class ServerManager : MonoBehaviour {
 				IDictionary<string,object> properties = db.GetDocument(change.DocumentId).Properties;
 				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_FEEDS_SCHEDULE) {
 					if(properties[Constants.DB_KEYWORD_IS_COMPLETED].ToString() == Constants.GENERIC_CANCELED) {
-						print("Schedule " + change.DocumentId + " has been canceled! Details below.");
+						if(Constants.DEBUG) print("Schedule " + change.DocumentId + " has been canceled! Details below.");
 						foreach(KeyValuePair<string,object> kv in properties) {
-							print (kv.Key + ": " + kv.Value);
+							if(Constants.DEBUG) print (kv.Key + ": " + kv.Value);
 						}
 						FlagFeedScheduleAsCanceled(properties);
 					}
@@ -264,9 +264,9 @@ public class ServerManager : MonoBehaviour {
 				IDictionary<string,object> properties = db.GetDocument(change.DocumentId).Properties;
 				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_BREED_SCHEDULE) {
 					if(properties[Constants.DB_KEYWORD_IS_COMPLETED].ToString() == Constants.GENERIC_CANCELED) {
-						print("Schedule " + change.DocumentId + " has been canceled! Details below.");
+						if(Constants.DEBUG) print("Schedule " + change.DocumentId + " has been canceled! Details below.");
 						foreach(KeyValuePair<string,object> kv in properties) {
-							print (kv.Key + ": " + kv.Value);
+							if(Constants.DEBUG) print (kv.Key + ": " + kv.Value);
 						}
 						FlagBreedScheduleAsCanceled(properties);
 					}
@@ -378,7 +378,7 @@ public class ServerManager : MonoBehaviour {
 				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_MATCH) {
 					if(properties[Constants.DB_KEYWORD_STATUS].ToString() == Constants.MATCH_STATUS_WAITING_FOR_OPPONENT ||
 					   properties[Constants.DB_KEYWORD_STATUS].ToString() == Constants.MATCH_STATUS_OPPONENT_FOUND) {
-						print("Match " + change.DocumentId + " status has been changed!");
+						if(Constants.DEBUG) print("Match " + change.DocumentId + " status has been changed!");
 						FlagChickensAsQueuedInMatch(properties);
 					}
 				}
@@ -387,7 +387,7 @@ public class ServerManager : MonoBehaviour {
 				}
 				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_MATCH) {
 					if(properties[Constants.DB_KEYWORD_STATUS].ToString() == Constants.MATCH_STATUS_CANCELED) {
-						print("Match " + change.DocumentId + " has been canceled!");
+						if(Constants.DEBUG) print("Match " + change.DocumentId + " has been canceled!");
 						FlagMatchAsCanceled(properties);
 					}
 				}

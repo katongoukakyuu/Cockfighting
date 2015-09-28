@@ -19,7 +19,7 @@ public class ChickenAI : MonoBehaviour {
 		navMeshAgent.avoidancePriority = Random.Range (1,101);
 	}
 
-	void Update() {
+	void FixedUpdate() {
 		if(!navMeshAgent.hasPath) {
 			navMeshAgent.SetDestination(gridOverlay.GetTiles()[Random.Range(0,xSize),Random.Range(0,ySize)].transform.position);
 		}

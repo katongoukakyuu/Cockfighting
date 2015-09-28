@@ -104,14 +104,14 @@ public class GridOverlay : MonoBehaviour {
 		{
 			if(Input.GetKey(KeyCode.KeypadPlus)) 
 			{
-				print ("keypad plus");
+				if(Constants.DEBUG) print ("keypad plus");
 				plane.transform.position = new Vector3(plane.transform.position.x, plane.transform.position.y + smallStep, plane.transform.position.z);
 				offsetY += smallStep;
 				lastScroll = Time.time;
 			}
 			if(Input.GetKey(KeyCode.KeypadMinus))
 			{
-				print ("keypad minus");
+				if(Constants.DEBUG) print ("keypad minus");
 				plane.transform.position = new Vector3(plane.transform.position.x, plane.transform.position.y - smallStep, plane.transform.position.z);
 				offsetY -= smallStep;
 				lastScroll = Time.time;
@@ -131,7 +131,7 @@ public class GridOverlay : MonoBehaviour {
 						selectedTile = hit.collider.gameObject.GetComponent<Tile>();
 					}
 					else {
-						print ("Tile component is null! Returning world position");
+						if(Constants.DEBUG) print ("Tile component is null! Returning world position");
 						Vector3 pos = hit.collider.gameObject.transform.position;
 						newPos = new Vector2(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.z));
 					}

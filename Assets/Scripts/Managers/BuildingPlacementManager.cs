@@ -10,7 +10,7 @@ public class BuildingPlacementManager : MonoBehaviour {
 	public Canvas buildingPlacementCanvas;
 	public Animator BuildPlacementAnimator;
 
-	private GridOverlay gridOverlay;
+	public GridOverlay gridOverlay;
 
 	private bool isInitialized = false;
 	private IDictionary<string,object> building;
@@ -31,8 +31,6 @@ public class BuildingPlacementManager : MonoBehaviour {
 	}
 
 	void Start() {
-		gridOverlay = Camera.main.GetComponent<GridOverlay>();
-
 		MouseHandler.Instance.OnMouseClick += OnClick;
 		gridOverlay.OnTileHoverChange += OnTileHoverChange;
 	}
@@ -130,6 +128,9 @@ public class BuildingPlacementManager : MonoBehaviour {
 	}
 
 	public void ButtonCancel() {
+		CameraControls.Instance.SwitchToCamera(0);
+		CameraControls.Instance.freeCamera = true;
+
 		FarmManager.Instance.SwitchState (Constants.FARM_MANAGER_STATE_FREE_SELECT);
 
 		Destroy (bldgObject);

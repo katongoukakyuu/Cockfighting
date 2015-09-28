@@ -27,7 +27,7 @@ public class ControlPanelFeedsScreenSaveButton : MonoBehaviour {
 			);
 		}
 		else {
-			print ("Error in saving Feeds, not enough fields to save.");
+			if(Constants.DEBUG) print ("Error in saving Feeds, not enough fields to save.");
 		}
 	}
 

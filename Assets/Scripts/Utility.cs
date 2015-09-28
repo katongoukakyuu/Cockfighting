@@ -11,6 +11,10 @@ public class Utility : MonoBehaviour {
 		}
 	}
 
+	public static float Modulo(float a,float b) {
+		return a - b * Mathf.Floor(a / b);
+	}
+
 	public static int GetPayout(int betAmount, IDictionary<string,object> bettingOdds, bool isLlamado) {
 		if(isLlamado) {
 			return (int) betAmount * 2 * int.Parse (bettingOdds[Constants.DB_KEYWORD_DEHADO_ODDS].ToString()) / int.Parse (bettingOdds[Constants.DB_KEYWORD_LLAMADO_ODDS].ToString());
@@ -23,21 +27,21 @@ public class Utility : MonoBehaviour {
 	public static Vector2 AStar(Vector2 start, Vector2 goal, Vector2 setSize, int step, bool canStepToGoal) {
 		List<Vector2> cameFrom = AStar (start, goal, setSize);
 		/*foreach(Vector2 v in cameFrom) {
-			print("came from: " + v);
+			if(Constants.DEBUG) print("came from: " + v);
 		}*/
 		if (step >= cameFrom.Count-1) {
 			if(cameFrom.Last () == goal && !canStepToGoal && cameFrom.Count > 1) {
-				//print ("cannot step to goal, step over limit!");
+				if(Constants.DEBUG) print ("cannot step to goal, step over limit!");
 				return cameFrom[cameFrom.Count-2];
 			}
-			//print ("can step to goal, step over limit!");
+			if(Constants.DEBUG) print ("can step to goal, step over limit!");
 			return cameFrom.Last ();
 		}
 		if (canStepToGoal) {
-			//print ("can step to goal!");
+			if(Constants.DEBUG) print ("can step to goal!");
 			return cameFrom [step + 1];
 		} else {
-			//print ("cannot step to goal!");
+			if(Constants.DEBUG) print ("cannot step to goal!");
 			return cameFrom [step];
 		}
 	}
@@ -66,7 +70,7 @@ public class Utility : MonoBehaviour {
 					current = v;
 				}
 			}
-			/*print ("current node is : " + current + ", goal node is : " + goal + ". Equal? " + 
+			/*if(Constants.DEBUG) print ("current node is : " + current + ", goal node is : " + goal + ". Equal? " + 
 			       (current == goal));*/
 
 			if(current == goal) {

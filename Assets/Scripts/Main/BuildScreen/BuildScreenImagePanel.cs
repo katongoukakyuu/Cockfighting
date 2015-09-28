@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +11,8 @@ public class BuildScreenImagePanel : MonoBehaviour {
 	public Text text;
 
 	private List<IDictionary<string, object>> bldgList;
+	private Sprite[] bldgImages;
+	private Sprite[] bldgImagesSubset = new Sprite[5];
 	private int bldgIndex = 0;
 
 	private float smallIconXSize;
@@ -36,11 +38,16 @@ public class BuildScreenImagePanel : MonoBehaviour {
 			smallIconYPos = images[1].rectTransform.anchoredPosition.y;
 			largeIconXPos = images[2].rectTransform.anchoredPosition.x;
 			largeIconYPos = images[2].rectTransform.anchoredPosition.y;
+
 		}
 	}
 
 	public void SetBuildings(List<IDictionary<string, object>> bldgList) {
 		this.bldgList = bldgList;
+		bldgImages = new Sprite[bldgList.Count];
+		for(int x = 0; x < bldgImages.Length; x++) {
+			bldgImages[x] = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
+		}
 		UpdateSelection ();
 	}
 
@@ -49,41 +56,23 @@ public class BuildScreenImagePanel : MonoBehaviour {
 	}
 
 	private void UpdateSelection() {
+		// update image list in use
+		// update bldgImagesSubset
+		// if bldgImages is less than bldgImagesSubset, repeat selection
+		// -2 -1 0 1 2 3 4 5 6 7 8
+
 		int x = bldgIndex;
-		print (bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME]);
+		if(Constants.DEBUG) print (bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME]);
+
+		for(int i = 0; i < 5; i++) {
+			bldgImagesSubset[i] = bldgImages[(int)Utility.Modulo((x+i-2), bldgImages.Length)];
+			images [i].sprite = bldgImagesSubset[i];
+		}
+
 		text.text = bldgList[x][Constants.DB_KEYWORD_NAME].ToString() + "\n" + 
 				bldgList[x][Constants.DB_KEYWORD_DESCRIPTION].ToString() + "\n" + 
 				"Cost: " + bldgList[x][Constants.DB_KEYWORD_COIN_COST].ToString() + " Coins / " + 
 				bldgList[x][Constants.DB_KEYWORD_CASH_COST].ToString() + " Cash";
-
-		images [2].sprite = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
-		print (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME]);
-
-		if (bldgIndex-1 > 0)
-			x = bldgIndex - 1;
-		else if(bldgList.Count - 2 > 0)
-			x = bldgList.Count - 2;
-		else
-			x = bldgList.Count - 1;
-		images [0].sprite = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
-
-		if (bldgIndex > 0)
-			x = bldgIndex - 1;
-		else
-			x = bldgList.Count - 1;
-		images [1].sprite = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
-
-		if (bldgIndex + 1 < bldgList.Count)
-			x = bldgIndex + 1;
-		else
-			x = 0;
-		images [3].sprite = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
-
-		if (bldgIndex + 2 < bldgList.Count)
-			x = bldgIndex + 2;
-		else
-			x = 0;
-		images [3].sprite = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
 	}
 
 	public void AnimateLeft() {
@@ -92,65 +81,6 @@ public class BuildScreenImagePanel : MonoBehaviour {
 	}
 
 	private IEnumerator AnimateLeft(float animDuration, int animSteps) {
-		float sizeIncX = (smallIconXSize - largeIconXSize) / animSteps;
-		float sizeIncY = (smallIconYSize - largeIconYSize) / animSteps;
-		float posIncX = (smallIconXPos - largeIconXPos) / animSteps;
-		float posIncY = (smallIconYPos - largeIconYPos) / animSteps;
-		float alphaInc = (0 - images[2].color.a) / animSteps;
-		float animWait = animDuration / animSteps;
-		Color c;
-		
-		isAnimating = true;
-		
-		images [4].gameObject.SetActive(true);
-		c = images[4].color;
-		c.a = 0;
-		images[4].color = c;
-		
-		for(int x = 0; x < animSteps; x++) {
-			c = images[1].color;
-			c.a += alphaInc;
-			images[1].color = c;
-			
-			images[2].rectTransform.sizeDelta = new Vector2(images[2].rectTransform.rect.width + sizeIncX,
-			                                                images[2].rectTransform.rect.height + sizeIncY);
-			images[2].rectTransform.anchoredPosition = new Vector2(images[2].rectTransform.anchoredPosition.x + posIncX,
-			                                                       images[2].rectTransform.anchoredPosition.y + posIncY);
-			
-			images[3].rectTransform.sizeDelta = new Vector2(images[3].rectTransform.rect.width - sizeIncX,
-			                                                images[3].rectTransform.rect.height - sizeIncY);
-			images[3].rectTransform.anchoredPosition = new Vector2(images[3].rectTransform.anchoredPosition.x + posIncX,
-			                                                       images[3].rectTransform.anchoredPosition.y + posIncY);
-			
-			c = images[4].color;
-			c.a -= alphaInc;
-			images[4].color = c;
-			
-			yield return new WaitForSeconds(animWait);
-		}
-		
-		images [0].rectTransform.anchoredPosition = images [4].rectTransform.anchoredPosition;
-		images [1].gameObject.SetActive (false);
-		
-		Image temp = images[0];
-		for(int x = 0; x < 4; x++) {
-			images[x] = images[x+1];
-		}
-		images [4] = temp;
-		if (bldgIndex + 1 < bldgList.Count)
-			bldgIndex++;
-		else
-			bldgIndex = 0;
-		UpdateSelection ();
-		isAnimating = false;
-	}
-
-	public void AnimateRight() {
-		if (!isAnimating)
-			StartCoroutine (AnimateRight(animDuration, animSteps));
-	}
-
-	private IEnumerator AnimateRight(float animDuration, int animSteps) {
 		float sizeIncX = (smallIconXSize - largeIconXSize) / animSteps;
 		float sizeIncY = (smallIconYSize - largeIconYSize) / animSteps;
 		float posIncX = (smallIconXPos - largeIconXPos) / animSteps;
@@ -200,6 +130,65 @@ public class BuildScreenImagePanel : MonoBehaviour {
 			bldgIndex--;
 		else
 			bldgIndex = bldgList.Count - 1;
+		UpdateSelection ();
+		isAnimating = false;
+	}
+
+	public void AnimateRight() {
+		if (!isAnimating)
+			StartCoroutine (AnimateRight(animDuration, animSteps));
+	}
+
+	private IEnumerator AnimateRight(float animDuration, int animSteps) {
+		float sizeIncX = (smallIconXSize - largeIconXSize) / animSteps;
+		float sizeIncY = (smallIconYSize - largeIconYSize) / animSteps;
+		float posIncX = (smallIconXPos - largeIconXPos) / animSteps;
+		float posIncY = (smallIconYPos - largeIconYPos) / animSteps;
+		float alphaInc = (0 - images[2].color.a) / animSteps;
+		float animWait = animDuration / animSteps;
+		Color c;
+		
+		isAnimating = true;
+		
+		images [4].gameObject.SetActive(true);
+		c = images[4].color;
+		c.a = 0;
+		images[4].color = c;
+		
+		for(int x = 0; x < animSteps; x++) {
+			c = images[1].color;
+			c.a += alphaInc;
+			images[1].color = c;
+			
+			images[2].rectTransform.sizeDelta = new Vector2(images[2].rectTransform.rect.width + sizeIncX,
+			                                                images[2].rectTransform.rect.height + sizeIncY);
+			images[2].rectTransform.anchoredPosition = new Vector2(images[2].rectTransform.anchoredPosition.x + posIncX,
+			                                                       images[2].rectTransform.anchoredPosition.y + posIncY);
+			
+			images[3].rectTransform.sizeDelta = new Vector2(images[3].rectTransform.rect.width - sizeIncX,
+			                                                images[3].rectTransform.rect.height - sizeIncY);
+			images[3].rectTransform.anchoredPosition = new Vector2(images[3].rectTransform.anchoredPosition.x + posIncX,
+			                                                       images[3].rectTransform.anchoredPosition.y + posIncY);
+			
+			c = images[4].color;
+			c.a -= alphaInc;
+			images[4].color = c;
+			
+			yield return new WaitForSeconds(animWait);
+		}
+		
+		images [0].rectTransform.anchoredPosition = images [4].rectTransform.anchoredPosition;
+		images [1].gameObject.SetActive (false);
+		
+		Image temp = images[0];
+		for(int x = 0; x < 4; x++) {
+			images[x] = images[x+1];
+		}
+		images [4] = temp;
+		if (bldgIndex + 1 < bldgList.Count)
+			bldgIndex++;
+		else
+			bldgIndex = 0;
 		UpdateSelection ();
 		isAnimating = false;
 	}

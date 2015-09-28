@@ -856,6 +856,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: .988549709
+        functionName: HitFinish
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -1188,13 +1195,13 @@ ModelImporter:
             inSlope: 1.91564429
             outSlope: .457825541
             tangentMode: 1
-          - time: .0541400164
+          - time: .0628418997
             value: .5
             inSlope: 6.53440952
             outSlope: .886080861
             tangentMode: 1
-          - time: .328025103
-            value: .5
+          - time: .336726993
+            value: .449999988
             inSlope: -1.60471332
             outSlope: -2.66844296
             tangentMode: 1
@@ -1208,6 +1215,13 @@ ModelImporter:
       events:
       - time: .354430199
         functionName: HitConfirm
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: .992366374
+        functionName: HitFinish
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

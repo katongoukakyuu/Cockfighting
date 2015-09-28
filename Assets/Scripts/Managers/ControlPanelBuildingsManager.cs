@@ -101,7 +101,7 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_BUILDING).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			print (row.Key);
+			if(Constants.DEBUG) print (row.Key);
 			l.Add (row.Key.ToString ());
 		}
 		buildingList = l;
@@ -111,7 +111,7 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_BUILDING).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			print (row.Key);
+			if(Constants.DEBUG) print (row.Key);
 			if(row.Key.ToString() == name) {
 				return db.GetDocument (row.DocumentId).Properties;
 			}
@@ -123,7 +123,7 @@ public class ControlPanelBuildingsManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_BUILDING).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			print (row.Key);
+			if(Constants.DEBUG) print (row.Key);
 			if(row.Key.ToString() == name) {
 				return row.DocumentId;
 			}

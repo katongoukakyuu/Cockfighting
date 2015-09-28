@@ -17,7 +17,7 @@ public class ButtonScripts : MonoBehaviour {
 
 	void Open()
 	{
-		print ("Open!");
+		if(Constants.DEBUG) print ("Open!");
 		FarmGUI.SetActive(false);
 		BlackOverLay.SetActive(true);
 		((MonoBehaviour)camera.GetComponent("CameraControls")).enabled = false;

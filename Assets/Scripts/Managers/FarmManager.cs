@@ -14,6 +14,8 @@ public class FarmManager : MonoBehaviour {
 	public Animator mainAnim;
 	public Animator ChickenStatAnim;
 
+	public GridOverlay gridOverlay;
+
 	public Canvas messageCanvas;
 
 	public GameObject mainCanvas;
@@ -21,8 +23,6 @@ public class FarmManager : MonoBehaviour {
 	public Text[] chickenStatsFields;
 	
 	private System.EventHandler<DatabaseChangeEventArgs> eventHandler;
-
-	private GridOverlay gridOverlay;
 
 	private string state = Constants.FARM_MANAGER_STATE_FREE_SELECT;
 	private bool isAnimating = false;
@@ -45,8 +45,6 @@ public class FarmManager : MonoBehaviour {
 	}
 
 	void Start() {
-		gridOverlay = Camera.main.GetComponent<GridOverlay>();
-
 		eventHandler = (sender, e) => {
 			var changes = e.Changes.ToList();
 			foreach (DocumentChange change in changes) {
@@ -83,8 +81,8 @@ public class FarmManager : MonoBehaviour {
 
 	public void UpdatePlayer() {
 		UpdateScreen();
-		UpdateChickens ();
 		UpdateBuildingsOwned ();
+		UpdateChickens ();
 	}
 
 	public void UpdateScreen() {
@@ -100,14 +98,24 @@ public class FarmManager : MonoBehaviour {
 		if(gridOverlay != null) {
 			int xMax = gridOverlay.GetTiles().GetLength(0);
 			int yMax = gridOverlay.GetTiles().GetLength(1);
-			print ("Grid overlay xy: " + xMax + ", " + yMax);
+			int x = 0;
+			if(Constants.DEBUG) print ("Grid overlay xy: " + xMax + ", " + yMax);
 			foreach(IDictionary<string,object> i in PlayerManager.Instance.playerChickens) {
-				GameObject g = Instantiate (chicken,
-				                            gridOverlay.GetTiles()[Random.Range (0,xMax), Random.Range (0,yMax)].transform.position,
-				                            Quaternion.identity) as GameObject;
+				GameObject g;
+				if(x < listBuildings.Count && listBuildings[x] != null) {
+					g = Instantiate (chicken,
+					                 listBuildings[x].transform.position,
+					                 Quaternion.identity) as GameObject;
+				}
+				else {
+					g = Instantiate (chicken,
+					                 gridOverlay.GetTiles()[Random.Range (0,xMax), Random.Range (0,yMax)].transform.position,
+					                 Quaternion.identity) as GameObject;
+				}
 				g.AddComponent<Chicken>();
 				g.GetComponent<Chicken>().chicken = i;
 				listChickens.Add (g);
+				x++;
 			}
 		}
 	}
@@ -149,7 +157,7 @@ public class FarmManager : MonoBehaviour {
 	}
 
 	public void UpdateSelectedObject(GameObject g) {
-		print ("tag is " + g.tag);
+		if(Constants.DEBUG) print ("tag is " + g.tag);
 		if (state == Constants.FARM_MANAGER_STATE_FREE_SELECT) {
 			if (g.tag == "Chicken" && state == Constants.FARM_MANAGER_STATE_FREE_SELECT) {
 				selectedObject = g;
@@ -226,24 +234,24 @@ public class FarmManager : MonoBehaviour {
 		return true;
 		
 		// debug
-		/*print ("north orientation bldg tiles:");
+		/*if(Constants.DEBUG) print ("north orientation bldg tiles:");
 		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_NORTH)) {
-			print(v.x + " " + v.y);
+			if(Constants.DEBUG) print(v.x + " " + v.y);
 		}
 
-		print ("east orientation bldg tiles:");
+		if(Constants.DEBUG) print ("east orientation bldg tiles:");
 		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_EAST)) {
-			print(v.x + " " + v.y);
+			if(Constants.DEBUG) print(v.x + " " + v.y);
 		}
 
-		print ("south orientation bldg tiles:");
+		if(Constants.DEBUG) print ("south orientation bldg tiles:");
 		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_SOUTH)) {
-			print(v.x + " " + v.y);
+			if(Constants.DEBUG) print(v.x + " " + v.y);
 		}
 
-		print ("west orientation bldg tiles:");
+		if(Constants.DEBUG) print ("west orientation bldg tiles:");
 		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_WEST)) {
-			print(v.x + " " + v.y);
+			if(Constants.DEBUG) print(v.x + " " + v.y);
 		}
 		*/
 	}
@@ -278,8 +286,8 @@ public class FarmManager : MonoBehaviour {
 		while(isAnimating)
 			yield return new WaitForSeconds(0.1f);
 		camera.transform.parent = parentTo;
-		print (cameraFrom.localPosition);
-		print (cameraTo.localPosition);
+		if(Constants.DEBUG) print (cameraFrom.localPosition);
+		if(Constants.DEBUG) print (cameraTo.localPosition);
 		float posIncX = (cameraTo.localPosition.x - cameraFrom.localPosition.x) / animSteps;
 		float posIncY = (cameraTo.localPosition.y - cameraFrom.localPosition.y) / animSteps;
 		float posIncZ = (cameraTo.localPosition.z - cameraFrom.localPosition.z) / animSteps;

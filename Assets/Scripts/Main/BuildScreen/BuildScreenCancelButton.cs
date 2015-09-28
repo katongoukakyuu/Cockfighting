@@ -10,6 +10,9 @@ public class BuildScreenCancelButton : MonoBehaviour {
 	public Animator buildAnimator;
 
 	public void ButtonPressed() {
+		CameraControls.Instance.SwitchToCamera(0);
+		CameraControls.Instance.freeCamera = true;
+
 		buildAnimator.SetBool("isHidden", true);
 		Invoke ("CancelBuildFunctions", 0.2f);
 	}
