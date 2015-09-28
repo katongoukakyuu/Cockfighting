@@ -49,7 +49,7 @@ LightmapSettings:
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
-    m_IndirectOutputScale: 1
+    m_IndirectOutputScale: 1.5
     m_AlbedoBoost: 1
     m_TemporalCoherenceThreshold: 1
     m_EnvironmentLightingMode: 0
@@ -1707,7 +1707,7 @@ Light:
   serializedVersion: 6
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 1.5
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -14448,7 +14448,7 @@ Transform:
   m_PrefabParentObject: {fileID: 422452, guid: 96b4116eba6a940448d3749d03ce33c5, type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2130313267}
-  m_LocalRotation: {x: -.707106888, y: 0, z: 0, w: .707106709}
+  m_LocalRotation: {x: -.580226839, y: .404149652, z: .404149592, w: .58022666}
   m_LocalPosition: {x: -7.90000534, y: -13.8889961, z: -11.7292881}
   m_LocalScale: {x: .387494713, y: .387494713, z: .387494713}
   m_Children: []
