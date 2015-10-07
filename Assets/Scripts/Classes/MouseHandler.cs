@@ -38,7 +38,7 @@ public class MouseHandler : MonoBehaviour {
 				RaycastHit hit;
 				if (Physics.Raycast(screenRay, out hit))
 				{
-					if(Constants.DEBUG) print (hit.collider.transform.gameObject);
+					// print (hit.collider.transform.gameObject);
 					OnMouseClick(hit.collider.transform.gameObject);
 					FarmManager.Instance.UpdateClick(hit.collider.transform.gameObject);
 				}

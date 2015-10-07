@@ -21,7 +21,7 @@ public class Tile : MonoBehaviour {
 	private void OnClick(GameObject g) {
 		if(!isSelectable) return;
 		if (g == this.gameObject) {
-			if(Constants.DEBUG) print ("i am selected");
+			// print ("i am selected");
 			GetComponent<Renderer>().material = matSelected;
 			if(FarmManager.Instance != null) {
 				FarmManager.Instance.UpdateSelectedObject(this.gameObject);

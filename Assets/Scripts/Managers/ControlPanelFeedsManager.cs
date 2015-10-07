@@ -112,7 +112,7 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_FEEDS).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			if(Constants.DEBUG) print (row.Key);
+			// print (row.Key);
 			l.Add (row.Key.ToString ());
 		}
 		feedsList = l;
@@ -122,7 +122,7 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_FEEDS).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			if(Constants.DEBUG) print (row.Key);
+			// print (row.Key);
 			if(row.Key.ToString() == name) {
 				return db.GetDocument (row.DocumentId).Properties;
 			}
@@ -134,7 +134,7 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 		var query = db.GetView (Constants.DB_TYPE_FEEDS).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			if(Constants.DEBUG) print (row.Key);
+			// print (row.Key);
 			if(row.Key.ToString() == name) {
 				return row.DocumentId;
 			}

@@ -99,7 +99,7 @@ public class FarmManager : MonoBehaviour {
 			int xMax = gridOverlay.GetTiles().GetLength(0);
 			int yMax = gridOverlay.GetTiles().GetLength(1);
 			int x = 0;
-			if(Constants.DEBUG) print ("Grid overlay xy: " + xMax + ", " + yMax);
+			// print ("Grid overlay xy: " + xMax + ", " + yMax);
 			foreach(IDictionary<string,object> i in PlayerManager.Instance.playerChickens) {
 				GameObject g;
 				if(x < listBuildings.Count && listBuildings[x] != null) {
@@ -157,13 +157,14 @@ public class FarmManager : MonoBehaviour {
 	}
 
 	public void UpdateSelectedObject(GameObject g) {
-		if(Constants.DEBUG) print ("tag is " + g.tag);
+		// print ("tag is " + g.tag);
 		if (state == Constants.FARM_MANAGER_STATE_FREE_SELECT) {
 			if (g.tag == "Chicken" && state == Constants.FARM_MANAGER_STATE_FREE_SELECT) {
 				selectedObject = g;
 				//mainCameraDummy = Instantiate(Camera.main.gameObject);
 				//mainCameraDummy.SetActive(false);
 				//CameraControls.Instance.freeCamera = false;
+				CameraControls.Instance.freeCamera = false;
 				UpdateChickenStats(selectedObject.GetComponent<Chicken>().chicken);
 				mainAnim.SetBool("isHidden", true);
 				chickenStatsCanvas.SetActive(true);
@@ -234,24 +235,24 @@ public class FarmManager : MonoBehaviour {
 		return true;
 		
 		// debug
-		/*if(Constants.DEBUG) print ("north orientation bldg tiles:");
+		/*// print ("north orientation bldg tiles:");
 		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_NORTH)) {
-			if(Constants.DEBUG) print(v.x + " " + v.y);
+			// print(v.x + " " + v.y);
 		}
 
-		if(Constants.DEBUG) print ("east orientation bldg tiles:");
+		// print ("east orientation bldg tiles:");
 		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_EAST)) {
-			if(Constants.DEBUG) print(v.x + " " + v.y);
+			// print(v.x + " " + v.y);
 		}
 
-		if(Constants.DEBUG) print ("south orientation bldg tiles:");
+		// print ("south orientation bldg tiles:");
 		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_SOUTH)) {
-			if(Constants.DEBUG) print(v.x + " " + v.y);
+			// print(v.x + " " + v.y);
 		}
 
-		if(Constants.DEBUG) print ("west orientation bldg tiles:");
+		// print ("west orientation bldg tiles:");
 		foreach (Vector2 v in GameManager.Instance.GetBuildingTiles (pos, bldgCenter, bldgSize, Constants.ORIENTATION_WEST)) {
-			if(Constants.DEBUG) print(v.x + " " + v.y);
+			// print(v.x + " " + v.y);
 		}
 		*/
 	}
@@ -269,6 +270,7 @@ public class FarmManager : MonoBehaviour {
 	}
 
 	private void SwitchToFreeCamera() {
+		CameraControls.Instance.freeCamera = true;
 		mainCanvas.SetActive(true);
 		ChickenStatAnim.SetBool("isHidden", true);
 		Invoke ("ChickenStatCloseFunction", 0.2f);
@@ -286,8 +288,8 @@ public class FarmManager : MonoBehaviour {
 		while(isAnimating)
 			yield return new WaitForSeconds(0.1f);
 		camera.transform.parent = parentTo;
-		if(Constants.DEBUG) print (cameraFrom.localPosition);
-		if(Constants.DEBUG) print (cameraTo.localPosition);
+		// print (cameraFrom.localPosition);
+		// print (cameraTo.localPosition);
 		float posIncX = (cameraTo.localPosition.x - cameraFrom.localPosition.x) / animSteps;
 		float posIncY = (cameraTo.localPosition.y - cameraFrom.localPosition.y) / animSteps;
 		float posIncZ = (cameraTo.localPosition.z - cameraFrom.localPosition.z) / animSteps;

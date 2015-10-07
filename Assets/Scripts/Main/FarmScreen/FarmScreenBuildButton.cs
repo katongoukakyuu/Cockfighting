@@ -21,11 +21,10 @@ public class FarmScreenBuildButton : MonoBehaviour {
 
 	void BuildFunctions()
 	{
+		CameraControls.Instance.freeCamera = false;
 		imagePanel.SetBuildings (DatabaseManager.Instance.LoadBuildings());
-		
 		mainCanvas.gameObject.SetActive (false);
 		buildStructuresCanvas.gameObject.SetActive (true);
-		Camera.main.GetComponent<GridOverlay>().ToggleCanHoverOnMap(false);
 	}
 	
 }

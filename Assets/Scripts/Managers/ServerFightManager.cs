@@ -124,19 +124,18 @@ public class ServerFightManager : MonoBehaviour {
 			) [Constants.DB_KEYWORD_NAME].ToString ());
 			moveStrength[moves.IndexOf(id)] = AnalyzeMoveStrength(moveName[moves.IndexOf(id)], playerNum);
 			moveStrengthTotal += moveStrength[moves.IndexOf(id)];
-			if(Constants.DEBUG) print ("move strength of " + moveName[moves.IndexOf(id)] + " is " + 
-			       moveStrength[moves.IndexOf(id)]);
+			// print ("move strength of " + moveName[moves.IndexOf(id)] + " is " + moveStrength[moves.IndexOf(id)]);
 		}
 
 		if(moveStrengthTotal == 0) return null;
 		float r = Random.Range(0.0f, 1.0f);
 		float lowLim;
 		float hiLim = 0.0f;
-		if(Constants.DEBUG) print ("randomizer is " + r);
+		// print ("randomizer is " + r);
 		for (int i = 0; i < movePercent.Length; i++)
 		{
 			movePercent[i] = moveStrength[i] / moveStrengthTotal;
-			if(Constants.DEBUG) print ("move percent of " + moveName[i] + " is " + movePercent[i]);
+			// print ("move percent of " + moveName[i] + " is " + movePercent[i]);
 			lowLim = hiLim;
 			hiLim += movePercent[i];
 			if (r >= lowLim && r < hiLim) {
@@ -193,30 +192,30 @@ public class ServerFightManager : MonoBehaviour {
 	}
 
 	private void ProcessMove(string moveName, int pN) {
-		if(Constants.DEBUG) print ("move used by chicken " + pN + " is " + moveName);
+		// print ("move used by chicken " + pN + " is " + moveName);
 		int eN = Mathf.Abs(pN-1);
 		switch (moveName) {
 		case Constants.FIGHT_MOVE_DASH:
-			if(Constants.DEBUG) print ("DASH, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
-			if(Constants.DEBUG) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+			// print ("DASH, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			// print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 			pos[pN] = Utility.AStar(pos[pN],pos[eN],ringSize,2,false);
-			if(Constants.DEBUG) print ("new pos: " + pos[pN]);
+			// print ("new pos: " + pos[pN]);
 			UpdateDistance ();
-			if(Constants.DEBUG) print ("AFTER DASH, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			// print ("AFTER DASH, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 			break;
 		case Constants.FIGHT_MOVE_FLYING_TALON:
-			if(Constants.DEBUG) print ("FLYING TALON, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
-			if(Constants.DEBUG) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+			// print ("FLYING TALON, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			// print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 			pos[pN] = Utility.AStar(pos[pN],pos[eN],ringSize,1,false);
-			if(Constants.DEBUG) print ("new pos: " + pos[pN]);
+			// print ("new pos: " + pos[pN]);
 			UpdateDistance ();
-			if(Constants.DEBUG) print ("AFTER FLYING TALON, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
-			hp[eN] -= (int)(atk[pN] * 0.7f);
-			if(Constants.DEBUG) print ("updated hp of chicken " + eN + " is " + hp[eN]);
+			// print ("AFTER FLYING TALON, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			hp[eN] -= (int)(atk[pN] * 0.4f);
+			// print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		case Constants.FIGHT_MOVE_SIDESTEP:
-			if(Constants.DEBUG) print ("SIDESTEP, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
-			if(Constants.DEBUG) print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
+			// print ("SIDESTEP, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			// print ("old pos: " + pos[pN] + ", enemy pos: " + pos[eN]);
 
 			Vector2 sidestepPosition;
 			do {
@@ -224,15 +223,15 @@ public class ServerFightManager : MonoBehaviour {
 				                               pos[eN].y);
 			} while(sidestepPosition == pos[eN]);
 			pos[pN] = Utility.AStar(pos[pN],sidestepPosition,ringSize,5,true);
-			if(Constants.DEBUG) print ("new pos: " + pos[pN]);
+			// print ("new pos: " + pos[pN]);
 			UpdateDistance ();
-			if(Constants.DEBUG) print ("AFTER SIDESTEP, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
-			if(Constants.DEBUG) print ("Sidestep!");
+			// print ("AFTER SIDESTEP, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			// print ("Sidestep!");
 			break;
 		case Constants.FIGHT_MOVE_PECK:
-			if(Constants.DEBUG) print ("PECK, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
-			hp[eN] -= (int)(atk[pN] * 0.4f);
-			if(Constants.DEBUG) print ("updated hp of chicken " + eN + " is " + hp[eN]);
+			// print ("PECK, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+			hp[eN] -= (int)(atk[pN] * 0.1f);
+			// print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		default:
 			break;
@@ -241,7 +240,7 @@ public class ServerFightManager : MonoBehaviour {
 
 	private void UpdateDistance() {
 		dist = Vector2.Distance(pos[0], pos[1]);
-		if(Constants.DEBUG) print ("Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
+		// print ("Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
 	}
 
 	private Dictionary<string, object> RecordTurn(string[] move) {

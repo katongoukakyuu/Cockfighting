@@ -18,6 +18,7 @@ public class FarmScreenMailboxButton : MonoBehaviour {
 
 	void MailFunctions()
 	{
+		CameraControls.Instance.freeCamera = false;
 		mainCanvas.gameObject.SetActive (false);
 		mailboxCanvas.gameObject.SetActive (true);
 		MailboxManager.Instance.Initialize ();

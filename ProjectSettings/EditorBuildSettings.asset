@@ -9,25 +9,25 @@ EditorBuildSettings:
     path: Assets/Scenes/Login.unity
   - enabled: 1
     path: Assets/Scenes/Farm.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Fight Screen.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Control Panel.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Control Panel - Breeds.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Control Panel - Buildings.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Control Panel - Feeds.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/graphic test.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/products graphic test.unity
   - enabled: 0
     path: Assets/Scenes/fight.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/untextured assets.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Fight Ring.unity
   - enabled: 1
     path: Assets/Scenes/Fight Ring 2.unity

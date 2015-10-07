@@ -41,7 +41,7 @@ public class ChickenFightAI : MonoBehaviour {
 			}
 			if(newDestination[0] != -1 && newDestination[1] != -1) {
 				if(moveImmediately) {
-					if(Constants.DEBUG) print ("moving immediately, target is " + gridOverlay.GetTiles()[newDestination[0],newDestination[1]].transform.position);
+					// print ("moving immediately, target is " + gridOverlay.GetTiles()[newDestination[0],newDestination[1]].transform.position);
 					navMeshAgent.Warp(gridOverlay.GetTiles()[newDestination[0],newDestination[1]].transform.position);
 					moveImmediately = false;
 					oldDestination[0] = newDestination[0];
@@ -50,7 +50,7 @@ public class ChickenFightAI : MonoBehaviour {
 					newDestination[1] = -1;
 				}
 				else {
-					if(Constants.DEBUG) print ("moving normally, target is " + gridOverlay.GetTiles()[newDestination[0],newDestination[1]].transform.position);
+					// print ("moving normally, target is " + gridOverlay.GetTiles()[newDestination[0],newDestination[1]].transform.position);
 					navMeshAgent.SetDestination(gridOverlay.GetTiles()[newDestination[0],newDestination[1]].transform.position);
 					targetPosition = gridOverlay.GetTiles()[newDestination[0],newDestination[1]].transform.position;
 					oldDestination[0] = newDestination[0];
@@ -72,7 +72,7 @@ public class ChickenFightAI : MonoBehaviour {
 	}
 
 	public void HitConfirm() {
-		if(Constants.DEBUG) print ("hit confirm!");
+		// print ("hit confirm!");
 		ReplayManager.Instance.UpdateUI((index+1)%2, false, true);
 	}
 

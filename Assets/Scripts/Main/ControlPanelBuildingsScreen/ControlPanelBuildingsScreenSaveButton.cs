@@ -24,7 +24,7 @@ public class ControlPanelBuildingsScreenSaveButton : MonoBehaviour {
 			);
 		}
 		else {
-			if(Constants.DEBUG) print ("Error in saving Building, not enough fields to save.");
+			// print ("Error in saving Building, not enough fields to save.");
 		}
 	}
 

@@ -32,17 +32,22 @@ public class BuildingPlacementManager : MonoBehaviour {
 
 	void Start() {
 		MouseHandler.Instance.OnMouseClick += OnClick;
-		gridOverlay.OnTileHoverChange += OnTileHoverChange;
+		//gridOverlay.OnTileHoverChange += OnTileHoverChange;
 	}
 	
 	private void OnClick(GameObject g) {
 		if (isInitialized && FarmManager.Instance.State() == Constants.FARM_MANAGER_STATE_BUILD_STRUCTURE) {
+			Tile hoveredTile = gridOverlay.GetSelectedTile();
+			bldgObject.transform.position = new Vector3 (hoveredTile.gameObject.transform.position.x,
+			                                             bldgObject.gameObject.transform.position.y,
+			                                             hoveredTile.gameObject.transform.position.z);
 			int[] pos = new int[] {
 				(int)gridOverlay.GetSelectedTile().position.x,
 				(int)gridOverlay.GetSelectedTile().position.y
 			};
 			if(FarmManager.Instance.CheckBuildable(building, pos, orientation)) {
-				if(curPos[0] == pos[0] && curPos[1] == pos[1]) {
+				bldgObject.GetComponentInChildren<Renderer>().material.color = Color.green;
+				if(curPos[0] == pos[0] && curPos[1] == pos[1] && g != null) {
 					FarmManager.Instance.BuildStructure(building, pos, orientation);
 					ButtonCancel();
 					DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString (),
@@ -52,6 +57,9 @@ public class BuildingPlacementManager : MonoBehaviour {
 				else {
 					curPos = pos;
 				}
+			}
+			else {
+				bldgObject.GetComponentInChildren<Renderer>().material.color = Color.red;
 			}
 		}
 	}
@@ -81,11 +89,12 @@ public class BuildingPlacementManager : MonoBehaviour {
 		this.building = building;
 		orientation = Constants.ORIENTATION_NORTH;
 		//gridOverlay.ToggleCanRenderLines(true);
-		gridOverlay.ToggleCanHoverOnMap(true);
+		//gridOverlay.ToggleCanHoverOnMap(true);
 		gridOverlay.ToggleCanClickOnMap(true);
 		//MouseHandler.Instance.enabled = true;
 		bldgObject = Instantiate (Resources.Load (Constants.PATH_PREFABS_BUILDINGS + building[Constants.DB_KEYWORD_PREFAB_NAME],typeof(GameObject))) as GameObject;
-		OnTileHoverChange ();
+		OnClick (null);
+		bldgObject.GetComponentInChildren<Renderer>().material.color = Color.red;
 		isInitialized = true;
 	}
 
@@ -152,7 +161,7 @@ public class BuildingPlacementManager : MonoBehaviour {
 			                                               0,
 			                                               bldgObject.transform.eulerAngles.z);
 		ChangeOrientation ("ccw");
-		OnTileHoverChange ();
+		OnClick (null);
 	}
 
 	public void ButtonRotateCW() {
@@ -162,6 +171,6 @@ public class BuildingPlacementManager : MonoBehaviour {
 			                                               0,
 			                                               bldgObject.transform.eulerAngles.z);
 		ChangeOrientation ("cw");
-		OnTileHoverChange ();
+		OnClick (null);
 	}
 }

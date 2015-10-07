@@ -188,9 +188,6 @@ public class FightManager : MonoBehaviour {
 	}
 
 	public void ButtonBack() {
-
-
-
 		switch(state) {
 		case Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT:
 				FightCanvasAnimation.SetBool("isHidden", true);
@@ -208,23 +205,22 @@ public class FightManager : MonoBehaviour {
 
 	void FightButtonFunction()
 	{
-
-			switch(state) {
-			case Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT:
-				mainCanvas.gameObject.SetActive (true);
-				listPanel.gameObject.SetActive (true);
-				matchmakingPanel.gameObject.SetActive (false);
-				fightCanvas.gameObject.SetActive (false);
-				break;
-			case Constants.FIGHT_MANAGER_STATE_MATCH_SELECT:
-				state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
-				listPanel.gameObject.SetActive (true);
-				matchmakingPanel.gameObject.SetActive (false);
-				break;
-			default:
-				break;
-			}
-
+		switch(state) {
+		case Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT:
+			CameraControls.Instance.freeCamera = true;
+			mainCanvas.gameObject.SetActive (true);
+			listPanel.gameObject.SetActive (true);
+			matchmakingPanel.gameObject.SetActive (false);
+			fightCanvas.gameObject.SetActive (false);
+			break;
+		case Constants.FIGHT_MANAGER_STATE_MATCH_SELECT:
+			state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
+			listPanel.gameObject.SetActive (true);
+			matchmakingPanel.gameObject.SetActive (false);
+			break;
+		default:
+			break;
+		}
 	}
 
 

@@ -64,13 +64,19 @@ public class BreedsManager : MonoBehaviour {
 		}
 		listButtons.Clear ();
 		countdowns.Clear ();
-		
+
+		listPanel.GetComponent<VerticalLayoutGroup>().enabled = true;
 		foreach (IDictionary<string, object> i in PlayerManager.Instance.playerChickens) {
 			Button b = Instantiate(listButton);
 			listButtons.Add (b);
 			b.GetComponentInChildren<Text> ().text = i[Constants.DB_KEYWORD_NAME].ToString();
 			b.transform.SetParent(listPanel.transform,false);
 		}
+		Invoke("DisableListPanelLayout", 0.1f);
+	}
+
+	void DisableListPanelLayout() {
+		listPanel.GetComponent<VerticalLayoutGroup>().enabled = false;
 	}
 
 	public void InitializeSchedules() {
@@ -264,6 +270,7 @@ public class BreedsManager : MonoBehaviour {
 	void BreedButtonFunction()
 	{
 		if(state == Constants.BREEDS_MANAGER_STATE_FREE_SELECT) {
+			CameraControls.Instance.freeCamera = true;
 			mainCanvas.gameObject.SetActive (true);
 			breedsCanvas.gameObject.SetActive (false);
 		}

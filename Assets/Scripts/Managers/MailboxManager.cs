@@ -115,6 +115,7 @@ public class MailboxManager : MonoBehaviour {
 	}
 
 	void MainButtonFunction(){
+		CameraControls.Instance.freeCamera = true;
 		mainCanvas.gameObject.SetActive (true);
 		mailboxCanvas.gameObject.SetActive (false);
 	}

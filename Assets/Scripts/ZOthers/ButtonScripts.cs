@@ -12,22 +12,22 @@ public class ButtonScripts : MonoBehaviour {
 	public GameObject ModeSection;
 	public GameObject FightScreen;
 
-	public GameObject camera;
+	public GameObject cameraControls;
 
 
 	void Open()
 	{
-		if(Constants.DEBUG) print ("Open!");
+		// print ("Open!");
 		FarmGUI.SetActive(false);
 		BlackOverLay.SetActive(true);
-		((MonoBehaviour)camera.GetComponent("CameraControls")).enabled = false;
+		((MonoBehaviour)cameraControls.GetComponent("CameraControls")).enabled = false;
 	}
 
 	void Close()
 	{
 		FarmGUI.SetActive (true);
 		BlackOverLay.SetActive (false);
-		((MonoBehaviour)camera.GetComponent("CameraControls")).enabled = true;
+		((MonoBehaviour)cameraControls.GetComponent("CameraControls")).enabled = true;
 	}
 
 	public void openMarketPanel()

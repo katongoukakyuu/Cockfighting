@@ -104,14 +104,14 @@ public class GridOverlay : MonoBehaviour {
 		{
 			if(Input.GetKey(KeyCode.KeypadPlus)) 
 			{
-				if(Constants.DEBUG) print ("keypad plus");
+				// print ("keypad plus");
 				plane.transform.position = new Vector3(plane.transform.position.x, plane.transform.position.y + smallStep, plane.transform.position.z);
 				offsetY += smallStep;
 				lastScroll = Time.time;
 			}
 			if(Input.GetKey(KeyCode.KeypadMinus))
 			{
-				if(Constants.DEBUG) print ("keypad minus");
+				// print ("keypad minus");
 				plane.transform.position = new Vector3(plane.transform.position.x, plane.transform.position.y - smallStep, plane.transform.position.z);
 				offsetY -= smallStep;
 				lastScroll = Time.time;
@@ -119,43 +119,14 @@ public class GridOverlay : MonoBehaviour {
 		}
 
 		if(canHoverOnMap) {
-			Ray screenRay;
-			if(Input.touchCount > 0) {
-				screenRay = Camera.main.ScreenPointToRay(new Vector3(Input.GetTouch (0).position.x,
-				                                                     Input.GetTouch (0).position.y,
-				                                                     0));
-			}
-			else {
-				screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-			}
-			
-			RaycastHit hit;
-			if (Physics.Raycast(screenRay, out hit))
-			{
-				if(hit.collider.gameObject.tag == "Map") {
-					Vector2 newPos;
-					if(hit.collider.gameObject.GetComponent<Tile>() != null) {
-						newPos = hit.collider.gameObject.GetComponent<Tile>().position;
-						selectedTile = hit.collider.gameObject.GetComponent<Tile>();
-					}
-					else {
-						if(Constants.DEBUG) print ("Tile component is null! Returning world position");
-						Vector3 pos = hit.collider.gameObject.transform.position;
-						newPos = new Vector2(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.z));
-					}
-					
-					if(position != newPos) {
-						position = newPos;
-						OnTileHoverChange();
-						Debug.Log ("map tile is " + position);
-					}
-				}
-			}
+			UpdateSelectedTile();
 		}
 
 		if(canClickOnMap) {
-			if(Input.GetMouseButton(0)) {
-				//Debug.Log ("clicked on " + TileMapManager.Instance.GetPosition());
+			if(Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)) {
+				if(!EventSystem.current.IsPointerOverGameObject()) {
+					UpdateSelectedTile();
+				}
 			}
 		}
 	}
@@ -265,6 +236,43 @@ public class GridOverlay : MonoBehaviour {
 		
 		
 		GL.End();
+	}
+
+	void UpdateSelectedTile() {
+		Ray screenRay;
+		if(Input.touchCount > 0) {
+			screenRay = Camera.main.ScreenPointToRay(new Vector3(Input.GetTouch (0).position.x,
+			                                                     Input.GetTouch (0).position.y,
+			                                                     0));
+		}
+		else {
+			screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+		}
+		
+		RaycastHit hit;
+		if (Physics.Raycast(screenRay, out hit))
+		{
+			if(hit.collider.gameObject.tag == "Map") {
+				Vector2 newPos;
+				if(hit.collider.gameObject.GetComponent<Tile>() != null) {
+					newPos = hit.collider.gameObject.GetComponent<Tile>().position;
+					selectedTile = hit.collider.gameObject.GetComponent<Tile>();
+				}
+				else {
+					// print ("Tile component is null! Returning world position");
+					Vector3 pos = hit.collider.gameObject.transform.position;
+					newPos = new Vector2(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.z));
+				}
+
+				if(position != newPos) {
+					position = newPos;
+					if(OnTileHoverChange != null) {
+						OnTileHoverChange();
+					}
+					// print ("map tile is " + position);
+				}
+			}
+		}
 	}
 
 	public Vector2[] GetBoardCorners() {

@@ -4062,7 +4062,7 @@ MonoBehaviour:
   BlackOverLay: {fileID: 0}
   ModeSection: {fileID: 0}
   FightScreen: {fileID: 0}
-  camera: {fileID: 0}
+  cameraControls: {fileID: 0}
 --- !u!1 &866601543
 GameObject:
   m_ObjectHideFlags: 0

@@ -68,13 +68,15 @@ public class FeedsManager : MonoBehaviour {
 		listButtons.Clear ();
 		listInventory.Clear ();
 		countdowns.Clear ();
-		
+
+		listPanel.GetComponent<VerticalLayoutGroup>().enabled = true;
 		foreach (IDictionary<string, object> i in PlayerManager.Instance.playerChickens) {
 			Button b = Instantiate(listButton);
 			listButtons.Add (b);
 			b.GetComponentInChildren<Text> ().text = i[Constants.DB_KEYWORD_NAME].ToString();
 			b.transform.SetParent(listPanel.transform,false);
 		}
+		Invoke("DisableListPanelLayout", 0.1f);
 
 		inventory = DatabaseManager.Instance.LoadItemsOwnedByPlayer(PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
 		foreach (IDictionary<string, object> i in inventory) {
@@ -89,6 +91,10 @@ public class FeedsManager : MonoBehaviour {
 			g.GetComponentInChildren<Text> ().text = i[Constants.DB_KEYWORD_QUANTITY].ToString();
 			g.transform.SetParent (inventoryScreenPanel.transform,false);
 		}
+	}
+
+	void DisableListPanelLayout() {
+		listPanel.GetComponent<VerticalLayoutGroup>().enabled = false;
 	}
 
 	public void InitializeSchedules() {
@@ -246,6 +252,7 @@ public class FeedsManager : MonoBehaviour {
 
 	void FeedButtonFunction()
 	{
+		CameraControls.Instance.freeCamera = true;
 		mainCanvas.gameObject.SetActive (true);
 		feedsCanvas.gameObject.SetActive (false);
 	}

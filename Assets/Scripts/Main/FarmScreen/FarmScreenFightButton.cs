@@ -21,6 +21,7 @@ public class FarmScreenFightButton : MonoBehaviour {
 
 	void FightFunctions()
 	{
+		CameraControls.Instance.freeCamera = false;
 		fightCanvas.gameObject.SetActive (true);
 		mainCanvas.gameObject.SetActive (false);
 		FightManager.Instance.Initialize ();

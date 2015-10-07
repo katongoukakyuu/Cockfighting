@@ -7,7 +7,7 @@ public class Utility : MonoBehaviour {
 
 	public static void PrintDictionary(IDictionary<string,object> id) {
 		foreach(KeyValuePair<string,object> kv in id) {
-			if(Constants.DEBUG) print(kv.Key.ToString() + ": " + kv.Value.ToString());
+			// print(kv.Key.ToString() + ": " + kv.Value.ToString());
 		}
 	}
 
@@ -27,21 +27,21 @@ public class Utility : MonoBehaviour {
 	public static Vector2 AStar(Vector2 start, Vector2 goal, Vector2 setSize, int step, bool canStepToGoal) {
 		List<Vector2> cameFrom = AStar (start, goal, setSize);
 		/*foreach(Vector2 v in cameFrom) {
-			if(Constants.DEBUG) print("came from: " + v);
+			// print("came from: " + v);
 		}*/
 		if (step >= cameFrom.Count-1) {
 			if(cameFrom.Last () == goal && !canStepToGoal && cameFrom.Count > 1) {
-				if(Constants.DEBUG) print ("cannot step to goal, step over limit!");
+				// print ("cannot step to goal, step over limit!");
 				return cameFrom[cameFrom.Count-2];
 			}
-			if(Constants.DEBUG) print ("can step to goal, step over limit!");
+			// print ("can step to goal, step over limit!");
 			return cameFrom.Last ();
 		}
 		if (canStepToGoal) {
-			if(Constants.DEBUG) print ("can step to goal!");
+			// print ("can step to goal!");
 			return cameFrom [step + 1];
 		} else {
-			if(Constants.DEBUG) print ("cannot step to goal!");
+			// print ("cannot step to goal!");
 			return cameFrom [step];
 		}
 	}
@@ -70,7 +70,7 @@ public class Utility : MonoBehaviour {
 					current = v;
 				}
 			}
-			/*if(Constants.DEBUG) print ("current node is : " + current + ", goal node is : " + goal + ". Equal? " + 
+			/*// print ("current node is : " + current + ", goal node is : " + goal + ". Equal? " + 
 			       (current == goal));*/
 
 			if(current == goal) {

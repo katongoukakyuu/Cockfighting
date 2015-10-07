@@ -62,7 +62,7 @@ public class BuildScreenImagePanel : MonoBehaviour {
 		// -2 -1 0 1 2 3 4 5 6 7 8
 
 		int x = bldgIndex;
-		if(Constants.DEBUG) print (bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME]);
+		// print (bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME]);
 
 		for(int i = 0; i < 5; i++) {
 			bldgImagesSubset[i] = bldgImages[(int)Utility.Modulo((x+i-2), bldgImages.Length)];

@@ -18,9 +18,9 @@ public class FarmScreenFeedButton : MonoBehaviour {
 
 	void FeedFunctions()
 	{
+		CameraControls.Instance.freeCamera = false;
 		mainCanvas.gameObject.SetActive (false);
 		feedCanvas.gameObject.SetActive (true);
-		Camera.main.GetComponent<GridOverlay>().ToggleCanHoverOnMap(false);
 		FeedsManager.Instance.Initialize ();
 	}
 	
