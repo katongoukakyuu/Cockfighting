@@ -52,9 +52,8 @@ public class FarmManager : MonoBehaviour {
 				if((properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_ACCOUNT &&
 				   properties[Constants.DB_COUCHBASE_ID].ToString() == PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString()) ||
 				   (properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_CHICKEN &&
-				 	properties[Constants.DB_KEYWORD_OWNER].ToString() == PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString())) {
-					DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString (),
-					                                      PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
+				 	properties[Constants.DB_KEYWORD_USER_ID].ToString() == PlayerManager.Instance.player[Constants.DB_KEYWORD_USER_ID].ToString())) {
+					DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
 					UpdateScreen();
 					return;
 				}
@@ -260,7 +259,7 @@ public class FarmManager : MonoBehaviour {
 	public void BuildStructure(IDictionary<string,object> building, int[] pos, string orientation) {
 		Dictionary<string, object> dic = GameManager.Instance.GenerateBuildingOwnedByPlayer (
 			building[Constants.DB_KEYWORD_NAME].ToString(),
-			PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString(),
+			PlayerManager.Instance.player[Constants.DB_KEYWORD_USER_ID].ToString(),
 			"default",
 			pos[0],
 			pos[1],

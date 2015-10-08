@@ -212,7 +212,7 @@ public class ServerManager : MonoBehaviour {
 		}
 
 		IDictionary<string,object> chickenChild = DatabaseManager.Instance.SaveEntry(GameManager.Instance.GenerateChicken ("Child", 
-		                                                      chicken1 [Constants.DB_KEYWORD_OWNER].ToString(), 
+		                                                      chicken1 [Constants.DB_KEYWORD_USER_ID].ToString(), 
 		                                                      Random.Range(0,2) == 0 ? Constants.GENDER_MALE : Constants.GENDER_FEMALE, 
 		                                                      breed, 
 		                                                      Constants.LIFE_STAGE_EGG));

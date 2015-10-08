@@ -163,6 +163,7 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_FIGHTING_MOVE_ID = "fighting move id";
 
 	// player document keywords
+	public const string DB_KEYWORD_USER_ID = "user id";
 	public const string DB_KEYWORD_USERNAME = "username";
 	public const string DB_KEYWORD_PASSWORD = "password";
 	public const string DB_KEYWORD_EMAIL = "email";

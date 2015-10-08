@@ -90,11 +90,11 @@ public class ServerFightManager : MonoBehaviour {
 			mailTypes.Add (Constants.MAIL_STATUS_UNREAD);
 			mailTypes.Add (Constants.MAIL_TYPE_NOTIFICATION);
 			mailTypes.Add (Constants.MAIL_TYPE_REPLAY);
-			Dictionary<string, object> mail = GameManager.Instance.GenerateMail(""+0, DatabaseManager.Instance.LoadPlayer(chickens[x][Constants.DB_KEYWORD_OWNER].ToString())[Constants.DB_COUCHBASE_ID].ToString(),
+			Dictionary<string, object> mail = GameManager.Instance.GenerateMail(""+0, DatabaseManager.Instance.LoadPlayer(chickens[x][Constants.DB_KEYWORD_USER_ID].ToString())[Constants.DB_COUCHBASE_ID].ToString(),
 															                 Constants.MAIL_FIGHT_CONCLUDED_TITLE,
 															                 Constants.MAIL_FIGHT_CONCLUDED_MESSAGE_1 + chickens[x][Constants.DB_KEYWORD_NAME].ToString() + 
 															                 Constants.MAIL_FIGHT_CONCLUDED_MESSAGE_2 + chickens[(x+1)%2][Constants.DB_KEYWORD_NAME].ToString() + 
-															                 Constants.MAIL_FIGHT_CONCLUDED_MESSAGE_3 + DatabaseManager.Instance.LoadPlayer(chickens[(x+1)%2][Constants.DB_KEYWORD_OWNER].ToString())[Constants.DB_KEYWORD_FARM_NAME].ToString() + 
+															                 Constants.MAIL_FIGHT_CONCLUDED_MESSAGE_3 + DatabaseManager.Instance.LoadPlayer(chickens[(x+1)%2][Constants.DB_KEYWORD_USER_ID].ToString())[Constants.DB_KEYWORD_FARM_NAME].ToString() + 
 																		     Constants.MAIL_FIGHT_CONCLUDED_MESSAGE_4,
 			                                                                 mailTypes, savedReplay [Constants.DB_COUCHBASE_ID].ToString ());
 			DatabaseManager.Instance.SaveEntry(mail);

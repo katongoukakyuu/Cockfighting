@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Facebook.Unity;
 
 public class Utility : MonoBehaviour {
 
@@ -9,6 +10,16 @@ public class Utility : MonoBehaviour {
 		foreach(KeyValuePair<string,object> kv in id) {
 			// print(kv.Key.ToString() + ": " + kv.Value.ToString());
 		}
+	}
+
+	public static void FBGetName(string userId) {
+		FB.API ("/"+userId,HttpMethod.GET, GetNameCallback);
+	}
+
+	private static void GetNameCallback(IResult result) {
+		print ("GetNamecallBack result: " + result.RawResult);
+		IDictionary id = Facebook.MiniJSON.Json.Deserialize(result.RawResult) as IDictionary;
+		print ("name: " + id["name"]);
 	}
 
 	public static float Modulo(float a,float b) {

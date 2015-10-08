@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Pathfinding.Serialization.JsonFx;
 using System.IO;
+using Facebook.Unity;
 
 public class LoginManager : MonoBehaviour {
 
@@ -44,11 +45,47 @@ public class LoginManager : MonoBehaviour {
 			DisplayError(Constants.LOGIN_ERROR_PASSWORD_LENGTH);
 			return;
 		}
-		if(DatabaseManager.Instance.LoginAccount(loginPanelUsernameInput.text,loginPanelPasswordInput.text)) {
+		/*if(DatabaseManager.Instance.LoginAccount(loginPanelUsernameInput.text,loginPanelPasswordInput.text)) {
 			Application.LoadLevel(Constants.SCENE_FARM);
 		}
 		else
-			DisplayError(Constants.LOGIN_FAIL);
+			DisplayError(Constants.LOGIN_FAIL);*/
+	}
+
+	public void LoginScreenButtonFacebookLogin() {
+		var perms = new List<string>(){"public_profile", "email", "user_friends"};
+		FB.LogInWithReadPermissions(perms, AuthCallback);
+	}
+	
+	private void AuthCallback (ILoginResult result) {
+		if (FB.IsLoggedIn) {
+			// AccessToken class will have session details
+			var aToken = Facebook.Unity.AccessToken.CurrentAccessToken;
+			// Print current access token's User ID
+			print(aToken.UserId);
+			// Print current access token's granted permissions
+			foreach (string perm in aToken.Permissions) {
+				print(perm);
+			}
+
+			//FB.API ("/me",HttpMethod.GET,PrintName);
+
+			if(!DatabaseManager.Instance.LoginAccount(aToken.UserId)) {
+				Dictionary<string, object> d = GameManager.Instance.RegisterAccount(aToken.UserId,"");
+				DatabaseManager.Instance.RegisterAccount(d);
+				DatabaseManager.Instance.LoginAccount(aToken.UserId);
+			}
+
+			Application.LoadLevel(Constants.SCENE_FARM);
+		} else {
+			print("User cancelled login");
+		}
+	}
+
+	private void PrintName(IResult result) {
+		print ("result: " + result.RawResult);
+		IDictionary id = Facebook.MiniJSON.Json.Deserialize(result.RawResult) as IDictionary;
+		print ("name: " + id["name"]);
 	}
 
 	public void RegisterScreenButtonRegister() {
@@ -57,8 +94,8 @@ public class LoginManager : MonoBehaviour {
 			DisplayError(Constants.LOGIN_ERROR_USERNAME_LENGTH);
 			return;
 		}
-		Dictionary<string, object> d = GameManager.Instance.RegisterAccount(registerPanelUsernameInput.text,registerPanelEmailInput.text,"");
-		DatabaseManager.Instance.RegisterAccount(d);
+		//Dictionary<string, object> d = GameManager.Instance.RegisterAccount(registerPanelUsernameInput.text,registerPanelEmailInput.text,"");
+		//DatabaseManager.Instance.RegisterAccount(d);
 	}
 
 	private void DisplayError(string msg) {

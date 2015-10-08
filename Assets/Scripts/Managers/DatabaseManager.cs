@@ -4,8 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Couchbase.Lite;
+using Couchbase.Lite.Auth;
+using Facebook.Unity;
 
 public class DatabaseManager : MonoBehaviour {
+
+	public Replication push;
+	public Replication pull;
 
 	private Manager manager;
 	private Database db;
@@ -24,6 +29,37 @@ public class DatabaseManager : MonoBehaviour {
 
 	void Awake() {
 		Manager.SharedInstance = new Manager (new DirectoryInfo (Application.persistentDataPath), ManagerOptions.Default);
+
+		if (!FB.IsInitialized) {
+			// Initialize the Facebook SDK
+			FB.Init(InitCallback, OnHideUnity);
+		} else {
+			// Already initialized, signal an app activation App Event
+			FB.ActivateApp();
+		}
+	}
+
+	private void InitCallback ()
+	{
+		if (FB.IsInitialized) {
+			// Signal an app activation App Event
+			FB.ActivateApp();
+			// Continue with Facebook SDK
+			// ...
+		} else {
+			print("Failed to Initialize the Facebook SDK");
+		}
+	}
+	
+	private void OnHideUnity (bool isGameShown)
+	{
+		if (!isGameShown) {
+			// Pause the game - we will need to hide
+			Time.timeScale = 0;
+		} else {
+			// Resume the game - we're getting focus again
+			Time.timeScale = 1;
+		}
 	}
 
 	void Start () {
@@ -33,6 +69,7 @@ public class DatabaseManager : MonoBehaviour {
 			Destroy(gameObject);
 			return;
 		}
+
 		manager = Manager.SharedInstance;
 		// print ("manager directory is " + manager.Directory);
 		db = manager.GetDatabase("cockfighting");
@@ -43,19 +80,42 @@ public class DatabaseManager : MonoBehaviour {
 			}
 		};
 
+		// connect to server
+		var url = new System.Uri("http://localhost:4984/sync_gateway/");
+		var push = db.CreatePushReplication(url);
+		var pull = db.CreatePullReplication(url);
+		var auth = AuthenticatorFactory.CreateBasicAuthenticator("admin", "password");
+		push.Authenticator = auth;
+		pull.Authenticator = auth;
+		push.Continuous = true;
+		pull.Continuous = true;
+
+		push.Changed += (sender, e) => 
+		{
+			print ("push status: " + push.Status);
+		};
+		pull.Changed += (sender, e) => 
+		{
+			print ("pull status: " + pull.Status);
+		};
+		push.Start();
+		pull.Start();
+		this.push = push;
+		this.pull = pull;
+
 		// initialize views
 		// account username-password
 		View viewAccount = db.GetView(Constants.DB_TYPE_ACCOUNT);
 		viewAccount.SetMap ((doc, emit) => {
 			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_ACCOUNT)
-				emit(doc[Constants.DB_KEYWORD_USERNAME], doc[Constants.DB_KEYWORD_PASSWORD]);
+				emit(doc[Constants.DB_KEYWORD_USER_ID], doc[Constants.DB_KEYWORD_FARM_NAME]);
 		}, "1");
 
 		// chicken name-owner
 		View viewChicken = db.GetView(Constants.DB_TYPE_CHICKEN);
 		viewChicken.SetMap ((doc, emit) => {
 			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_CHICKEN)
-				emit(doc[Constants.DB_KEYWORD_NAME], doc[Constants.DB_KEYWORD_OWNER]);
+				emit(doc[Constants.DB_KEYWORD_NAME], doc[Constants.DB_KEYWORD_USER_ID]);
 		}, "1");
 
 		// building name
@@ -69,7 +129,7 @@ public class DatabaseManager : MonoBehaviour {
 		View viewBuildingOwned = db.GetView(Constants.DB_TYPE_BUILDING_OWNED);
 		viewBuildingOwned.SetMap ((doc, emit) => {
 			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_BUILDING_OWNED)
-				emit(doc[Constants.DB_KEYWORD_NAME], doc[Constants.DB_KEYWORD_OWNER]);
+				emit(doc[Constants.DB_KEYWORD_NAME], doc[Constants.DB_KEYWORD_USER_ID]);
 		}, "1");
 
 		// feeds
@@ -194,9 +254,9 @@ public class DatabaseManager : MonoBehaviour {
 			Constants.FIGHT_MOVE_PECK
 		));
 
-		RegisterAccount(GameManager.Instance.RegisterAccount ("test", "test@test.com", "Savior Studios"));
-		RegisterAccount(GameManager.Instance.RegisterAccount ("test2", "test@test.com", "Devil Studios"));
-		RegisterAccount(GameManager.Instance.RegisterAccount ("test3", "test@test.com", "Purgatory Studios"));
+		//RegisterAccount(GameManager.Instance.RegisterAccount ("test", "test@test.com", "Savior Studios"));
+		//RegisterAccount(GameManager.Instance.RegisterAccount ("test2", "test@test.com", "Devil Studios"));
+		//RegisterAccount(GameManager.Instance.RegisterAccount ("test3", "test@test.com", "Purgatory Studios"));
 		ControlPanelBreedsManager.Instance.SaveBreed (
 			"Kelso",
 			1.3f, 1.2f, 1.0f, 0.9f, 1.1f, 1.0f
@@ -271,11 +331,11 @@ public class DatabaseManager : MonoBehaviour {
 			10, -20, 10, -10, 10, 10,
 			"Hen Coop"
 		);
-		SaveEntry(GameManager.Instance.GenerateItemOwnedByPlayer(
+		/*SaveEntry(GameManager.Instance.GenerateItemOwnedByPlayer(
 			LoadPlayer("test")[Constants.DB_COUCHBASE_ID].ToString (),
 			LoadFeeds("Uber Feeds")[Constants.DB_COUCHBASE_ID].ToString (),
 			"50"
-		));
+		));*/
 
 		SaveEntry (GameManager.Instance.GenerateMatchmakingCategory (
 			"Beginner", false, false
@@ -386,18 +446,18 @@ public class DatabaseManager : MonoBehaviour {
 
 		List<IDictionary<string,object>> chicken = new List<IDictionary<string,object>>();
 		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Larry", 
-		                                      dic [Constants.DB_KEYWORD_USERNAME].ToString(), 
+		                                      dic [Constants.DB_KEYWORD_USER_ID].ToString(), 
 		                                      Constants.GENDER_MALE, 
 		                                      "Kelso", 
 		                                      Constants.LIFE_STAGE_COCK)));
 
 		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Gary", 
-		                                      dic [Constants.DB_KEYWORD_USERNAME].ToString(), 
+		                                      dic [Constants.DB_KEYWORD_USER_ID].ToString(), 
 		                                      Constants.GENDER_MALE, 
 		                                      "Kelso", 
 		                                      Constants.LIFE_STAGE_COCK)));
 		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Mary", 
-		                                      dic [Constants.DB_KEYWORD_USERNAME].ToString(), 
+		                                      dic [Constants.DB_KEYWORD_USER_ID].ToString(), 
 		                                      Constants.GENDER_FEMALE, 
 		                                      "Kelso", 
 		                                      Constants.LIFE_STAGE_HEN)));
@@ -440,12 +500,15 @@ public class DatabaseManager : MonoBehaviour {
 		return null;
 	}
 
-	public bool LoginAccount(string username, string password) {
+	public bool LoginAccount(string userId) {
 		var query = db.GetView (Constants.DB_TYPE_ACCOUNT).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			if(row.Key.ToString() == username && row.Value.ToString() == password) {
-				UpdatePlayer (username, row.DocumentId);
+			if(row.Key.ToString() == userId) {
+				UpdatePlayer (row.DocumentId);
+				var auth = AuthenticatorFactory.CreateFacebookAuthenticator(userId);
+				push.Authenticator = auth;
+				pull.Authenticator = auth;
 				return true;
 			}
 		}
@@ -468,11 +531,19 @@ public class DatabaseManager : MonoBehaviour {
 		});
 	}
 
-	public void UpdatePlayer(string username, string id) {
+	public void UpdatePlayer(string id) {
 		PlayerManager.Instance.player = db.GetDocument (id).Properties;
-		PlayerManager.Instance.playerChickens = LoadChickens (username);
-		PlayerManager.Instance.playerBuildings = LoadBuildingsOwnedByPlayer (username);
-		PlayerManager.Instance.playerOccupiedTiles = LoadPlayerOccupiedTiles (username);
+		string userId = PlayerManager.Instance.player[Constants.DB_KEYWORD_USER_ID].ToString();
+		FB.API ("/"+PlayerManager.Instance.player[Constants.DB_KEYWORD_USER_ID].ToString(),HttpMethod.GET, GetNameCallback);
+		PlayerManager.Instance.playerChickens = LoadChickens (userId);
+		PlayerManager.Instance.playerBuildings = LoadBuildingsOwnedByPlayer (userId);
+		PlayerManager.Instance.playerOccupiedTiles = LoadPlayerOccupiedTiles ();
+	}
+
+	private void GetNameCallback(IResult result) {
+		print ("GetNameCallback result: " + result.RawResult);
+		IDictionary id = Facebook.MiniJSON.Json.Deserialize(result.RawResult) as IDictionary;
+		print ("name: " + id["name"]);
 	}
 
 	public void EditChicken(IDictionary<string, object> dic) {
@@ -480,7 +551,7 @@ public class DatabaseManager : MonoBehaviour {
 		d.Update((UnsavedRevision newRevision) => {
 			var properties = newRevision.Properties;
 			properties[Constants.DB_KEYWORD_NAME] = dic[Constants.DB_KEYWORD_NAME].ToString();
-			properties[Constants.DB_KEYWORD_OWNER] = dic[Constants.DB_KEYWORD_OWNER].ToString();
+			properties[Constants.DB_KEYWORD_USER_ID] = dic[Constants.DB_KEYWORD_USER_ID].ToString();
 			properties[Constants.DB_KEYWORD_NOTES] = dic[Constants.DB_KEYWORD_NOTES].ToString();
 			properties[Constants.DB_KEYWORD_ATTACK] = dic[Constants.DB_KEYWORD_ATTACK].ToString();
 			properties[Constants.DB_KEYWORD_DEFENSE] = dic[Constants.DB_KEYWORD_DEFENSE].ToString();
@@ -500,12 +571,12 @@ public class DatabaseManager : MonoBehaviour {
 		});
 	}
 
-	public List<IDictionary<string,object>> LoadChickens(string username) {
+	public List<IDictionary<string,object>> LoadChickens(string userId) {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
 		var query = db.GetView (Constants.DB_TYPE_CHICKEN).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			if(row.Value.ToString() == username || username == null) {
+			if(row.Value.ToString() == userId || userId == null) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
 		}
@@ -534,19 +605,19 @@ public class DatabaseManager : MonoBehaviour {
 		return null;
 	}
 
-	public List<IDictionary<string,object>> LoadBuildingsOwnedByPlayer(string username) {
+	public List<IDictionary<string,object>> LoadBuildingsOwnedByPlayer(string userId) {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
 		var query = db.GetView (Constants.DB_TYPE_BUILDING_OWNED).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			if(row.Value.ToString() == username) {
+			if(row.Value.ToString() == userId) {
 				l.Add (db.GetDocument (row.DocumentId).Properties);
 			}
 		}
 		return l;
 	}
 
-	public List<Vector2> LoadPlayerOccupiedTiles(string username) {
+	public List<Vector2> LoadPlayerOccupiedTiles() {
 		List<Vector2> occupiedTiles = new List<Vector2> ();
 		foreach (IDictionary<string,object> bldg in PlayerManager.Instance.playerBuildings) {
 			IDictionary<string,object> building = LoadBuilding(bldg[Constants.DB_KEYWORD_NAME].ToString());

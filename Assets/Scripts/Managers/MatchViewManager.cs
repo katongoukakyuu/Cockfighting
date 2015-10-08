@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
+using Facebook.Unity;
 
 public class MatchViewManager : MonoBehaviour {
 
@@ -116,7 +117,7 @@ public class MatchViewManager : MonoBehaviour {
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_AGG_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_AGGRESSION].ToString());
 
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_FARM_NAME).GetComponent<Text>().text = selectedPlayer[Constants.DB_KEYWORD_FARM_NAME].ToString();
-		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_OWNER).GetComponent<Text>().text = selectedPlayer[Constants.DB_KEYWORD_USERNAME].ToString();
+		FBGetName(selectedPlayer[Constants.DB_KEYWORD_USER_ID].ToString());
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_RECORD).GetComponent<Text>().text = 
 			selectedPlayer[Constants.DB_KEYWORD_MATCHES_WON].ToString() + " - " + selectedPlayer[Constants.DB_KEYWORD_MATCHES_LOST].ToString() + " - " + selectedPlayer[Constants.DB_KEYWORD_MATCHES_TIED].ToString();
 
@@ -218,6 +219,16 @@ public class MatchViewManager : MonoBehaviour {
 			statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_PANEL_1).gameObject.SetActive(true);
 			statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_PANEL_2).gameObject.SetActive(false);
 		}
+	}
+
+	private void FBGetName(string userId) {
+		FB.API ("/"+userId,HttpMethod.GET, GetNameCallback);
+	}
+	
+	private void GetNameCallback(IResult result) {
+		print ("GetNameCallback result: " + result.RawResult);
+		IDictionary id = Facebook.MiniJSON.Json.Deserialize(result.RawResult) as IDictionary;
+		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_OWNER).GetComponent<Text>().text = id["name"].ToString();
 	}
 
 }

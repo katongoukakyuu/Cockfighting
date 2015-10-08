@@ -27,12 +27,10 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public Dictionary<string, object> RegisterAccount(string username, string email, string farmName) {
+	public Dictionary<string, object> RegisterAccount(string userId, string farmName) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_ACCOUNT},
-			{Constants.DB_KEYWORD_USERNAME, username},
-			{Constants.DB_KEYWORD_PASSWORD, "test"},
-			{Constants.DB_KEYWORD_EMAIL, email},
+			{Constants.DB_KEYWORD_USER_ID, userId},
 			{Constants.DB_KEYWORD_FARM_NAME, farmName},
 			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
 			{Constants.DB_KEYWORD_MATCHES_WON, 0},
@@ -44,11 +42,11 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
-	public Dictionary<string, object> GenerateChicken(string name, string owner, string gender, string breed, string lifeStage) {
+	public Dictionary<string, object> GenerateChicken(string name, string userId, string gender, string breed, string lifeStage) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_CHICKEN},
 			{Constants.DB_KEYWORD_NAME, name},
-			{Constants.DB_KEYWORD_OWNER, owner},
+			{Constants.DB_KEYWORD_USER_ID, userId},
 			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
 			{Constants.DB_TYPE_BREED, breed},
 			{Constants.DB_KEYWORD_GENDER, gender},
@@ -71,11 +69,11 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
-	public Dictionary<string, object> GenerateBuildingOwnedByPlayer(string name, string owner, string mapName, int xPos, int yPos, string orientation) {
+	public Dictionary<string, object> GenerateBuildingOwnedByPlayer(string name, string userId, string mapName, int xPos, int yPos, string orientation) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_BUILDING_OWNED},
 			{Constants.DB_KEYWORD_NAME, name},
-			{Constants.DB_KEYWORD_OWNER, owner},
+			{Constants.DB_KEYWORD_USER_ID, userId},
 			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
 			{Constants.DB_KEYWORD_MAP_NAME, mapName},
 			{Constants.DB_KEYWORD_X_POSITION, xPos},

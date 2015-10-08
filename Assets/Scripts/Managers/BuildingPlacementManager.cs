@@ -50,8 +50,7 @@ public class BuildingPlacementManager : MonoBehaviour {
 				if(curPos[0] == pos[0] && curPos[1] == pos[1] && g != null) {
 					FarmManager.Instance.BuildStructure(building, pos, orientation);
 					ButtonCancel();
-					DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_KEYWORD_USERNAME].ToString (),
-					                                      PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
+					DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
 					FarmManager.Instance.UpdateBuildingsOwned();
 				}
 				else {
