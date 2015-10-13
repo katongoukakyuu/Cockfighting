@@ -9,8 +9,10 @@ using Facebook.Unity;
 
 public class DatabaseManager : MonoBehaviour {
 
-	public Replication push;
-	public Replication pull;
+	public bool turnReplicationOn = false;
+
+	private Replication push;
+	private Replication pull;
 
 	private Manager manager;
 	private Database db;
@@ -81,27 +83,29 @@ public class DatabaseManager : MonoBehaviour {
 		};
 
 		// connect to server
-		var url = new System.Uri("http://localhost:4984/sync_gateway/");
-		var push = db.CreatePushReplication(url);
-		var pull = db.CreatePullReplication(url);
-		var auth = AuthenticatorFactory.CreateBasicAuthenticator("admin", "password");
-		push.Authenticator = auth;
-		pull.Authenticator = auth;
-		push.Continuous = true;
-		pull.Continuous = true;
-
-		push.Changed += (sender, e) => 
-		{
-			print ("push status: " + push.Status);
-		};
-		pull.Changed += (sender, e) => 
-		{
-			print ("pull status: " + pull.Status);
-		};
-		push.Start();
-		pull.Start();
-		this.push = push;
-		this.pull = pull;
+		if(turnReplicationOn) {
+			var url = new System.Uri("http://localhost:4984/sync_gateway/");
+			var push = db.CreatePushReplication(url);
+			var pull = db.CreatePullReplication(url);
+			//var auth = AuthenticatorFactory.CreateBasicAuthenticator("admin", "password");
+			//push.Authenticator = auth;
+			//pull.Authenticator = auth;
+			push.Continuous = true;
+			pull.Continuous = true;
+			
+			push.Changed += (sender, e) => 
+			{
+				print ("push status: " + push.Status);
+			};
+			pull.Changed += (sender, e) => 
+			{
+				print ("pull status: " + pull.Status);
+			};
+			push.Start();
+			pull.Start();
+			this.push = push;
+			this.pull = pull;
+		}
 
 		// initialize views
 		// account username-password
@@ -185,7 +189,7 @@ public class DatabaseManager : MonoBehaviour {
 		View viewItems = db.GetView(Constants.DB_TYPE_ITEM);
 		viewItems.SetMap ((doc, emit) => {
 			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_ITEM)
-				emit(doc[Constants.DB_KEYWORD_NAME], null);
+				emit(doc[Constants.DB_KEYWORD_NAME], doc[Constants.DB_KEYWORD_SUBTYPE]);
 		}, "1");
 
 		// items owned by player
@@ -317,25 +321,63 @@ public class DatabaseManager : MonoBehaviour {
 			0, 0,
 			"Teepee Wood", "Teepee Wood"
 			);
-		ControlPanelFeedsManager.Instance.SaveFeeds (
-			"Uber Feeds", "Feeds for uber chickens.",
-			10, 10,
-			1, 1, 1, 1,
-			10, -20, 10, -10, 10, 10,
-			"Hen Coop"
-		);
-		ControlPanelFeedsManager.Instance.SaveFeeds (
-			"Mini Feeds", "Feeds for mini chickens.",
-			10, 10,
+
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Mini Feeds", Constants.DB_TYPE_FEEDS, "Feeds for mini chickens.",
+			10, 10, true,
 			0, 0, 0, 5,
 			10, -20, 10, -10, 10, 10,
-			"Hen Coop"
-		);
-		/*SaveEntry(GameManager.Instance.GenerateItemOwnedByPlayer(
-			LoadPlayer("test")[Constants.DB_COUCHBASE_ID].ToString (),
-			LoadFeeds("Uber Feeds")[Constants.DB_COUCHBASE_ID].ToString (),
-			"50"
-		));*/
+			"Buildings/Chicken House Net"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Uber Feeds", Constants.DB_TYPE_FEEDS, "Feeds for uber chickens.",
+			10, 10, true,
+			1, 1, 1, 1,
+			10, -20, 10, -10, 10, 10,
+			"Buildings/Hen House Basic"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Mini Treats", Constants.DB_TYPE_TREATS, "Treats for mini chickens.",
+			10, 10, true,
+			0, 0, 0, 5,
+			10, -20, 10, -10, 10, 10,
+			"Buildings/Hen House Wood"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Uber Treats", Constants.DB_TYPE_TREATS, "Treats for uber chickens.",
+			10, 10, true,
+			1, 1, 1, 1,
+			10, -20, 10, -10, 10, 10,
+			"Buildings/Teepee Cement"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Mini Vitamins", Constants.DB_TYPE_VITAMINS, "Vitamins for mini chickens.",
+			10, 10, true,
+			0, 0, 0, 5,
+			10, -20, 10, -10, 10, 10,
+			"Buildings/Teepee Corrugated Steel"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Uber Vitamins", Constants.DB_TYPE_VITAMINS, "Vitamins for uber chickens.",
+			10, 10, true,
+			1, 1, 1, 1,
+			10, -20, 10, -10, 10, 10,
+			"Buildings/Teepee Drum"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Mini Shots", Constants.DB_TYPE_SHOTS, "Shots for mini chickens.",
+			10, 10, true,
+			0, 0, 0, 5,
+			10, -20, 10, -10, 10, 10,
+			"Buildings/Teepee Tire"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Uber Shots", Constants.DB_TYPE_SHOTS, "Shots for uber chickens.",
+			10, 10, true,
+			1, 1, 1, 1,
+			10, -20, 10, -10, 10, 10,
+			"Buildings/Teepee Wood"
+		));
 
 		SaveEntry (GameManager.Instance.GenerateMatchmakingCategory (
 			"Beginner", false, false
@@ -483,17 +525,23 @@ public class DatabaseManager : MonoBehaviour {
 			}
 		}
 
+		SaveEntry(GameManager.Instance.GenerateItemOwnedByPlayer(
+			LoadPlayer(dic [Constants.DB_KEYWORD_USER_ID].ToString())[Constants.DB_COUCHBASE_ID].ToString(),
+			LoadFeeds("Uber Feeds")[Constants.DB_COUCHBASE_ID].ToString (),
+			"50"
+		));
+
 		if (rev != null) {
 			return rev.Properties;
 		}
 		return null;
 	}
 
-	public IDictionary<string, object> LoadPlayer(string name) {
+	public IDictionary<string, object> LoadPlayer(string id) {
 		var query = db.GetView (Constants.DB_TYPE_ACCOUNT).CreateQuery();
 		var rows = query.Run ();
 		foreach(var row in rows) {
-			if(row.Key.ToString() == name || row.DocumentId == name) {
+			if(row.Key.ToString() == id || row.DocumentId == id) {
 				return db.GetDocument (row.DocumentId).Properties;
 			}
 		}
@@ -506,9 +554,11 @@ public class DatabaseManager : MonoBehaviour {
 		foreach(var row in rows) {
 			if(row.Key.ToString() == userId) {
 				UpdatePlayer (row.DocumentId);
-				var auth = AuthenticatorFactory.CreateFacebookAuthenticator(userId);
-				push.Authenticator = auth;
-				pull.Authenticator = auth;
+				if(push != null && pull != null) {
+					var auth = AuthenticatorFactory.CreateFacebookAuthenticator(userId);
+					push.Authenticator = auth;
+					pull.Authenticator = auth;
+				}
 				return true;
 			}
 		}
@@ -758,7 +808,19 @@ public class DatabaseManager : MonoBehaviour {
 		}
 		return null;
 	}
-	
+
+	public List<IDictionary<string,object>> LoadStoreItems(string subtypeFilter) {
+		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
+		var query = db.GetView (Constants.DB_TYPE_ITEM).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(subtypeFilter == null || row.Value.ToString() == subtypeFilter) {
+				l.Add (db.GetDocument (row.DocumentId).Properties);
+			}
+		}
+		return l;
+	}
+
 	public List<IDictionary<string,object>> LoadItemsOwnedByPlayer(string playerId) {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
 		var query = db.GetView (Constants.DB_TYPE_ITEM_OWNED).CreateQuery();

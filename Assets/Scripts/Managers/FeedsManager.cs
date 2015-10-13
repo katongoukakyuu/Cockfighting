@@ -83,7 +83,7 @@ public class FeedsManager : MonoBehaviour {
 			GameObject g = Instantiate (inventoryIcon);
 			listInventory.Add (g);
 			g.name = i[Constants.DB_KEYWORD_ITEM_ID].ToString();
-			g.GetComponent<Image>().sprite = 
+			g.transform.GetChild(0).GetComponent<Image>().sprite = 
 				Resources.Load<Sprite> (
 					Constants.PATH_SPRITES+DatabaseManager.Instance.LoadItem(i[Constants.DB_KEYWORD_ITEM_ID].ToString())[Constants.DB_KEYWORD_IMAGE_NAME].ToString()
 				);

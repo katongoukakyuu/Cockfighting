@@ -142,6 +142,9 @@ public class Constants : MonoBehaviour {
 	public const string DB_TYPE_BUILDING_OWNED = "building owned";
 	public const string DB_TYPE_CHICKEN = "chicken";
 	public const string DB_TYPE_FEEDS = "feeds";
+	public const string DB_TYPE_TREATS = "treats";
+	public const string DB_TYPE_VITAMINS = "vitamins";
+	public const string DB_TYPE_SHOTS = "shots";
 	public const string DB_TYPE_FEEDS_SCHEDULE = "feeds schedule";
 	public const string DB_TYPE_BREED_SCHEDULE = "breed schedule";
 	public const string DB_TYPE_FIGHTING_MOVE = "fighting move";
@@ -247,12 +250,13 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_ORIENTATION = "orientation";
 	// end building-owned-by-player keywords
 
-	// feeds document keywords
+	// item document keywords
+	public const string DB_KEYWORD_AVAILABLE_AT_STORE = "store";
 	public const string DB_KEYWORD_DURATION_DAYS = "days";
 	public const string DB_KEYWORD_DURATION_HOURS = "hours";
 	public const string DB_KEYWORD_DURATION_MINUTES = "minutes";
 	public const string DB_KEYWORD_DURATION_SECONDS = "seconds";
-	// end feeds document keywords
+	// end item document keywords
 
 	// feeds schedule document keywords
 	public const string DB_KEYWORD_END_TIME = "end time";
@@ -475,6 +479,17 @@ public class Constants : MonoBehaviour {
 	public const string MAIL_PANEL_MAIL_TO = "Title Panel/To";
 	public const string MAIL_PANEL_MAIL_MESSAGE = "Message Panel/Scroll Panel/Panel/Text";
 	// end mail panel children
+
+	// store details panel children
+	public const string STORE_DETAILS_PANEL_ICON = "Store Icon";
+	public const string STORE_DETAILS_PANEL_ICON_IMAGE = "Store Icon/Image";
+	public const string STORE_DETAILS_PANEL_NAME = "Name";
+	public const string STORE_DETAILS_PANEL_CATEGORY = "Category";
+	public const string STORE_DETAILS_PANEL_PRICE = "Price";
+	public const string STORE_DETAILS_PANEL_COIN_PRICE = "Price/Coin Price";
+	public const string STORE_DETAILS_PANEL_CASH_PRICE = "Price/Cash Price";
+	public const string STORE_DETAILS_PANEL_DESCRIPTION = "Description";
+	// end store details panel children
 
 	// fight move list
 	public const string FIGHT_MOVE_NONE = "None";

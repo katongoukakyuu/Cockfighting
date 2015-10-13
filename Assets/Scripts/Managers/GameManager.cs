@@ -138,6 +138,35 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
+	public Dictionary<string, object> GenerateItem(string name, string subType, string description,
+	                                               int coinCost, int cashCost, bool availableAtStore,
+	                                               int durD, int durH, int durM, int durS,
+	                                               int effAtk, int effDef, int effHp, int effAgi, int effGam, int effAgg, 
+	                                               string imageName) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_ITEM},
+			{Constants.DB_KEYWORD_SUBTYPE, subType},
+			{Constants.DB_KEYWORD_NAME, name},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
+			{Constants.DB_KEYWORD_DESCRIPTION, description},
+			{Constants.DB_KEYWORD_COIN_COST, coinCost},
+			{Constants.DB_KEYWORD_CASH_COST, cashCost},
+			{Constants.DB_KEYWORD_AVAILABLE_AT_STORE, availableAtStore},
+			{Constants.DB_KEYWORD_DURATION_DAYS, durD},
+			{Constants.DB_KEYWORD_DURATION_HOURS, durH},
+			{Constants.DB_KEYWORD_DURATION_MINUTES, durM},
+			{Constants.DB_KEYWORD_DURATION_SECONDS, durS},
+			{Constants.DB_KEYWORD_ATTACK, effAtk},
+			{Constants.DB_KEYWORD_DEFENSE, effDef},
+			{Constants.DB_KEYWORD_HP, effHp},
+			{Constants.DB_KEYWORD_AGILITY, effAgi},
+			{Constants.DB_KEYWORD_GAMENESS, effGam},
+			{Constants.DB_KEYWORD_AGGRESSION, effAgg},
+			{Constants.DB_KEYWORD_IMAGE_NAME, imageName}
+		};
+		return d;
+	}
+
 	public Dictionary<string, object> GenerateItemOwnedByPlayer(string playerId, string itemId, string quantity) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_ITEM_OWNED},

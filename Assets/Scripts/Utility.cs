@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 using Facebook.Unity;
 
 public class Utility : MonoBehaviour {
 
 	public static void PrintDictionary(IDictionary<string,object> id) {
 		foreach(KeyValuePair<string,object> kv in id) {
-			// print(kv.Key.ToString() + ": " + kv.Value.ToString());
+			 print(kv.Key.ToString() + ": " + kv.Value.ToString());
 		}
 	}
 
@@ -20,6 +21,11 @@ public class Utility : MonoBehaviour {
 		print ("GetNamecallBack result: " + result.RawResult);
 		IDictionary id = Facebook.MiniJSON.Json.Deserialize(result.RawResult) as IDictionary;
 		print ("name: " + id["name"]);
+	}
+
+	public static string ToProperCase(string s) {
+		TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+		return textInfo.ToTitleCase(s);
 	}
 
 	public static float Modulo(float a,float b) {

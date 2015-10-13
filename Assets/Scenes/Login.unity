@@ -11390,6 +11390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fce89c345e68ed645a1d5882ddbcfaf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnReplicationOn: 0
 --- !u!114 &1768759166
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -55,7 +55,7 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 	}
 
 	public void SaveFeeds(string name, string description,
-	                         int coinCost, int cashCost,
+	                         int coinCost, int cashCost, bool availableAtStore,
 	                         int durD, int durH, int durM, int durS,
 	                         int effAtk, int effDef, int effHp, int effAgi, int effGam, int effAgg, 
 	                         string imageName) {
@@ -69,6 +69,7 @@ public class ControlPanelFeedsManager : MonoBehaviour {
 				{Constants.DB_KEYWORD_DESCRIPTION, description},
 				{Constants.DB_KEYWORD_COIN_COST, coinCost},
 				{Constants.DB_KEYWORD_CASH_COST, cashCost},
+				{Constants.DB_KEYWORD_AVAILABLE_AT_STORE, availableAtStore},
 				{Constants.DB_KEYWORD_DURATION_DAYS, durD},
 				{Constants.DB_KEYWORD_DURATION_HOURS, durH},
 				{Constants.DB_KEYWORD_DURATION_MINUTES, durM},
