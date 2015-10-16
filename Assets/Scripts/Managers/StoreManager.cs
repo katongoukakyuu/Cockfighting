@@ -15,11 +15,14 @@ public class StoreManager : MonoBehaviour {
 	public GameObject detailsPanel;
 
 	public GameObject storeIcon;
-	public GameObject buyButton;
+	public Button buyCoinButton;
+	public Button buyCashButton;
 
 	private List<IDictionary<string,object>> items;
 	private List<GameObject> listItems = new List<GameObject>();
 	private IDictionary<string,object> selectedItem;
+
+	private bool buyWithCoin = true;
 
 	private static StoreManager instance;
 	private StoreManager() {}
@@ -80,6 +83,8 @@ public class StoreManager : MonoBehaviour {
 	public void SetSelectedItem(string s) {
 		foreach(IDictionary<string,object> i in items) {
 			if(s == i[Constants.DB_COUCHBASE_ID].ToString()) {
+				buyCoinButton.interactable = true;
+				buyCashButton.interactable = true;
 				selectedItem = i;
 				break;
 			}
@@ -101,11 +106,44 @@ public class StoreManager : MonoBehaviour {
 	}
 
 	public void ButtonBuyCoin() {
-
+		buyWithCoin = true;
+		MessageManager.Instance.OpenStoreDialog(selectedItem,Constants.DB_KEYWORD_COIN,ButtonOkDelegate);
 	}
 
 	public void ButtonBuyCash() {
+		buyWithCoin = false;
+		MessageManager.Instance.OpenStoreDialog(selectedItem,Constants.DB_KEYWORD_CASH,ButtonOkDelegate);
+	}
+
+	private void ButtonOkDelegate() {
+		MessageManager.Instance.DisplayMessage(Constants.STORE_PURCHASE_CONFIRM_TITLE,
+		                                       Constants.STORE_PURCHASE_CONFIRM,
+		                                       ButtonOkDelegateFinal,
+		                                       true);
+	}
+
+	private void ButtonOkDelegateFinal() {
+		GameObject storePanel = GameObject.Find(Constants.STORE_QUANTITY_PANEL);
+		int quantity = (int)storePanel.transform.FindChild(Constants.STORE_QUANTITY_PANEL_SLIDER).GetComponent<Slider>().value;
+		int pricePerUnit = buyWithCoin ? int.Parse (selectedItem[Constants.DB_KEYWORD_COIN_COST].ToString()) :
+			int.Parse (selectedItem[Constants.DB_KEYWORD_CASH_COST].ToString());
+		int price = quantity * pricePerUnit;
+
+		IDictionary<string,object> player = PlayerManager.Instance.player;
+		if(buyWithCoin) {
+			player[Constants.DB_KEYWORD_COIN] = (int.Parse(player[Constants.DB_KEYWORD_COIN].ToString()) - price);
+		}
+		else {
+			player[Constants.DB_KEYWORD_CASH] = (int.Parse(player[Constants.DB_KEYWORD_CASH].ToString()) - price);
+		}
+		DatabaseManager.Instance.EditAccount(player);
+		DatabaseManager.Instance.SaveEntry(GameManager.Instance.GenerateItemOwnedByPlayer(
+			PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString(),
+			selectedItem[Constants.DB_COUCHBASE_ID].ToString (),
+			""+quantity
+		));
 		
+		MessageManager.Instance.ClearMessageFinal();
 	}
 
 	public void ButtonBack() {

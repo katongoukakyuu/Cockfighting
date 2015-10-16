@@ -451,6 +451,15 @@ public class DatabaseManager : MonoBehaviour {
 	}
 
 	public IDictionary<string,object> SaveEntry(Dictionary<string, object> dic) {
+		if(dic[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_ITEM_OWNED) {
+			IDictionary<string,object> id =  LoadItemOwnedByPlayer(dic[Constants.DB_KEYWORD_PLAYER_ID].ToString(),
+			                                                       dic[Constants.DB_KEYWORD_ITEM_ID].ToString());
+			if(id != null) {
+				EditItemOwnedByPlayer(id[Constants.DB_COUCHBASE_ID].ToString(),dic);
+				return null;
+			}
+		}
+
 		Document d = db.CreateDocument();
 		var properties = dic;
 		var rev = d.PutProperties(properties);
@@ -569,8 +578,6 @@ public class DatabaseManager : MonoBehaviour {
 		Document d = db.GetDocument(dic[Constants.DB_COUCHBASE_ID].ToString());
 		d.Update((UnsavedRevision newRevision) => {
 			var properties = newRevision.Properties;
-			properties[Constants.DB_KEYWORD_PASSWORD] = dic[Constants.DB_KEYWORD_PASSWORD].ToString();
-			properties[Constants.DB_KEYWORD_EMAIL] = dic[Constants.DB_KEYWORD_EMAIL].ToString();
 			properties[Constants.DB_KEYWORD_FARM_NAME] = dic[Constants.DB_KEYWORD_FARM_NAME].ToString();
 			properties[Constants.DB_KEYWORD_MATCHES_WON] = dic[Constants.DB_KEYWORD_MATCHES_WON].ToString();
 			properties[Constants.DB_KEYWORD_MATCHES_LOST] = dic[Constants.DB_KEYWORD_MATCHES_LOST].ToString();
@@ -832,7 +839,27 @@ public class DatabaseManager : MonoBehaviour {
 		}
 		return l;
 	}
-	
+
+	public IDictionary<string,object> LoadItemOwnedByPlayer(string playerId, string itemId) {
+		var query = db.GetView (Constants.DB_TYPE_ITEM_OWNED).CreateQuery();
+		var rows = query.Run ();
+		foreach(var row in rows) {
+			if(row.Key.ToString() == playerId && row.Value.ToString() == itemId) {
+				return db.GetDocument (row.DocumentId).Properties;
+			}
+		}
+		return null;
+	}
+
+	public void EditItemOwnedByPlayer(string id, IDictionary<string, object> dic) {
+		Document d = db.GetDocument(id);
+		d.Update((UnsavedRevision newRevision) => {
+			var properties = newRevision.Properties;
+			properties[Constants.DB_KEYWORD_QUANTITY] = dic[Constants.DB_KEYWORD_QUANTITY].ToString();
+			return true;
+		});
+	}
+
 	public List<IDictionary<string,object>> LoadMatchmakingCategories() {
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>>();
 		var query = db.GetView (Constants.DB_TYPE_MATCHMAKING_CATEGORY).CreateQuery();

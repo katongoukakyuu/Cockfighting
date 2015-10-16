@@ -100,6 +100,11 @@ public class Constants : MonoBehaviour {
 	public const string MESSAGE_MATCH_BET_MESSAGE_3 = " Coins.";
 	// end match bet fight messages
 
+	// store messages
+	public const string STORE_PURCHASE_CONFIRM_TITLE = "Confirm Purchase";
+	public const string STORE_PURCHASE_CONFIRM = "Are you sure you want to buy the items?";
+	// end store messages
+
 	// automated mail messages
 	public const string MAIL_FIGHT_CONCLUDED_TITLE = "Fight Concluded";
 	public const string MAIL_FIGHT_CONCLUDED_MESSAGE_1 = "The fight between ";
@@ -359,10 +364,11 @@ public class Constants : MonoBehaviour {
 	public const string LIFE_STAGE_HEN = "hen";
 
 	// message panel children
-	public const string MESSAGE_PANEL_TITLE = "Msg Title Text";
-	public const string MESSAGE_PANEL_MESSAGE = "Msg Message Text";
-	public const string MESSAGE_PANEL_OK_BUTTON = "Msg OK Button";
-	public const string MESSAGE_PANEL_CANCEL_BUTTON = "Msg Cancel Button";
+	public const string MESSAGE_PANEL_FINAL_TITLE = "Title/Text";
+	public const string MESSAGE_PANEL_TITLE = "Title/Text";
+	public const string MESSAGE_PANEL_MESSAGE = "Main Panel/Message Panel/Text";
+	public const string MESSAGE_PANEL_OK_BUTTON = "Main Panel/Button Panel/OK Button";
+	public const string MESSAGE_PANEL_CANCEL_BUTTON = "Main Panel/Button Panel/Cancel Button";
 	// end message panel children
 
 	// schedule panel children
@@ -490,6 +496,22 @@ public class Constants : MonoBehaviour {
 	public const string STORE_DETAILS_PANEL_CASH_PRICE = "Price/Cash Price";
 	public const string STORE_DETAILS_PANEL_DESCRIPTION = "Description";
 	// end store details panel children
+
+	// store quantity panel children
+	public const string STORE_QUANTITY_PANEL = "Main Panel - Store";
+	public const string STORE_QUANTITY_PANEL_PLAYER_COIN = "Panel/Price/Coin Price";
+	public const string STORE_QUANTITY_PANEL_PLAYER_CASH = "Panel/Price/Cash Price";
+	public const string STORE_QUANTITY_PANEL_ICON = "Details Panel/Panel 1/Store Icon/Image";
+	public const string STORE_QUANTITY_PANEL_NAME = "Details Panel/Panel 2/Name";
+	public const string STORE_QUANTITY_PANEL_CATEGORY = "Details Panel/Panel 2/Category";
+	public const string STORE_QUANTITY_PANEL_COIN_PRICE = "Details Panel/Panel 3/Price/Coin Price";
+	public const string STORE_QUANTITY_PANEL_COIN_IMAGE = "Details Panel/Panel 3/Price/Coin Image";
+	public const string STORE_QUANTITY_PANEL_CASH_PRICE = "Details Panel/Panel 3/Price/Cash Price";
+	public const string STORE_QUANTITY_PANEL_CASH_IMAGE = "Details Panel/Panel 3/Price/Cash Image";
+	public const string STORE_QUANTITY_PANEL_DESCRIPTION = "Details Panel/Panel 3/Description";
+	public const string STORE_QUANTITY_PANEL_SLIDER = "Slider/Slider";
+	public const string STORE_QUANTITY_PANEL_AMOUNT = "Slider/Amount";
+	// end store quantity panel children
 
 	// fight move list
 	public const string FIGHT_MOVE_NONE = "None";
