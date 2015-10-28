@@ -111,6 +111,10 @@ public class LoginManager : MonoBehaviour {
 		DatabaseManager.Instance.ReinitializeDatabase();
 	}
 
+	public void DebugWatchReplay() {
+		Application.LoadLevel(Constants.SCENE_FIGHT_RING);
+	}
+
 	private IEnumerator SwitchScreen(float animDuration, int animSteps, int screen) {
 		/*
 		 * screen:

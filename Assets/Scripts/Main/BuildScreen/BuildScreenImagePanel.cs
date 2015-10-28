@@ -46,7 +46,7 @@ public class BuildScreenImagePanel : MonoBehaviour {
 		this.bldgList = bldgList;
 		bldgImages = new Sprite[bldgList.Count];
 		for(int x = 0; x < bldgImages.Length; x++) {
-			bldgImages[x] = Resources.Load (Constants.PATH_SPRITES_BUILDINGS + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
+			bldgImages[x] = Resources.Load (Constants.PATH_SPRITES + bldgList[x][Constants.DB_KEYWORD_IMAGE_NAME], typeof(Sprite)) as Sprite;
 		}
 		UpdateSelection ();
 	}

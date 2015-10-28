@@ -17,7 +17,7 @@ public class Constants : MonoBehaviour {
 	public const string SCENE_CONTROL_PANEL_FEEDS = "Control Panel - Feeds";
 
 	public const string PATH_SPRITES = "Sprites/";
-	public const string PATH_SPRITES_BUILDINGS = "Sprites/Buildings/";
+	public const string PATH_SPRITES_STORE = "Store Icons/";
 	public const string PATH_PREFABS_BUILDINGS = "Prefabs/Buildings/";
 
 	public const string FARM_MANAGER_STATE_FREE_SELECT = "Free Select";
@@ -122,13 +122,15 @@ public class Constants : MonoBehaviour {
 	public const int CHICKEN_AGILITY_DEFAULT_START = 1000;
 	public const int CHICKEN_GAMENESS_DEFAULT_START = 1000;
 	public const int CHICKEN_AGGRESSION_DEFAULT_START = 1000;
+	public const int CHICKEN_CONDITIONING_DEFAULT_START = 100;
 
-	public const int CHICKEN_ATTACK_DEFAULT_MAX = 2500;
-	public const int CHICKEN_DEFENSE_DEFAULT_MAX = 2500;
-	public const int CHICKEN_HP_DEFAULT_MAX = 2500;
-	public const int CHICKEN_AGILITY_DEFAULT_MAX = 2500;
-	public const int CHICKEN_GAMENESS_DEFAULT_MAX = 2500;
-	public const int CHICKEN_AGGRESSION_DEFAULT_MAX = 2500;
+	public const int CHICKEN_ATTACK_DEFAULT_MAX = 2000;
+	public const int CHICKEN_DEFENSE_DEFAULT_MAX = 2000;
+	public const int CHICKEN_HP_DEFAULT_MAX = 2000;
+	public const int CHICKEN_AGILITY_DEFAULT_MAX = 2000;
+	public const int CHICKEN_GAMENESS_DEFAULT_MAX = 2000;
+	public const int CHICKEN_AGGRESSION_DEFAULT_MAX = 2000;
+	public const int CHICKEN_CONDITIONING_DEFAULT_MAX = 100;
 
 	public const double BREED_DURATION_DEFAULT_DAYS = 0d;
 	public const double BREED_DURATION_DEFAULT_HOURS = 0d;
@@ -226,6 +228,7 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_AGILITY = "agility";
 	public const string DB_KEYWORD_GAMENESS = "gameness";
 	public const string DB_KEYWORD_AGGRESSION = "aggression";
+	public const string DB_KEYWORD_CONDITIONING = "conditioning";
 
 	public const string DB_KEYWORD_ATTACK_MAX = "attack max";
 	public const string DB_KEYWORD_DEFENSE_MAX = "defense max";
@@ -233,6 +236,7 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_AGILITY_MAX = "agility max";
 	public const string DB_KEYWORD_GAMENESS_MAX = "gameness max";
 	public const string DB_KEYWORD_AGGRESSION_MAX = "aggression max";
+	public const string DB_KEYWORD_CONDITIONING_MAX = "conditioning max";
 
 	public const string DB_KEYWORD_IS_QUEUED_FOR_MATCH = "is queued for match";
 	// end chicken document keywords
@@ -488,7 +492,7 @@ public class Constants : MonoBehaviour {
 
 	// store details panel children
 	public const string STORE_DETAILS_PANEL_ICON = "Store Icon";
-	public const string STORE_DETAILS_PANEL_ICON_IMAGE = "Store Icon/Image";
+	public const string STORE_DETAILS_PANEL_ICON_IMAGE = "Store Icon";
 	public const string STORE_DETAILS_PANEL_NAME = "Name";
 	public const string STORE_DETAILS_PANEL_CATEGORY = "Category";
 	public const string STORE_DETAILS_PANEL_PRICE = "Price";

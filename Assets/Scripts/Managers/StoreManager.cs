@@ -71,7 +71,7 @@ public class StoreManager : MonoBehaviour {
 			GameObject g = Instantiate (storeIcon);
 			listItems.Add (g);
 			g.name = i[Constants.DB_COUCHBASE_ID].ToString();
-			g.transform.GetChild(0).GetComponent<Image>().sprite = 
+			g.transform.GetComponent<Image>().sprite = 
 				Resources.Load<Sprite> (
 					Constants.PATH_SPRITES+i[Constants.DB_KEYWORD_IMAGE_NAME].ToString()
 				);

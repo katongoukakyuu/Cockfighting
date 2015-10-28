@@ -9,7 +9,8 @@ public class ServerFightManager : MonoBehaviour {
 	public bool debug;
 
 	private List<string> moveName = new List<string>();
-	private int[] atk = new int[2], def = new int[2], hp = new int[2], agi = new int[2], gam = new int[2], agg = new int[2];
+	private int[] atk = new int[2], def = new int[2], hp = new int[2], agi = new int[2], gam = new int[2], agg = new int[2], con = new int[2];
+	private float[] critChance = new float[2];
 	private Vector2[] pos = new Vector2[2];
 	private float dist;
 
@@ -46,6 +47,7 @@ public class ServerFightManager : MonoBehaviour {
 		agi[0] = int.Parse (c1[Constants.DB_KEYWORD_AGILITY].ToString());
 		gam[0] = int.Parse (c1[Constants.DB_KEYWORD_GAMENESS].ToString());
 		agg[0] = int.Parse (c1[Constants.DB_KEYWORD_AGGRESSION].ToString());
+		con[0] = int.Parse (c1[Constants.DB_KEYWORD_CONDITIONING].ToString());
 
 		atk[1] = int.Parse (c2[Constants.DB_KEYWORD_ATTACK].ToString());
 		def[1] = int.Parse (c2[Constants.DB_KEYWORD_DEFENSE].ToString());
@@ -53,6 +55,20 @@ public class ServerFightManager : MonoBehaviour {
 		agi[1] = int.Parse (c2[Constants.DB_KEYWORD_AGILITY].ToString());
 		gam[1] = int.Parse (c2[Constants.DB_KEYWORD_GAMENESS].ToString());
 		agg[1] = int.Parse (c2[Constants.DB_KEYWORD_AGGRESSION].ToString());
+		con[1] = int.Parse (c2[Constants.DB_KEYWORD_CONDITIONING].ToString());
+
+		// apply aggression and conditioning buffs
+		for(int i = 0; i < 2; i++) {
+			float conPenalty = 1f - (1f - con[0]/100f)/2f;
+			agg[i] = (int) (agg[i] * conPenalty);
+			float aggBonus = agg[i] * 0.01f * Mathf.Log (agg[i],2f);
+			atk[i] = (int) (atk[i] * conPenalty + aggBonus);
+			def[i] = (int) (def[i] * conPenalty + aggBonus);
+			hp[i] = (int) (hp[i] * conPenalty + aggBonus);
+			agi[i] = (int) (agi[i] * conPenalty + aggBonus);
+			gam[i] = (int) (gam[i] * conPenalty + aggBonus);
+			critChance[i] = gam[i] * 0.000025f;
+		}
 		
 		pos[0] = new Vector3(Random.Range(0,(int)ringSize.x), Random.Range (0, (int)ringSize.y));
 		pos[1] = new Vector3(Random.Range(0,(int)ringSize.x), Random.Range (0, (int)ringSize.y));
@@ -60,22 +76,48 @@ public class ServerFightManager : MonoBehaviour {
 
 		List<IDictionary<string,object>> l = new List<IDictionary<string,object>> ();
 		string[] move = new string[2];
+		int atbBarMax = 5000;
+		int[] atbBar = new int[2] {0,0};
+
 		move[0] = AssignNextMove (null, 0);
 		move[1] = AssignNextMove (null, 1);
 		l.Add (RecordTurn(move));
 
 		while(hp[0] > 0 && hp[1] > 0) {
-		//for(int i = 0; i < 2; i++) {
+		//for(int i = 0; i < 5; i++) {
 			int pN, eN;
 			if (agi[0] > agi[1]) pN = 0;
 			else pN = 1;
 			eN = Mathf.Abs(pN - 1);
-			move[pN] = AssignNextMove (c1Moves, pN);
-			ProcessMove(move[pN], pN);
-			move[eN] = AssignNextMove (c1Moves, eN);
-			ProcessMove(move[eN], eN);
-			l.Add (RecordTurn(move));
-			UpdateDistance ();
+
+			atbBar[pN] += agi[pN];
+			if(atbBar[pN] >= atbBarMax) {
+				move[pN] = AssignNextMove (c1Moves, pN);
+				atbBar[pN] -= atbBarMax;
+				ProcessMove(move[pN], pN);
+			}
+			else {
+				move[pN] = AssignNextMove (null, pN);
+			}
+
+			atbBar[eN] += agi[eN];
+			if(atbBar[eN] >= atbBarMax) {
+				move[eN] = AssignNextMove (c2Moves, eN);
+				atbBar[eN] -= atbBarMax;
+				ProcessMove(move[eN], eN);
+			}
+			else {
+				move[eN] = AssignNextMove (null, eN);
+			}
+
+			if(move[pN] == Constants.FIGHT_MOVE_NONE &&
+			   move[eN] == Constants.FIGHT_MOVE_NONE) {
+				continue;
+			}
+			else {
+				l.Add (RecordTurn(move));
+				UpdateDistance ();
+			}
 		}
 
 		Dictionary<string, object> d = GameManager.Instance.GenerateReplay (
@@ -101,8 +143,10 @@ public class ServerFightManager : MonoBehaviour {
 		}
 
 		// DEBUG FOR QUICK MATCH
-		/*var loadedReplay = DatabaseManager.Instance.LoadReplay (savedReplay [Constants.DB_COUCHBASE_ID].ToString ());
-		StartCoroutine(ReplayManager.Instance.PlayReplay(loadedReplay));*/
+		if(ReplayManager.Instance != null) {
+			var loadedReplay = DatabaseManager.Instance.LoadReplay (savedReplay [Constants.DB_COUCHBASE_ID].ToString ());
+			StartCoroutine(ReplayManager.Instance.PlayReplay(loadedReplay));
+		}
 		// END DEBUG FOR QUICK MATCH
 		
 		if(hp[0] <= 0) return 0;
@@ -210,7 +254,7 @@ public class ServerFightManager : MonoBehaviour {
 			// print ("new pos: " + pos[pN]);
 			UpdateDistance ();
 			// print ("AFTER FLYING TALON, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
-			hp[eN] -= (int)(atk[pN] * 0.4f);
+			hp[eN] -= CalculateDamage(0.8f, atk[pN], def[eN], critChance[pN], gam[pN]);
 			// print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		case Constants.FIGHT_MOVE_SIDESTEP:
@@ -230,11 +274,20 @@ public class ServerFightManager : MonoBehaviour {
 			break;
 		case Constants.FIGHT_MOVE_PECK:
 			// print ("PECK, Distance of " + pos[0] + " and " + pos[1] + " is " + dist);
-			hp[eN] -= (int)(atk[pN] * 0.1f);
+			hp[eN] -= CalculateDamage(0.5f, atk[pN], def[eN], critChance[pN], gam[pN]);
 			// print ("updated hp of chicken " + eN + " is " + hp[eN]);
 			break;
 		default:
 			break;
+		}
+	}
+
+	private int CalculateDamage(float mult, int pAtk, int eDef, float pCrit, int pGam) {
+		if(Random.value <= pCrit) {
+			return (int)(pAtk * mult * (1000f / (1000f + eDef)) * (2f + pGam * 0.0001f));
+		}
+		else {
+			return (int)(pAtk * mult * (1000f / (1000f + eDef)));
 		}
 	}
 

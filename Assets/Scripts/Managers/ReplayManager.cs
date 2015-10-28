@@ -71,15 +71,17 @@ public class ReplayManager : MonoBehaviour {
 		   PlayerManager.Instance.selectedReplay != null) {
 			StartCoroutine(PlayReplay(PlayerManager.Instance.selectedReplay));
 		}
-
-		// DEBUG FOR QUICK MATCH
-		/*ServerFightManager.Instance.AutomateFight (
-			DatabaseManager.Instance.LoadChicken("Gary", "test"),
-			DatabaseManager.Instance.LoadChicken("Larry", "test2"),
-			DatabaseManager.Instance.LoadFightingMovesOwned (DatabaseManager.Instance.LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
-			DatabaseManager.Instance.LoadFightingMovesOwned (DatabaseManager.Instance.LoadChicken("Larry", "test2")[Constants.DB_COUCHBASE_ID].ToString())
-		);*/
-		// END DEBUG FOR QUICK MATCH
+		else {
+			// DEBUG FOR QUICK MATCH
+			ServerFightManager.Instance.AutomateFight (
+				DatabaseManager.Instance.LoadChicken("Gary", "test"),
+				DatabaseManager.Instance.LoadChicken("Larry", "test"),
+				DatabaseManager.Instance.LoadFightingMovesOwned (DatabaseManager.Instance.LoadChicken("Gary", "test")[Constants.DB_COUCHBASE_ID].ToString()),
+				DatabaseManager.Instance.LoadFightingMovesOwned (DatabaseManager.Instance.LoadChicken("Larry", "test")[Constants.DB_COUCHBASE_ID].ToString())
+			);
+			// END DEBUG FOR QUICK MATCH
+		}
+		
 	}
 
 	void FixedUpdate() {
@@ -141,7 +143,7 @@ public class ReplayManager : MonoBehaviour {
 
 		List<IDictionary<string,object>> moves = (replay [Constants.DB_KEYWORD_REPLAY] as Newtonsoft.Json.Linq.JArray).ToObject<List<IDictionary<string,object>>> ();
 		foreach(IDictionary<string,object> id in moves) {
-			//Utility.PrintDictionary(id);
+			Utility.PrintDictionary(id);
 			//// print ("----- NEWLINE -----");
 			if(moves.IndexOf(id) != 0) {
 				isImmediate = false;
@@ -254,7 +256,13 @@ public class ReplayManager : MonoBehaviour {
 	}
 
 	public void ButtonBack() {
-		Application.LoadLevel(Constants.SCENE_FARM);
+		if(PlayerManager.Instance.selectedReplay != null) {
+			PlayerManager.Instance.selectedReplay = null;
+			Application.LoadLevel(Constants.SCENE_FARM);
+		}
+		else {
+			Application.LoadLevel(Constants.SCENE_LOGIN);
+		}
 	}
 
 	public void UpdateUI(int i, bool isImmediate, bool calledFromMoveProc) {
