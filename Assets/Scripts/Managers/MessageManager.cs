@@ -37,7 +37,7 @@ public class MessageManager : MonoBehaviour {
 		
 		EventTrigger trigger = okButton.GetComponentInParent<EventTrigger> ();
 		EventTrigger.Entry entry = new EventTrigger.Entry ();
-		entry.eventID = EventTriggerType.Select;
+		entry.eventID = EventTriggerType.PointerClick;
 		entry.callback.AddListener ((eventData) => {
 			ClearMessage(allowCancel);
 			if(bd != null) bd ();
@@ -48,7 +48,7 @@ public class MessageManager : MonoBehaviour {
 			cancelButton.gameObject.SetActive(true);
 			trigger = cancelButton.GetComponentInParent<EventTrigger> ();
 			entry = new EventTrigger.Entry ();
-			entry.eventID = EventTriggerType.Select;
+			entry.eventID = EventTriggerType.PointerClick;
 			entry.callback.AddListener ((eventData) => {
 				ClearMessage(allowCancel);
 			});
@@ -121,7 +121,7 @@ public class MessageManager : MonoBehaviour {
 
 		EventTrigger trigger = okButtonFinal.GetComponentInParent<EventTrigger> ();
 		EventTrigger.Entry entry = new EventTrigger.Entry ();
-		entry.eventID = EventTriggerType.Select;
+		entry.eventID = EventTriggerType.PointerClick;
 		entry.callback.AddListener ((eventData) => {
 			if(bd != null) bd ();
 		});
@@ -129,7 +129,7 @@ public class MessageManager : MonoBehaviour {
 		
 		trigger = cancelButtonFinal.GetComponentInParent<EventTrigger> ();
 		entry = new EventTrigger.Entry ();
-		entry.eventID = EventTriggerType.Select;
+		entry.eventID = EventTriggerType.PointerClick;
 		entry.callback.AddListener ((eventData) => {
 			ClearMessageFinal();
 		});

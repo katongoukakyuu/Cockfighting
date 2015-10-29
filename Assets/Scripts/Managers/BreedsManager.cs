@@ -22,6 +22,7 @@ public class BreedsManager : MonoBehaviour {
 
 	public GameObject listPanel;
 	public Button listButton;
+	public ScrollRect scrollRect;
 
 	public GameObject scheduleListPanel;
 	public GameObject scheduleListItem;
@@ -70,13 +71,14 @@ public class BreedsManager : MonoBehaviour {
 			Button b = Instantiate(listButton);
 			listButtons.Add (b);
 			b.GetComponentInChildren<Text> ().text = i[Constants.DB_KEYWORD_NAME].ToString();
+			b.GetComponent<BreedsScreenListButton>().MainScroll = scrollRect;
 			b.transform.SetParent(listPanel.transform,false);
 		}
-		Invoke("DisableListPanelLayout", 0.1f);
+		Invoke("DisableListPanelLayout", 0.2f);
 	}
 
 	void DisableListPanelLayout() {
-		listPanel.GetComponent<VerticalLayoutGroup>().enabled = false;
+		//listPanel.GetComponent<VerticalLayoutGroup>().enabled = false;
 	}
 
 	public void InitializeSchedules() {

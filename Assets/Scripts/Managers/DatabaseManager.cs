@@ -764,6 +764,36 @@ public class DatabaseManager : MonoBehaviour {
 		                                      Constants.GENDER_FEMALE, 
 		                                      "Kelso", 
 		                                      Constants.LIFE_STAGE_HEN)));
+		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Larry2", 
+		                                      dic [Constants.DB_KEYWORD_USER_ID].ToString(), 
+		                                      Constants.GENDER_MALE, 
+		                                      "Kelso", 
+		                                      Constants.LIFE_STAGE_COCK)));
+		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Gary2", 
+		                                      dic [Constants.DB_KEYWORD_USER_ID].ToString(), 
+		                                      Constants.GENDER_MALE, 
+		                                      "Kelso", 
+		                                      Constants.LIFE_STAGE_COCK)));
+		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Mary2", 
+		                                      dic [Constants.DB_KEYWORD_USER_ID].ToString(), 
+		                                      Constants.GENDER_FEMALE, 
+		                                      "Kelso", 
+		                                      Constants.LIFE_STAGE_HEN)));
+		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Larry3", 
+		                                      dic [Constants.DB_KEYWORD_USER_ID].ToString(), 
+		                                      Constants.GENDER_MALE, 
+		                                      "Kelso", 
+		                                      Constants.LIFE_STAGE_COCK)));
+		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Gary3", 
+		                                      dic [Constants.DB_KEYWORD_USER_ID].ToString(), 
+		                                      Constants.GENDER_MALE, 
+		                                      "Kelso", 
+		                                      Constants.LIFE_STAGE_COCK)));
+		chicken.Add (SaveEntry(GameManager.Instance.GenerateChicken ("Mary3", 
+		                                      dic [Constants.DB_KEYWORD_USER_ID].ToString(), 
+		                                      Constants.GENDER_FEMALE, 
+		                                      "Kelso", 
+		                                      Constants.LIFE_STAGE_HEN)));
 
 		foreach(IDictionary<string,object> id in chicken) {
 			if(id[Constants.DB_KEYWORD_LIFE_STAGE].ToString() != Constants.LIFE_STAGE_HEN) {

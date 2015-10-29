@@ -20,6 +20,7 @@ public class FeedsManager : MonoBehaviour {
 
 	public GameObject listPanel;
 	public Button listButton;
+	public ScrollRect scrollRect;
 
 	public GameObject scheduleListPanel;
 	public GameObject scheduleListItem;
@@ -74,9 +75,10 @@ public class FeedsManager : MonoBehaviour {
 			Button b = Instantiate(listButton);
 			listButtons.Add (b);
 			b.GetComponentInChildren<Text> ().text = i[Constants.DB_KEYWORD_NAME].ToString();
+			b.GetComponent<FeedsScreenListButton>().MainScroll = scrollRect;
 			b.transform.SetParent(listPanel.transform,false);
 		}
-		Invoke("DisableListPanelLayout", 0.1f);
+		Invoke("DisableListPanelLayout", 0.2f);
 
 		inventory = DatabaseManager.Instance.LoadItemsOwnedByPlayer(PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
 		foreach (IDictionary<string, object> i in inventory) {
@@ -94,7 +96,7 @@ public class FeedsManager : MonoBehaviour {
 	}
 
 	void DisableListPanelLayout() {
-		listPanel.GetComponent<VerticalLayoutGroup>().enabled = false;
+		//listPanel.GetComponent<VerticalLayoutGroup>().enabled = false;
 	}
 
 	public void InitializeSchedules() {

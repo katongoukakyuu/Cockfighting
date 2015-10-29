@@ -8,7 +8,7 @@ public class ControlPanelBreedsScreenListButton : MonoBehaviour {
 	void Start() {
 		EventTrigger trigger = GetComponentInParent<EventTrigger> ();
 		EventTrigger.Entry entry = new EventTrigger.Entry ();
-		entry.eventID = EventTriggerType.Select;
+		entry.eventID = EventTriggerType.PointerClick;
 		entry.callback.AddListener ((eventData) => {
 			LoadBreedsScreenManager.Instance.SetSelected (this.GetComponentInChildren<Text>().text);
 		});

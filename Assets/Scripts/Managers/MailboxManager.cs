@@ -15,6 +15,7 @@ public class MailboxManager : MonoBehaviour {
 	public GameObject mailboxPanel;
 	public GameObject replayButton;
 	public GameObject deleteButton;
+	public ScrollRect scrollRect;
 
 	private string state = Constants.MAILBOX_MANAGER_STATE_VIEW_LIST;
 
@@ -53,6 +54,7 @@ public class MailboxManager : MonoBehaviour {
 			g.name = i[Constants.DB_COUCHBASE_ID].ToString();
 			g.transform.FindChild(Constants.MAIL_PANEL_LIST_TITLE).GetComponent<Text>().text = i[Constants.DB_KEYWORD_TITLE].ToString();
 			g.transform.FindChild(Constants.MAIL_PANEL_LIST_MESSAGE).GetComponent<Text>().text = i[Constants.DB_KEYWORD_MESSAGE].ToString();
+			g.GetComponent<MailboxScreenListButton>().MainScroll = scrollRect;
 			g.transform.SetParent(mailboxPanel.transform,false);
 		}
 	}

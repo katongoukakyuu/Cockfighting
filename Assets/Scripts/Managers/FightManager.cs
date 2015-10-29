@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
@@ -15,6 +15,7 @@ public class FightManager : MonoBehaviour {
 	public GameObject matchmakingPanel;
 	public GameObject matchmakingListPanel;
 	public GameObject queueButton;
+	public ScrollRect scrollRect;
 
 
 	private string state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;

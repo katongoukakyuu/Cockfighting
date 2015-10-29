@@ -13,6 +13,7 @@ public class MatchCreateManager : MonoBehaviour {
 	public GameObject listPanel;
 	public GameObject statsPanel;
 	public GameObject optionsPanel;
+	public ScrollRect scrollRect;
 
 	//private string state = Constants.FIGHT_MANAGER_STATE_CATEGORY_SELECT;
 
@@ -77,6 +78,7 @@ public class MatchCreateManager : MonoBehaviour {
 			Button b = Instantiate(listChickenButton);
 			listChickenButtons.Add (b);
 			b.GetComponentInChildren<Text> ().text = i[Constants.DB_KEYWORD_NAME].ToString();
+			b.GetComponent<MatchCreateScreenListButton>().MainScroll = scrollRect;
 			b.transform.SetParent(listPanel.transform,false);
 		}
 
