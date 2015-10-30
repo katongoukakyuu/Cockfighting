@@ -222,6 +222,9 @@ public class Constants : MonoBehaviour {
 	public const string DB_KEYWORD_NOTES = "notes";
 	public const string DB_KEYWORD_LIFE_STAGE = "life stage";
 
+	public const string DB_KEYWORD_GENERATION_ID = "generation id";
+	public const string DB_KEYWORD_GENERATION_COUNT = "generation count";
+
 	public const string DB_KEYWORD_ATTACK = "attack";
 	public const string DB_KEYWORD_DEFENSE = "defense";
 	public const string DB_KEYWORD_HP = "hp";

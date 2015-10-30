@@ -49,6 +49,38 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_USER_ID, userId},
 			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
 			{Constants.DB_TYPE_BREED, breed},
+			{Constants.DB_KEYWORD_GENERATION_ID, name + userId},
+			{Constants.DB_KEYWORD_GENERATION_COUNT, 0},
+			{Constants.DB_KEYWORD_GENDER, gender},
+			{Constants.DB_KEYWORD_NOTES, ""},
+			{Constants.DB_KEYWORD_ATTACK, Constants.CHICKEN_ATTACK_DEFAULT_START},
+			{Constants.DB_KEYWORD_DEFENSE, Constants.CHICKEN_DEFENSE_DEFAULT_START},
+			{Constants.DB_KEYWORD_HP, Constants.CHICKEN_HP_DEFAULT_START},
+			{Constants.DB_KEYWORD_AGILITY, Constants.CHICKEN_AGILITY_DEFAULT_START},
+			{Constants.DB_KEYWORD_GAMENESS, Constants.CHICKEN_GAMENESS_DEFAULT_START},
+			{Constants.DB_KEYWORD_AGGRESSION, Constants.CHICKEN_AGGRESSION_DEFAULT_START},
+			{Constants.DB_KEYWORD_CONDITIONING, Constants.CHICKEN_CONDITIONING_DEFAULT_START},
+			{Constants.DB_KEYWORD_ATTACK_MAX, Constants.CHICKEN_ATTACK_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_DEFENSE_MAX, Constants.CHICKEN_DEFENSE_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_HP_MAX, Constants.CHICKEN_HP_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_AGILITY_MAX, Constants.CHICKEN_AGILITY_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_GAMENESS_MAX, Constants.CHICKEN_GAMENESS_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_AGGRESSION_MAX, Constants.CHICKEN_AGGRESSION_DEFAULT_MAX},
+			{Constants.DB_KEYWORD_LIFE_STAGE, lifeStage},
+			{Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH, false},
+		};
+		return d;
+	}
+
+	public Dictionary<string, object> GenerateChicken(string name, string userId, string gender, string breed, string genId, int genCount, string lifeStage) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_CHICKEN},
+			{Constants.DB_KEYWORD_NAME, name},
+			{Constants.DB_KEYWORD_USER_ID, userId},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()},
+			{Constants.DB_TYPE_BREED, breed},
+			{Constants.DB_KEYWORD_GENERATION_ID, genId},
+			{Constants.DB_KEYWORD_GENERATION_COUNT, genCount},
 			{Constants.DB_KEYWORD_GENDER, gender},
 			{Constants.DB_KEYWORD_NOTES, ""},
 			{Constants.DB_KEYWORD_ATTACK, Constants.CHICKEN_ATTACK_DEFAULT_START},

@@ -204,32 +204,87 @@ public class ServerManager : MonoBehaviour {
 		IDictionary<string,object> chicken2 = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString());
 		
 		string breed;
+		string[] generationId = new string[2];
+		int conditioning;
+		int[] generationCount = new int[2];
 		if(chicken1[Constants.DB_KEYWORD_GENDER].ToString() == Constants.GENDER_MALE) {
 			breed = chicken1[Constants.DB_TYPE_BREED].ToString();
+			generationId[0] = chicken1[Constants.DB_KEYWORD_GENERATION_ID].ToString();
+			generationCount[0] = int.Parse(chicken1[Constants.DB_KEYWORD_GENERATION_COUNT].ToString());
+			conditioning = int.Parse(chicken2[Constants.DB_KEYWORD_CONDITIONING].ToString());
 		}
 		else {
 			breed = chicken2[Constants.DB_TYPE_BREED].ToString();
+			generationId[0] = chicken2[Constants.DB_KEYWORD_GENERATION_ID].ToString();
+			generationCount[0] = int.Parse(chicken2[Constants.DB_KEYWORD_GENERATION_COUNT].ToString());
+			conditioning = int.Parse(chicken1[Constants.DB_KEYWORD_CONDITIONING].ToString());
+		}
+
+		// inbreeding code
+		float inbreedingPenalty = 0f;
+		if(generationId[0] == generationId[1]) {
+			int generationGap = Mathf.Abs(generationCount[0] - generationCount[1]);
+			if(generationGap <= 2) {
+				generationGap = 3 - generationGap;
+				inbreedingPenalty = 5f * Mathf.Pow(2, generationGap-1) * 0.01f;
+			}
 		}
 
 		IDictionary<string,object> chickenChild = DatabaseManager.Instance.SaveEntry(GameManager.Instance.GenerateChicken ("Child", 
 		                                                      chicken1 [Constants.DB_KEYWORD_USER_ID].ToString(), 
 		                                                      Random.Range(0,2) == 0 ? Constants.GENDER_MALE : Constants.GENDER_FEMALE, 
-		                                                      breed, 
+		                                                      breed, generationId[0], generationCount[0]+1,
 		                                                      Constants.LIFE_STAGE_EGG));
 
-		chickenChild[Constants.DB_KEYWORD_ATTACK] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_ATTACK].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_ATTACK].ToString()))/2;
-		chickenChild[Constants.DB_KEYWORD_DEFENSE] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_DEFENSE].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_DEFENSE].ToString()))/2;
-		chickenChild[Constants.DB_KEYWORD_HP] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_HP].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_HP].ToString()))/2;
-		chickenChild[Constants.DB_KEYWORD_AGILITY] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_AGILITY].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_AGILITY].ToString()))/2;
-		chickenChild[Constants.DB_KEYWORD_GAMENESS] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_GAMENESS].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_GAMENESS].ToString()))/2;
-		chickenChild[Constants.DB_KEYWORD_AGGRESSION] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_AGGRESSION].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_AGGRESSION].ToString()))/2;
+		/* 
+		 * formula for base stats:
+		 * (parent_1_stat/2 + parent_2_stat/2) * (0.9 to 1.1) * (1 - (1 - hen_conditioning)/2) * 0.01 * (1 - inbreed_penalty)
+		 */
+		int[,] pStats = new int[2,6];
+		int[,] pMax = new int[2,6];
+		pStats[0,0] = int.Parse (chicken1[Constants.DB_KEYWORD_ATTACK].ToString());
+		pStats[0,1] = int.Parse (chicken1[Constants.DB_KEYWORD_DEFENSE].ToString());
+		pStats[0,2] = int.Parse (chicken1[Constants.DB_KEYWORD_HP].ToString());
+		pStats[0,3] = int.Parse (chicken1[Constants.DB_KEYWORD_AGILITY].ToString());
+		pStats[0,4] = int.Parse (chicken1[Constants.DB_KEYWORD_GAMENESS].ToString());
+		pStats[0,5] = int.Parse (chicken1[Constants.DB_KEYWORD_AGGRESSION].ToString());
 
-		chickenChild[Constants.DB_KEYWORD_ATTACK_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_ATTACK_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_ATTACK_MAX].ToString()))/2;
-		chickenChild[Constants.DB_KEYWORD_DEFENSE_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_DEFENSE_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_DEFENSE_MAX].ToString()))/2;
-		chickenChild[Constants.DB_KEYWORD_HP_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_HP_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_HP_MAX].ToString()))/2;
-		chickenChild[Constants.DB_KEYWORD_AGILITY_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_AGILITY_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_AGILITY_MAX].ToString()))/2;
-		chickenChild[Constants.DB_KEYWORD_GAMENESS_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_GAMENESS_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_GAMENESS_MAX].ToString()))/2;
-		chickenChild[Constants.DB_KEYWORD_AGGRESSION_MAX] = "" + (int.Parse (chicken1[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString()) + int.Parse (chicken2[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString()))/2;
+		pStats[1,0] = int.Parse (chicken2[Constants.DB_KEYWORD_ATTACK].ToString());
+		pStats[1,1] = int.Parse (chicken2[Constants.DB_KEYWORD_DEFENSE].ToString());
+		pStats[1,2] = int.Parse (chicken2[Constants.DB_KEYWORD_HP].ToString());
+		pStats[1,3] = int.Parse (chicken2[Constants.DB_KEYWORD_AGILITY].ToString());
+		pStats[1,4] = int.Parse (chicken2[Constants.DB_KEYWORD_GAMENESS].ToString());
+		pStats[1,5] = int.Parse (chicken2[Constants.DB_KEYWORD_AGGRESSION].ToString());
+
+		pMax[0,0] = int.Parse (chicken1[Constants.DB_KEYWORD_ATTACK_MAX].ToString());
+		pMax[0,1] = int.Parse (chicken1[Constants.DB_KEYWORD_DEFENSE_MAX].ToString());
+		pMax[0,2] = int.Parse (chicken1[Constants.DB_KEYWORD_HP_MAX].ToString());
+		pMax[0,3] = int.Parse (chicken1[Constants.DB_KEYWORD_AGILITY_MAX].ToString());
+		pMax[0,4] = int.Parse (chicken1[Constants.DB_KEYWORD_GAMENESS_MAX].ToString());
+		pMax[0,5] = int.Parse (chicken1[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString());
+		
+		pMax[1,0] = int.Parse (chicken2[Constants.DB_KEYWORD_ATTACK_MAX].ToString());
+		pMax[1,1] = int.Parse (chicken2[Constants.DB_KEYWORD_DEFENSE_MAX].ToString());
+		pMax[1,2] = int.Parse (chicken2[Constants.DB_KEYWORD_HP_MAX].ToString());
+		pMax[1,3] = int.Parse (chicken2[Constants.DB_KEYWORD_AGILITY_MAX].ToString());
+		pMax[1,4] = int.Parse (chicken2[Constants.DB_KEYWORD_GAMENESS_MAX].ToString());
+		pMax[1,5] = int.Parse (chicken2[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString());
+
+		float conditioningMultiplier = (1f-(1f-conditioning*0.01f)/2f) * 0.01f;
+		float inbreedingMultiplier = (1f - inbreedingPenalty);
+		chickenChild[Constants.DB_KEYWORD_ATTACK] = (int)((pStats[0,0]/2f + pStats[1,0]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
+		chickenChild[Constants.DB_KEYWORD_DEFENSE] = (int)((pStats[0,1]/2f + pStats[1,1]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
+		chickenChild[Constants.DB_KEYWORD_HP] = (int)((pStats[0,2]/2f + pStats[1,2]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
+		chickenChild[Constants.DB_KEYWORD_AGILITY] = (int)((pStats[0,3]/2f + pStats[1,3]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
+		chickenChild[Constants.DB_KEYWORD_GAMENESS] = (int)((pStats[0,4]/2f + pStats[1,4]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
+		chickenChild[Constants.DB_KEYWORD_AGGRESSION] = (int)((pStats[0,5]/2f + pStats[1,5]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
+
+		chickenChild[Constants.DB_KEYWORD_ATTACK_MAX] = (int)((pMax[0,0] + pMax[1,0]) * conditioningMultiplier);
+		chickenChild[Constants.DB_KEYWORD_DEFENSE_MAX] = (int)((pMax[0,1] + pMax[1,1]) * conditioningMultiplier);
+		chickenChild[Constants.DB_KEYWORD_HP_MAX] = (int)((pMax[0,2] + pMax[1,2]) * conditioningMultiplier);
+		chickenChild[Constants.DB_KEYWORD_AGILITY_MAX] = (int)((pMax[0,3] + pMax[1,3]) * conditioningMultiplier);
+		chickenChild[Constants.DB_KEYWORD_GAMENESS_MAX] = (int)((pMax[0,4] + pMax[1,4]) * conditioningMultiplier);
+		chickenChild[Constants.DB_KEYWORD_AGGRESSION_MAX] = (int)((pMax[0,5] + pMax[1,5]) * conditioningMultiplier);
 	
 		DatabaseManager.Instance.EditChicken(chickenChild);
 		
