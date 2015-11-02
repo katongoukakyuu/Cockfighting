@@ -154,8 +154,8 @@ public class FightManager : MonoBehaviour {
 					g.transform.FindChild(Constants.MATCH_PANEL_ODDS_2).GetComponent<Text>().text = "O: " + bettingOdds[Constants.DB_KEYWORD_DEHADO_ODDS].ToString();
 				}
 
-				System.DateTime dt1 = TrimMilli(System.DateTime.Now.ToUniversalTime());
-				System.DateTime dt2 = TrimMilli(System.DateTime.Parse(i[Constants.DB_KEYWORD_END_TIME].ToString()));
+				System.DateTime dt1 = Utility.TrimMilli(System.DateTime.Now.ToUniversalTime());
+				System.DateTime dt2 = Utility.TrimMilli(System.DateTime.Parse(i[Constants.DB_KEYWORD_END_TIME].ToString()));
 				if(dt2 != System.DateTime.MinValue) {
 					g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>().text = "" + (dt2 - dt1);
 					IEnumerator ie = DisplayCountdown(g.transform.FindChild(Constants.MATCH_PANEL_TIMER).GetComponent<Text>(), dt2);
@@ -224,20 +224,14 @@ public class FightManager : MonoBehaviour {
 		}
 	}
 
-
-	private System.DateTime TrimMilli(System.DateTime dt)
-	{
-		return new System.DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0, dt.Kind);
-	}
-
 	private IEnumerator DisplayCountdown(Text display, System.DateTime target) {
 		while (true) {
-			System.TimeSpan diff = target - TrimMilli (System.DateTime.Now.ToUniversalTime ());
+			System.TimeSpan diff = target - Utility.TrimMilli (System.DateTime.Now.ToUniversalTime ());
 			if (diff.CompareTo (System.TimeSpan.Zero) <= 0) {
 				display.text = "" + System.TimeSpan.Zero;
 				yield break;
 			}
-			display.text = "" + (target - TrimMilli(System.DateTime.Now.ToUniversalTime()));
+			display.text = "" + (target - Utility.TrimMilli(System.DateTime.Now.ToUniversalTime()));
 			yield return new WaitForSeconds(1f);
 		}
 	}

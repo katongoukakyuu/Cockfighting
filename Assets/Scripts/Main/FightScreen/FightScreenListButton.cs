@@ -3,49 +3,15 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class FightScreenListButton : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IBeginDragHandler,  IDragHandler, IEndDragHandler, IScrollHandler {
-	
-	public ScrollRect MainScroll;
-	private bool canClick = true;
-	
-	public void OnPointerDown (PointerEventData eventData)
-	{
-		if (MainScroll.velocity.magnitude > 2f) {
-			canClick = false;
-		}
-		MainScroll.StopMovement();
-	}
-	
-	public void OnPointerClick (PointerEventData eventData)
-	{
-		print (MainScroll.velocity.magnitude);
-		if(canClick) {
+public class FightScreenListButton : MonoBehaviour {
+
+	void Start() {
+		EventTrigger trigger = GetComponentInParent<EventTrigger> ();
+		EventTrigger.Entry entry = new EventTrigger.Entry ();
+		entry.eventID = EventTriggerType.PointerClick;
+		entry.callback.AddListener ((eventData) => {
 			FightManager.Instance.SetSelected (this.name);
-		}
-		canClick = true;
-	}
-	
-	public void OnBeginDrag(PointerEventData eventData)
-	{
-		MainScroll.OnBeginDrag(eventData);
-		canClick = false;
-	}
-	
-	public void OnDrag(PointerEventData eventData)
-	{
-		MainScroll.OnDrag(eventData);
-		canClick = false;
-	}
-	
-	public void OnEndDrag(PointerEventData eventData)
-	{
-		MainScroll.OnEndDrag(eventData);
-		canClick = true;
-	}
-	
-	public void OnScroll(PointerEventData data)
-	{
-		MainScroll.OnScroll(data);
-		canClick = false;
+		});
+		trigger.triggers.Add (entry);
 	}
 }

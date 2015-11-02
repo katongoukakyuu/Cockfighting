@@ -40,6 +40,8 @@ public class ServerManager : MonoBehaviour {
 		StartCoroutine(ProcessBreedSchedules());
 		StartCoroutine(ProcessBreedScheduleCanceling());
 
+		StartCoroutine(ProcessConditioningDecay());
+
 		StartCoroutine(ProcessMatchesStatusChanges());
 		StartCoroutine(ProcessMatchSchedules());
 	}
@@ -93,13 +95,35 @@ public class ServerManager : MonoBehaviour {
 	private void ProcessFeedSchedulesApplySchedule(IDictionary<string,object> schedule) {
 		IDictionary<string,object> chicken = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID].ToString());
 		IDictionary<string,object> feeds = DatabaseManager.Instance.LoadFeeds(schedule[Constants.DB_KEYWORD_FEEDS_ID].ToString());
-		
-		chicken[Constants.DB_KEYWORD_ATTACK] = "" + (int.Parse (chicken[Constants.DB_KEYWORD_ATTACK].ToString()) + int.Parse (feeds[Constants.DB_KEYWORD_ATTACK].ToString()));
-		chicken[Constants.DB_KEYWORD_DEFENSE] = "" + (int.Parse (chicken[Constants.DB_KEYWORD_DEFENSE].ToString()) + int.Parse (feeds[Constants.DB_KEYWORD_DEFENSE].ToString()));
-		chicken[Constants.DB_KEYWORD_HP] = "" + (int.Parse (chicken[Constants.DB_KEYWORD_HP].ToString()) + int.Parse (feeds[Constants.DB_KEYWORD_HP].ToString()));
-		chicken[Constants.DB_KEYWORD_AGILITY] = "" + (int.Parse (chicken[Constants.DB_KEYWORD_AGILITY].ToString()) + int.Parse (feeds[Constants.DB_KEYWORD_AGILITY].ToString()));
-		chicken[Constants.DB_KEYWORD_GAMENESS] = "" + (int.Parse (chicken[Constants.DB_KEYWORD_GAMENESS].ToString()) + int.Parse (feeds[Constants.DB_KEYWORD_GAMENESS].ToString()));
-		chicken[Constants.DB_KEYWORD_AGGRESSION] = "" + (int.Parse (chicken[Constants.DB_KEYWORD_AGGRESSION].ToString()) + int.Parse (feeds[Constants.DB_KEYWORD_AGGRESSION].ToString()));
+
+		int[] stats = new int[7];
+		int[] statsMax = new int[7];
+		int[] feedsStats = new int[7];
+		string[] statsStrings = {
+			Constants.DB_KEYWORD_ATTACK,
+			Constants.DB_KEYWORD_DEFENSE,
+			Constants.DB_KEYWORD_HP,
+			Constants.DB_KEYWORD_AGILITY,
+			Constants.DB_KEYWORD_GAMENESS,
+			Constants.DB_KEYWORD_AGGRESSION,
+			Constants.DB_KEYWORD_CONDITIONING
+		};
+		string[] statsStringsMax = {
+			Constants.DB_KEYWORD_ATTACK_MAX,
+			Constants.DB_KEYWORD_DEFENSE_MAX,
+			Constants.DB_KEYWORD_HP_MAX,
+			Constants.DB_KEYWORD_AGILITY_MAX,
+			Constants.DB_KEYWORD_GAMENESS_MAX,
+			Constants.DB_KEYWORD_AGGRESSION_MAX,
+			Constants.CHICKEN_CONDITIONING_DEFAULT_MAX.ToString()
+		};
+
+		for(int i = 0; i < statsStrings.Length; i++) {
+			stats[i] = int.Parse (chicken[statsStrings[i]].ToString());
+			statsMax[i] = int.Parse (chicken[statsStringsMax[i]].ToString());
+			feedsStats[i] = int.Parse (feeds[statsStrings[i]].ToString());
+			chicken[statsStrings[i]] = stats[i] + feedsStats[i] <= statsMax[i] ? stats[i] + feedsStats[i] : statsMax[i];
+		}
 
 		DatabaseManager.Instance.EditChicken(chicken);
 
@@ -158,6 +182,63 @@ public class ServerManager : MonoBehaviour {
 	}
 
 	// FEED SCHEDULES END
+
+	// CONDITIONING DECAY START
+	
+	private IEnumerator ProcessConditioningDecay() {
+		List<IDictionary<string,object>> listSchedules = new List<IDictionary<string,object>>();
+		List<System.DateTime> listEndTimes = new List<System.DateTime>();
+		System.DateTime earliestEndTime = System.DateTime.MinValue;
+		int earliestEndTimeIndex = 0;
+		
+		ProcessConditioningDecayInitialize(ref listSchedules, ref listEndTimes, ref earliestEndTime, ref earliestEndTimeIndex);
+		
+		while(true) {
+			if(earliestEndTime.CompareTo(System.DateTime.MinValue) != 0 && earliestEndTime.CompareTo(System.DateTime.Now.ToUniversalTime()) < 0) {
+				ProcessConditioningDecayApplySchedule(listSchedules[earliestEndTimeIndex]);
+				ProcessConditioningDecayInitialize(ref listSchedules, ref listEndTimes, ref earliestEndTime, ref earliestEndTimeIndex);
+			}
+			yield return new WaitForSeconds(1);
+		}
+	}
+	
+	private void ProcessConditioningDecayInitialize(ref List<IDictionary<string,object>> listSchedules,
+	                                            ref List<System.DateTime> listEndTimes,
+	                                            ref System.DateTime earliestEndTime,
+	                                            ref int earliestEndTimeIndex) {
+		listSchedules = DatabaseManager.Instance.LoadFeedsSchedule(null);
+		listEndTimes.Clear ();
+		earliestEndTime = System.DateTime.MinValue;
+		earliestEndTimeIndex = 0;
+		
+		listSchedules.RemoveAll(i => i[Constants.DB_KEYWORD_IS_COMPLETED].ToString() != Constants.GENERIC_FALSE);
+		
+		foreach(IDictionary<string,object> i in listSchedules) {
+			System.DateTime dtTemp = System.DateTime.Parse (i[Constants.DB_KEYWORD_END_TIME].ToString());
+			listEndTimes.Add (dtTemp);
+			if(earliestEndTime.CompareTo(System.DateTime.MinValue) == 0 || earliestEndTime.CompareTo(dtTemp) > 0) {
+				earliestEndTime = dtTemp;
+				earliestEndTimeIndex = listSchedules.IndexOf(i);
+			}
+		}
+	}
+	
+	private void ProcessConditioningDecayApplySchedule(IDictionary<string,object> schedule) {
+		IDictionary<string,object> chicken = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID].ToString());
+
+		if(int.Parse (chicken[Constants.DB_KEYWORD_CONDITIONING].ToString()) > 50 &&
+		   chicken[Constants.DB_KEYWORD_LIFE_STAGE].ToString() != Constants.LIFE_STAGE_EGG) {
+			chicken[Constants.DB_KEYWORD_CONDITIONING] = "" + (int.Parse (chicken[Constants.DB_KEYWORD_CONDITIONING].ToString()) - Constants.CHICKEN_CONDITIONING_DEFAULT_DECAY_AMOUNT);
+			DatabaseManager.Instance.EditChicken(chicken);
+		}
+
+		System.DateTime dtTemp = System.DateTime.Parse (schedule[Constants.DB_KEYWORD_END_TIME].ToString());
+		dtTemp = dtTemp.AddHours (Constants.CHICKEN_CONDITIONING_DEFAULT_DECAY_TIMER);
+		schedule[Constants.DB_KEYWORD_END_TIME] = dtTemp;
+		DatabaseManager.Instance.EditConditioningDecaySchedule(schedule);
+	}
+	
+	// CONDITIONING DECAY END
 
 	// BREED SCHEDULES START
 
@@ -240,51 +321,36 @@ public class ServerManager : MonoBehaviour {
 		 * formula for base stats:
 		 * (parent_1_stat/2 + parent_2_stat/2) * (0.9 to 1.1) * (1 - (1 - hen_conditioning)/2) * 0.01 * (1 - inbreed_penalty)
 		 */
-		int[,] pStats = new int[2,6];
-		int[,] pMax = new int[2,6];
-		pStats[0,0] = int.Parse (chicken1[Constants.DB_KEYWORD_ATTACK].ToString());
-		pStats[0,1] = int.Parse (chicken1[Constants.DB_KEYWORD_DEFENSE].ToString());
-		pStats[0,2] = int.Parse (chicken1[Constants.DB_KEYWORD_HP].ToString());
-		pStats[0,3] = int.Parse (chicken1[Constants.DB_KEYWORD_AGILITY].ToString());
-		pStats[0,4] = int.Parse (chicken1[Constants.DB_KEYWORD_GAMENESS].ToString());
-		pStats[0,5] = int.Parse (chicken1[Constants.DB_KEYWORD_AGGRESSION].ToString());
-
-		pStats[1,0] = int.Parse (chicken2[Constants.DB_KEYWORD_ATTACK].ToString());
-		pStats[1,1] = int.Parse (chicken2[Constants.DB_KEYWORD_DEFENSE].ToString());
-		pStats[1,2] = int.Parse (chicken2[Constants.DB_KEYWORD_HP].ToString());
-		pStats[1,3] = int.Parse (chicken2[Constants.DB_KEYWORD_AGILITY].ToString());
-		pStats[1,4] = int.Parse (chicken2[Constants.DB_KEYWORD_GAMENESS].ToString());
-		pStats[1,5] = int.Parse (chicken2[Constants.DB_KEYWORD_AGGRESSION].ToString());
-
-		pMax[0,0] = int.Parse (chicken1[Constants.DB_KEYWORD_ATTACK_MAX].ToString());
-		pMax[0,1] = int.Parse (chicken1[Constants.DB_KEYWORD_DEFENSE_MAX].ToString());
-		pMax[0,2] = int.Parse (chicken1[Constants.DB_KEYWORD_HP_MAX].ToString());
-		pMax[0,3] = int.Parse (chicken1[Constants.DB_KEYWORD_AGILITY_MAX].ToString());
-		pMax[0,4] = int.Parse (chicken1[Constants.DB_KEYWORD_GAMENESS_MAX].ToString());
-		pMax[0,5] = int.Parse (chicken1[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString());
-		
-		pMax[1,0] = int.Parse (chicken2[Constants.DB_KEYWORD_ATTACK_MAX].ToString());
-		pMax[1,1] = int.Parse (chicken2[Constants.DB_KEYWORD_DEFENSE_MAX].ToString());
-		pMax[1,2] = int.Parse (chicken2[Constants.DB_KEYWORD_HP_MAX].ToString());
-		pMax[1,3] = int.Parse (chicken2[Constants.DB_KEYWORD_AGILITY_MAX].ToString());
-		pMax[1,4] = int.Parse (chicken2[Constants.DB_KEYWORD_GAMENESS_MAX].ToString());
-		pMax[1,5] = int.Parse (chicken2[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString());
-
 		float conditioningMultiplier = (1f-(1f-conditioning*0.01f)/2f) * 0.01f;
 		float inbreedingMultiplier = (1f - inbreedingPenalty);
-		chickenChild[Constants.DB_KEYWORD_ATTACK] = (int)((pStats[0,0]/2f + pStats[1,0]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
-		chickenChild[Constants.DB_KEYWORD_DEFENSE] = (int)((pStats[0,1]/2f + pStats[1,1]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
-		chickenChild[Constants.DB_KEYWORD_HP] = (int)((pStats[0,2]/2f + pStats[1,2]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
-		chickenChild[Constants.DB_KEYWORD_AGILITY] = (int)((pStats[0,3]/2f + pStats[1,3]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
-		chickenChild[Constants.DB_KEYWORD_GAMENESS] = (int)((pStats[0,4]/2f + pStats[1,4]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
-		chickenChild[Constants.DB_KEYWORD_AGGRESSION] = (int)((pStats[0,5]/2f + pStats[1,5]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
+		int[,] pStats = new int[2,6];
+		int[,] pMax = new int[2,6];
+		string[] statsStrings = {
+			Constants.DB_KEYWORD_ATTACK,
+			Constants.DB_KEYWORD_DEFENSE,
+			Constants.DB_KEYWORD_HP,
+			Constants.DB_KEYWORD_AGILITY,
+			Constants.DB_KEYWORD_GAMENESS,
+			Constants.DB_KEYWORD_AGGRESSION,
+		};
+		string[] statsStringsMax = {
+			Constants.DB_KEYWORD_ATTACK_MAX,
+			Constants.DB_KEYWORD_DEFENSE_MAX,
+			Constants.DB_KEYWORD_HP_MAX,
+			Constants.DB_KEYWORD_AGILITY_MAX,
+			Constants.DB_KEYWORD_GAMENESS_MAX,
+			Constants.DB_KEYWORD_AGGRESSION_MAX,
+		};
 
-		chickenChild[Constants.DB_KEYWORD_ATTACK_MAX] = (int)((pMax[0,0] + pMax[1,0]) * conditioningMultiplier);
-		chickenChild[Constants.DB_KEYWORD_DEFENSE_MAX] = (int)((pMax[0,1] + pMax[1,1]) * conditioningMultiplier);
-		chickenChild[Constants.DB_KEYWORD_HP_MAX] = (int)((pMax[0,2] + pMax[1,2]) * conditioningMultiplier);
-		chickenChild[Constants.DB_KEYWORD_AGILITY_MAX] = (int)((pMax[0,3] + pMax[1,3]) * conditioningMultiplier);
-		chickenChild[Constants.DB_KEYWORD_GAMENESS_MAX] = (int)((pMax[0,4] + pMax[1,4]) * conditioningMultiplier);
-		chickenChild[Constants.DB_KEYWORD_AGGRESSION_MAX] = (int)((pMax[0,5] + pMax[1,5]) * conditioningMultiplier);
+		for(int i = 0; i < statsStrings.Length; i++) {
+			pStats[0,i] = int.Parse (chicken1[statsStrings[i]].ToString());
+			pStats[1,i] = int.Parse (chicken2[statsStrings[i]].ToString());
+			pMax[0,i] = int.Parse (chicken1[statsStringsMax[i]].ToString());
+			pMax[1,i] = int.Parse (chicken2[statsStringsMax[i]].ToString());
+
+			chickenChild[statsStrings[i]] = (int)((pStats[0,i]/2f + pStats[1,i]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
+			chickenChild[statsStringsMax[i]] = (int)((pMax[0,i] + pMax[1,i]) * conditioningMultiplier);
+		}
 	
 		DatabaseManager.Instance.EditChicken(chickenChild);
 		
@@ -408,8 +474,8 @@ public class ServerManager : MonoBehaviour {
 			return;
 		}
 
-		System.DateTime intervalTime = TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_INTERVAL_TIME].ToString()));
-		System.TimeSpan interval = TrimMilli(System.TimeSpan.FromTicks(long.Parse(schedule[Constants.DB_KEYWORD_INTERVAL].ToString())));
+		System.DateTime intervalTime = Utility.TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_INTERVAL_TIME].ToString()));
+		System.TimeSpan interval = Utility.TrimMilli(System.TimeSpan.FromTicks(long.Parse(schedule[Constants.DB_KEYWORD_INTERVAL].ToString())));
 		int bettingOddsOrder = int.Parse (DatabaseManager.Instance.LoadBettingOdds(schedule[Constants.DB_KEYWORD_BETTING_ODDS_ID].ToString())[Constants.DB_KEYWORD_ORDER].ToString());
 		int intervalsLeft = int.Parse (schedule[Constants.DB_KEYWORD_INTERVALS_LEFT].ToString());
 
@@ -492,12 +558,12 @@ public class ServerManager : MonoBehaviour {
 	}
 
 	private void SwitchToBettingPeriod(IDictionary<string,object> schedule) {
-		System.DateTime startTime = TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_CREATED_AT].ToString()));
-		System.DateTime endTime = TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()));
+		System.DateTime startTime = Utility.TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_CREATED_AT].ToString()));
+		System.DateTime endTime = Utility.TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()));
 		System.TimeSpan interval = endTime - startTime;
 		System.DateTime intervalTime;
 
-		interval = TrimMilli(new System.TimeSpan(interval.Ticks/Constants.BETTING_ODDS_COUNT));
+		interval = Utility.TrimMilli(new System.TimeSpan(interval.Ticks/Constants.BETTING_ODDS_COUNT));
 		intervalTime = startTime.Add (interval);
 
 		schedule[Constants.DB_KEYWORD_INTERVAL] = interval.Ticks;
@@ -596,14 +662,4 @@ public class ServerManager : MonoBehaviour {
 	}
 
 	// MATCHES END
-
-	private System.DateTime TrimMilli(System.DateTime dt)
-	{
-		return new System.DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0, dt.Kind);
-	}
-
-	private System.TimeSpan TrimMilli(System.TimeSpan dt)
-	{
-		return new System.TimeSpan(dt.Days, dt.Hours, dt.Minutes, dt.Seconds);
-	}
 }

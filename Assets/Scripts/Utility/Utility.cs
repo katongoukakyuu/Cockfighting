@@ -32,6 +32,14 @@ public class Utility : MonoBehaviour {
 		return a - b * Mathf.Floor(a / b);
 	}
 
+	public static System.DateTime TrimMilli(System.DateTime dt) {
+		return new System.DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0, dt.Kind);
+	}
+
+	public static System.TimeSpan TrimMilli(System.TimeSpan dt) {
+		return new System.TimeSpan(dt.Days, dt.Hours, dt.Minutes, dt.Seconds);
+	}
+
 	public static int GetPayout(int betAmount, IDictionary<string,object> bettingOdds, bool isLlamado) {
 		if(isLlamado) {
 			return (int) betAmount * 2 * int.Parse (bettingOdds[Constants.DB_KEYWORD_DEHADO_ODDS].ToString()) / int.Parse (bettingOdds[Constants.DB_KEYWORD_LLAMADO_ODDS].ToString());

@@ -131,6 +131,10 @@ public class Constants : MonoBehaviour {
 	public const int CHICKEN_GAMENESS_DEFAULT_MAX = 2000;
 	public const int CHICKEN_AGGRESSION_DEFAULT_MAX = 2000;
 	public const int CHICKEN_CONDITIONING_DEFAULT_MAX = 100;
+	public const int CHICKEN_CONDITIONING_DEFAULT_MIN = 50;
+
+	public const double CHICKEN_CONDITIONING_DEFAULT_DECAY_TIMER = 1;
+	public const int CHICKEN_CONDITIONING_DEFAULT_DECAY_AMOUNT = 10;
 
 	public const double BREED_DURATION_DEFAULT_DAYS = 0d;
 	public const double BREED_DURATION_DEFAULT_HOURS = 0d;
@@ -154,6 +158,7 @@ public class Constants : MonoBehaviour {
 	public const string DB_TYPE_SHOTS = "shots";
 	public const string DB_TYPE_FEEDS_SCHEDULE = "feeds schedule";
 	public const string DB_TYPE_BREED_SCHEDULE = "breed schedule";
+	public const string DB_TYPE_CONDITIONING_DECAY_SCHEDULE = "conditioning decay schedule";
 	public const string DB_TYPE_FIGHTING_MOVE = "fighting move";
 	public const string DB_TYPE_FIGHTING_MOVE_OWNED = "fighting move owned";
 	public const string DB_TYPE_MAIL = "mail";
@@ -421,6 +426,7 @@ public class Constants : MonoBehaviour {
 	public const string CREATE_MATCH_STAT_AGI_SLIDER = "AGI/Slider";
 	public const string CREATE_MATCH_STAT_GAM_SLIDER = "GAM/Slider";
 	public const string CREATE_MATCH_STAT_AGG_SLIDER = "AGG/Slider";
+	public const string CREATE_MATCH_STAT_CON_SLIDER = "CON/Slider";
 
 	public const string CREATE_MATCH_BETTING_BUTTON = "Betting Button";
 	public const string CREATE_MATCH_BETTING_PANEL = "Betting Panel";
@@ -456,6 +462,7 @@ public class Constants : MonoBehaviour {
 	public const string VIEW_MATCH_STAT_AGI_SLIDER = "Stats Panel 1/AGI/Slider";
 	public const string VIEW_MATCH_STAT_GAM_SLIDER = "Stats Panel 1/GAM/Slider";
 	public const string VIEW_MATCH_STAT_AGG_SLIDER = "Stats Panel 1/AGG/Slider";
+	public const string VIEW_MATCH_STAT_CON_SLIDER = "Stats Panel 1/CON/Slider";
 
 	public const string VIEW_MATCH_STAT_FARM_NAME = "Stats Panel 2/Main Panel/Farm Name/Text 2";
 	public const string VIEW_MATCH_STAT_OWNER = "Stats Panel 2/Main Panel/Owner/Text 2";
@@ -508,7 +515,7 @@ public class Constants : MonoBehaviour {
 	public const string STORE_QUANTITY_PANEL = "Main Panel - Store";
 	public const string STORE_QUANTITY_PANEL_PLAYER_COIN = "Panel/Price/Coin Price";
 	public const string STORE_QUANTITY_PANEL_PLAYER_CASH = "Panel/Price/Cash Price";
-	public const string STORE_QUANTITY_PANEL_ICON = "Details Panel/Panel 1/Store Icon/Image";
+	public const string STORE_QUANTITY_PANEL_ICON = "Details Panel/Panel 1/Store Icon";
 	public const string STORE_QUANTITY_PANEL_NAME = "Details Panel/Panel 2/Name";
 	public const string STORE_QUANTITY_PANEL_CATEGORY = "Details Panel/Panel 2/Category";
 	public const string STORE_QUANTITY_PANEL_COIN_PRICE = "Details Panel/Panel 3/Price/Coin Price";

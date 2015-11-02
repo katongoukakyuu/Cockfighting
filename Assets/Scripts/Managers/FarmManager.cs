@@ -21,6 +21,7 @@ public class FarmManager : MonoBehaviour {
 	public GameObject mainCanvas;
 	public GameObject chickenStatsCanvas;
 	public Text[] chickenStatsFields;
+	public Slider[] chickenStatsSliders;
 	
 	private System.EventHandler<DatabaseChangeEventArgs> eventHandler;
 
@@ -197,18 +198,29 @@ public class FarmManager : MonoBehaviour {
 	}
 
 	private void UpdateChickenStats(IDictionary<string,object> dic) {
-		if (chickenStatsFields.Length == 11) {
+		if (chickenStatsFields.Length == 5) {
 			chickenStatsFields[0].text = dic[Constants.DB_KEYWORD_NAME].ToString();
 			chickenStatsFields[1].text = dic[Constants.DB_TYPE_BREED].ToString();
 			chickenStatsFields[2].text = dic[Constants.DB_KEYWORD_GENDER].ToString();
 			chickenStatsFields[3].text = dic[Constants.DB_KEYWORD_LIFE_STAGE].ToString();
 			chickenStatsFields[4].text = dic[Constants.DB_KEYWORD_NOTES].ToString();
-			chickenStatsFields[5].text = dic[Constants.DB_KEYWORD_ATTACK] + " / " + dic[Constants.DB_KEYWORD_ATTACK_MAX];
-			chickenStatsFields[6].text = dic[Constants.DB_KEYWORD_DEFENSE] + " / " + dic[Constants.DB_KEYWORD_DEFENSE_MAX];
-			chickenStatsFields[7].text = dic[Constants.DB_KEYWORD_HP] + " / " + dic[Constants.DB_KEYWORD_HP_MAX];
-			chickenStatsFields[8].text = dic[Constants.DB_KEYWORD_AGILITY] + " / " + dic[Constants.DB_KEYWORD_AGILITY_MAX];
-			chickenStatsFields[9].text = dic[Constants.DB_KEYWORD_GAMENESS] + " / " + dic[Constants.DB_KEYWORD_GAMENESS_MAX];
-			chickenStatsFields[10].text = dic[Constants.DB_KEYWORD_AGGRESSION] + " / " + dic[Constants.DB_KEYWORD_AGGRESSION_MAX];
+		}
+		if(chickenStatsSliders.Length == 7) {
+			chickenStatsSliders[0].maxValue = float.Parse(dic[Constants.DB_KEYWORD_ATTACK_MAX].ToString());
+			chickenStatsSliders[1].maxValue = float.Parse(dic[Constants.DB_KEYWORD_DEFENSE_MAX].ToString());
+			chickenStatsSliders[2].maxValue = float.Parse(dic[Constants.DB_KEYWORD_HP_MAX].ToString());
+			chickenStatsSliders[3].maxValue = float.Parse(dic[Constants.DB_KEYWORD_AGILITY_MAX].ToString());
+			chickenStatsSliders[4].maxValue = float.Parse(dic[Constants.DB_KEYWORD_GAMENESS_MAX].ToString());
+			chickenStatsSliders[5].maxValue = float.Parse(dic[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString());
+			chickenStatsSliders[6].maxValue = Constants.CHICKEN_CONDITIONING_DEFAULT_MAX;
+
+			chickenStatsSliders[0].value = float.Parse(dic[Constants.DB_KEYWORD_ATTACK].ToString());
+			chickenStatsSliders[1].value = float.Parse(dic[Constants.DB_KEYWORD_DEFENSE].ToString());
+			chickenStatsSliders[2].value = float.Parse(dic[Constants.DB_KEYWORD_HP].ToString());
+			chickenStatsSliders[3].value = float.Parse(dic[Constants.DB_KEYWORD_AGILITY].ToString());
+			chickenStatsSliders[4].value = float.Parse(dic[Constants.DB_KEYWORD_GAMENESS].ToString());
+			chickenStatsSliders[5].value = float.Parse(dic[Constants.DB_KEYWORD_AGGRESSION].ToString());
+			chickenStatsSliders[6].value = float.Parse(dic[Constants.DB_KEYWORD_CONDITIONING].ToString());
 		}
 	}
 

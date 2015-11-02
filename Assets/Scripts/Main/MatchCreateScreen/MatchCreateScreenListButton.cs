@@ -18,7 +18,7 @@ public class MatchCreateScreenListButton : MonoBehaviour, IPointerDownHandler, I
 	
 	public void OnPointerClick (PointerEventData eventData)
 	{
-		print (MainScroll.velocity.magnitude);
+		
 		if(canClick) {
 			MatchCreateManager.Instance.SetSelected (this.GetComponentInChildren<Text>().text);
 		}

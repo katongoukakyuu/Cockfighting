@@ -108,6 +108,7 @@ public class MatchViewManager : MonoBehaviour {
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_AGI_SLIDER).GetComponent<Slider>().maxValue = float.Parse(selectedChicken[Constants.DB_KEYWORD_AGILITY_MAX].ToString());
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_GAM_SLIDER).GetComponent<Slider>().maxValue = float.Parse(selectedChicken[Constants.DB_KEYWORD_GAMENESS_MAX].ToString());
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_AGG_SLIDER).GetComponent<Slider>().maxValue = float.Parse(selectedChicken[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString());
+		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_CON_SLIDER).GetComponent<Slider>().maxValue = Constants.CHICKEN_CONDITIONING_DEFAULT_MAX;
 
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_ATK_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_ATTACK].ToString());
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_DEF_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_DEFENSE].ToString());
@@ -115,6 +116,7 @@ public class MatchViewManager : MonoBehaviour {
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_AGI_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_AGILITY].ToString());
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_GAM_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_GAMENESS].ToString());
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_AGG_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_AGGRESSION].ToString());
+		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_CON_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_CONDITIONING].ToString());
 
 		statsPanel.transform.FindChild(Constants.VIEW_MATCH_STAT_FARM_NAME).GetComponent<Text>().text = selectedPlayer[Constants.DB_KEYWORD_FARM_NAME].ToString();
 		FBGetName(selectedPlayer[Constants.DB_KEYWORD_USER_ID].ToString());

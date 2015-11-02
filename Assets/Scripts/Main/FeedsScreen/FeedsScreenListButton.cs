@@ -18,7 +18,7 @@ public class FeedsScreenListButton : MonoBehaviour, IPointerDownHandler, IPointe
 	
 	public void OnPointerClick (PointerEventData eventData)
 	{
-		print (MainScroll.velocity.magnitude);
+		
 		if(canClick) {
 			FeedsManager.Instance.SetSelected (this.GetComponentInChildren<Text>().text);
 		}

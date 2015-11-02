@@ -140,6 +140,17 @@ public class GameManager : MonoBehaviour {
 		return d;
 	}
 
+	public Dictionary<string, object> GenerateConditioningDecaySchedule(string chickenId, string endTime) {
+		Dictionary<string, object> d = new Dictionary<string, object>() {
+			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_CONDITIONING_DECAY_SCHEDULE},
+			{Constants.DB_KEYWORD_CHICKEN_ID, chickenId},
+			{Constants.DB_KEYWORD_END_TIME, endTime},
+			{Constants.DB_KEYWORD_IS_COMPLETED, Constants.GENERIC_FALSE},
+			{Constants.DB_KEYWORD_CREATED_AT, System.DateTime.Now.ToUniversalTime().ToString ()}
+		};
+		return d;
+	}
+
 	public Dictionary<string, object> GenerateFightingMove(string name) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_FIGHTING_MOVE},
@@ -174,7 +185,7 @@ public class GameManager : MonoBehaviour {
 	public Dictionary<string, object> GenerateItem(string name, string subType, string description,
 	                                               int coinCost, int cashCost, bool availableAtStore,
 	                                               int durD, int durH, int durM, int durS,
-	                                               int effAtk, int effDef, int effHp, int effAgi, int effGam, int effAgg, 
+	                                               int effAtk, int effDef, int effHp, int effAgi, int effGam, int effAgg, int effCon,
 	                                               string imageName) {
 		Dictionary<string, object> d = new Dictionary<string, object>() {
 			{Constants.DB_KEYWORD_TYPE, Constants.DB_TYPE_ITEM},
@@ -195,6 +206,7 @@ public class GameManager : MonoBehaviour {
 			{Constants.DB_KEYWORD_AGILITY, effAgi},
 			{Constants.DB_KEYWORD_GAMENESS, effGam},
 			{Constants.DB_KEYWORD_AGGRESSION, effAgg},
+			{Constants.DB_KEYWORD_CONDITIONING, effCon},
 			{Constants.DB_KEYWORD_IMAGE_NAME, imageName}
 		};
 		return d;

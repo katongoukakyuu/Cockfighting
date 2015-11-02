@@ -18,7 +18,7 @@ public class BreedsScreenListButton : MonoBehaviour, IPointerDownHandler, IPoint
 
 	public void OnPointerClick (PointerEventData eventData)
 	{
-		print (MainScroll.velocity.magnitude);
+		
 		if(canClick) {
 			BreedsManager.Instance.SetSelected (this.GetComponentInChildren<Text>().text);
 		}

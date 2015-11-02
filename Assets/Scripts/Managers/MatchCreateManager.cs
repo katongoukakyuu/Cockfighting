@@ -169,6 +169,7 @@ public class MatchCreateManager : MonoBehaviour {
 		statsPanel.transform.FindChild(Constants.CREATE_MATCH_STAT_AGI_SLIDER).GetComponent<Slider>().maxValue = float.Parse(selectedChicken[Constants.DB_KEYWORD_AGILITY_MAX].ToString());
 		statsPanel.transform.FindChild(Constants.CREATE_MATCH_STAT_GAM_SLIDER).GetComponent<Slider>().maxValue = float.Parse(selectedChicken[Constants.DB_KEYWORD_GAMENESS_MAX].ToString());
 		statsPanel.transform.FindChild(Constants.CREATE_MATCH_STAT_AGG_SLIDER).GetComponent<Slider>().maxValue = float.Parse(selectedChicken[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString());
+		statsPanel.transform.FindChild(Constants.CREATE_MATCH_STAT_CON_SLIDER).GetComponent<Slider>().maxValue = Constants.CHICKEN_CONDITIONING_DEFAULT_MAX;
 
 		statsPanel.transform.FindChild(Constants.CREATE_MATCH_STAT_ATK_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_ATTACK].ToString());
 		statsPanel.transform.FindChild(Constants.CREATE_MATCH_STAT_DEF_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_DEFENSE].ToString());
@@ -176,6 +177,7 @@ public class MatchCreateManager : MonoBehaviour {
 		statsPanel.transform.FindChild(Constants.CREATE_MATCH_STAT_AGI_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_AGILITY].ToString());
 		statsPanel.transform.FindChild(Constants.CREATE_MATCH_STAT_GAM_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_GAMENESS].ToString());
 		statsPanel.transform.FindChild(Constants.CREATE_MATCH_STAT_AGG_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_AGGRESSION].ToString());
+		statsPanel.transform.FindChild(Constants.CREATE_MATCH_STAT_CON_SLIDER).GetComponent<Slider>().value = float.Parse(selectedChicken[Constants.DB_KEYWORD_CONDITIONING].ToString());
 	}
 
 	private void ConfirmOk() {
@@ -197,7 +199,7 @@ public class MatchCreateManager : MonoBehaviour {
 			bettingOption = Constants.BETTING_OPTION_SPECTATOR_BETTING;
 			bettingAmount = (int)optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<Slider>().value * 
 				optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_AMOUNT_SLIDER).GetComponent<FightScreenChickenStatAutoAdjust>().multiplier;
-			dt = TrimMilli(System.DateTime.Now.ToUniversalTime());
+			dt = Utility.TrimMilli(System.DateTime.Now.ToUniversalTime());
 			dt = dt.AddMinutes (System.Convert.ToDouble(optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_WAIT_DURATION_SLIDER).GetComponent<Slider>().value * 
 			                                            optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_WAIT_DURATION_SLIDER).GetComponent<FightScreenChickenStatAutoAdjust>().multiplier));
 		}
@@ -278,10 +280,5 @@ public class MatchCreateManager : MonoBehaviour {
 		if(t.isOn) {
 			optionsPanel.transform.FindChild(Constants.CREATE_MATCH_BETTING_2_BUTTON).GetComponent<Toggle>().isOn = false;
 		}
-	}
-
-	private System.DateTime TrimMilli(System.DateTime dt)
-	{
-		return new System.DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0, dt.Kind);
 	}
 }

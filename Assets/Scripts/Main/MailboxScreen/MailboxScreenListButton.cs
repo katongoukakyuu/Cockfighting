@@ -18,7 +18,7 @@ public class MailboxScreenListButton : MonoBehaviour, IPointerDownHandler, IPoin
 	
 	public void OnPointerClick (PointerEventData eventData)
 	{
-		print (MainScroll.velocity.magnitude);
+		
 		if(canClick) {
 			MailboxManager.Instance.SetSelected (this.name);
 		}

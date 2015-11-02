@@ -130,7 +130,7 @@ public class BreedsManager : MonoBehaviour {
 	}
 
 	private void FinalizeSelectedItem() {
-		System.DateTime dt = TrimMilli(System.DateTime.Now.ToUniversalTime());
+		System.DateTime dt = Utility.TrimMilli(System.DateTime.Now.ToUniversalTime());
 		foreach (IDictionary<string,object> i in selectedSchedules) {
 			System.DateTime dtTemp = System.DateTime.Parse(i[Constants.DB_KEYWORD_END_TIME].ToString());
 			if(dtTemp.CompareTo(dt) > 0) {
@@ -177,8 +177,8 @@ public class BreedsManager : MonoBehaviour {
 			}
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_NAME).GetComponent<Text>().text = mate[Constants.DB_KEYWORD_NAME].ToString();
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_STATS).GetComponent<Text>().text = GenerateStatsString(mate);
-			System.DateTime dt1 = TrimMilli(System.DateTime.Now.ToUniversalTime());
-			System.DateTime dt2 = TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()));
+			System.DateTime dt1 = Utility.TrimMilli(System.DateTime.Now.ToUniversalTime());
+			System.DateTime dt2 = Utility.TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()));
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>().text = "" + (dt2 - dt1);
 			IEnumerator ie = DisplayCountdown(g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>(),
 			                                  dt2);
@@ -343,19 +343,14 @@ public class BreedsManager : MonoBehaviour {
 		return s;
 	}
 
-	private System.DateTime TrimMilli(System.DateTime dt)
-	{
-		return new System.DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0, dt.Kind);
-	}
-
 	private IEnumerator DisplayCountdown(Text display, System.DateTime target) {
 		while (true) {
-			System.TimeSpan diff = target - TrimMilli (System.DateTime.Now.ToUniversalTime ());
+			System.TimeSpan diff = target - Utility.TrimMilli (System.DateTime.Now.ToUniversalTime ());
 			if (diff.CompareTo (System.TimeSpan.Zero) <= 0) {
 				display.text = "" + System.TimeSpan.Zero;
 				yield break;
 			}
-			display.text = "" + (target - TrimMilli(System.DateTime.Now.ToUniversalTime()));
+			display.text = "" + (target - Utility.TrimMilli(System.DateTime.Now.ToUniversalTime()));
 			yield return new WaitForSeconds(1f);
 		}
 	}
