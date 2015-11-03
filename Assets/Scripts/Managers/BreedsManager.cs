@@ -167,6 +167,7 @@ public class BreedsManager : MonoBehaviour {
 	public void AddScheduleToList(GameObject g, IDictionary<string, object> schedule) {
 		scheduleListItems.Add (g);
 		g.GetComponentInChildren<BreedsScreenScheduleCancelButton>().index = scheduleListItems.IndexOf(g);
+		g.GetComponentInChildren<BreedsScreenScheduleHurryButton>().index = scheduleListItems.IndexOf(g);
 		if (schedule != null) {
 			IDictionary<string,object> mate;
 			if(selectedChicken[Constants.DB_COUCHBASE_ID].ToString() == DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString())[Constants.DB_COUCHBASE_ID].ToString()) {
@@ -180,6 +181,7 @@ public class BreedsManager : MonoBehaviour {
 			System.DateTime dt1 = Utility.TrimMilli(System.DateTime.Now.ToUniversalTime());
 			System.DateTime dt2 = Utility.TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()));
 			g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>().text = "" + (dt2 - dt1);
+			g.transform.FindChild(Constants.SCHEDULE_PANEL_HURRY_BUTTON).GetComponent<Button>().interactable = true;
 			IEnumerator ie = DisplayCountdown(g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>(),
 			                                  dt2);
 			StartCoroutine(ie);
@@ -240,6 +242,28 @@ public class BreedsManager : MonoBehaviour {
 		}
 	}
 
+	public void HurrySchedule(int index) {
+		if(index >= selectedSchedules.Count) {
+			GameObject g = scheduleListItems[index];
+			scheduleListItems.Remove(g);
+			Destroy(g);
+			addScheduleButton.interactable = true;
+		}
+		else {
+			x = index;
+			MessageManager.Instance.DisplayMessage(Constants.MESSAGE_SCHEDULE_HURRY_TITLE, 
+			                                       Constants.MESSAGE_SCHEDULE_HURRY,
+			                                       FinalizeHurrySchedule, true);
+		}
+	}
+	
+	private void FinalizeHurrySchedule() {
+		IDictionary<string,object> schedule = selectedSchedules[x];
+		schedule[Constants.DB_KEYWORD_IS_COMPLETED] = Constants.GENERIC_HURRIED;
+		DatabaseManager.Instance.EditBreedsSchedule(schedule);
+		SetSelected(selectedChicken[Constants.DB_KEYWORD_NAME].ToString());
+	}
+
 	public void CancelSchedule(int index) {
 		if(index >= selectedSchedules.Count) {
 			GameObject g = scheduleListItems[index];
@@ -250,8 +274,8 @@ public class BreedsManager : MonoBehaviour {
 		else {
 			x = index;
 			MessageManager.Instance.DisplayMessage(Constants.MESSAGE_SCHEDULE_CANCEL_TITLE, 
-			               Constants.MESSAGE_SCHEDULE_CANCEL,
-			               FinalizeCancelSchedule, true);
+									               Constants.MESSAGE_SCHEDULE_CANCEL,
+									               FinalizeCancelSchedule, true);
 		}
 	}
 

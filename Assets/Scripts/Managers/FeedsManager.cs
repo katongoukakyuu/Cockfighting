@@ -163,6 +163,7 @@ public class FeedsManager : MonoBehaviour {
 	public void AddScheduleToList(GameObject g, IDictionary<string, object> schedule) {
 		scheduleListItems.Add (g);
 		g.GetComponentInChildren<FeedsScreenScheduleCancelButton>().index = scheduleListItems.IndexOf(g);
+		g.GetComponentInChildren<FeedsScreenScheduleHurryButton>().index = scheduleListItems.IndexOf(g);
 		if (schedule != null) {
 			IDictionary<string,object> feeds = DatabaseManager.Instance.LoadFeeds(schedule[Constants.DB_KEYWORD_FEEDS_ID].ToString());
 			g.transform.FindChild (Constants.SCHEDULE_PANEL_ICON).GetComponent<Image> ().sprite = 
@@ -176,6 +177,7 @@ public class FeedsManager : MonoBehaviour {
 					System.DateTime dt1 = Utility.TrimMilli(System.DateTime.Now.ToUniversalTime());
 					System.DateTime dt2 = Utility.TrimMilli(System.DateTime.Parse(schedule[Constants.DB_KEYWORD_END_TIME].ToString()));
 					g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>().text = "" + (dt2 - dt1);
+					g.transform.FindChild(Constants.SCHEDULE_PANEL_HURRY_BUTTON).GetComponent<Button>().interactable = true;
 					IEnumerator ie = DisplayCountdown(g.transform.FindChild(Constants.SCHEDULE_PANEL_TIMER).GetComponent<Text>(),
 					                                      dt2);
 					StartCoroutine(ie);
@@ -223,6 +225,28 @@ public class FeedsManager : MonoBehaviour {
 		if(itemType != null) {
 			RestrictChoice(itemType);
 		}
+	}
+
+	public void HurrySchedule(int index) {
+		if(index >= selectedSchedules.Count) {
+			GameObject g = scheduleListItems[index];
+			scheduleListItems.Remove(g);
+			Destroy(g);
+			addScheduleButton.interactable = true;
+		}
+		else {
+			x = index;
+			MessageManager.Instance.DisplayMessage(Constants.MESSAGE_SCHEDULE_HURRY_TITLE, 
+			                                       Constants.MESSAGE_SCHEDULE_HURRY,
+			                                       FinalizeHurrySchedule, true);
+		}
+	}
+	
+	private void FinalizeHurrySchedule() {
+		IDictionary<string,object> schedule = selectedSchedules[x];
+		schedule[Constants.DB_KEYWORD_IS_COMPLETED] = Constants.GENERIC_HURRIED;
+		DatabaseManager.Instance.EditFeedsSchedule(schedule);
+		SetSelected(selectedChicken[Constants.DB_KEYWORD_NAME].ToString());
 	}
 
 	public void CancelSchedule(int index) {

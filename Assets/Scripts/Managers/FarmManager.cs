@@ -212,7 +212,7 @@ public class FarmManager : MonoBehaviour {
 			chickenStatsSliders[3].maxValue = float.Parse(dic[Constants.DB_KEYWORD_AGILITY_MAX].ToString());
 			chickenStatsSliders[4].maxValue = float.Parse(dic[Constants.DB_KEYWORD_GAMENESS_MAX].ToString());
 			chickenStatsSliders[5].maxValue = float.Parse(dic[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString());
-			chickenStatsSliders[6].maxValue = Constants.CHICKEN_CONDITIONING_DEFAULT_MAX;
+			chickenStatsSliders[6].maxValue = float.Parse(dic[Constants.DB_KEYWORD_CONDITIONING_MAX].ToString());
 
 			chickenStatsSliders[0].value = float.Parse(dic[Constants.DB_KEYWORD_ATTACK].ToString());
 			chickenStatsSliders[1].value = float.Parse(dic[Constants.DB_KEYWORD_DEFENSE].ToString());

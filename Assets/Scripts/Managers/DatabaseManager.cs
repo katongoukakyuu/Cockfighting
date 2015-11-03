@@ -907,6 +907,7 @@ public class DatabaseManager : MonoBehaviour {
 			properties[Constants.DB_KEYWORD_AGILITY_MAX] = dic[Constants.DB_KEYWORD_AGILITY_MAX].ToString();
 			properties[Constants.DB_KEYWORD_GAMENESS_MAX] = dic[Constants.DB_KEYWORD_GAMENESS_MAX].ToString();
 			properties[Constants.DB_KEYWORD_AGGRESSION_MAX] = dic[Constants.DB_KEYWORD_AGGRESSION_MAX].ToString();
+			properties[Constants.DB_KEYWORD_CONDITIONING_MAX] = dic[Constants.DB_KEYWORD_CONDITIONING_MAX].ToString();
 			properties[Constants.DB_KEYWORD_LIFE_STAGE] = dic[Constants.DB_KEYWORD_LIFE_STAGE].ToString();
 			properties[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH] = dic[Constants.DB_KEYWORD_IS_QUEUED_FOR_MATCH].ToString();
 			return true;

@@ -55,6 +55,7 @@ public class Constants : MonoBehaviour {
 	public const string GENERIC_TRUE = "true";
 	public const string GENERIC_FALSE = "false";
 	public const string GENERIC_CANCELED = "canceled";
+	public const string GENERIC_HURRIED = "hurried";
 	public const string GENERIC_CANCEL = "Cancel";
 	public const string GENERIC_BACK = "Back";
 	public const string GENERIC_ERROR_FIELDS = "Please fill up all the fields.";
@@ -65,6 +66,8 @@ public class Constants : MonoBehaviour {
 	public const string MESSAGE_SCHEDULE_PANEL_3 = "Choose a mate from the list to the left!";
 	public const string MESSAGE_SCHEDULE_CANCEL_TITLE = "Cancel Schedule";
 	public const string MESSAGE_SCHEDULE_CANCEL = "Are you sure you want to cancel the schedule?";
+	public const string MESSAGE_SCHEDULE_HURRY_TITLE = "Hurry Schedule";
+	public const string MESSAGE_SCHEDULE_HURRY = "Are you sure you want to hurry the schedule?";
 	public const string MESSAGE_SCHEDULE_FEED = "Do you want to feed your chicken with this?";
 	public const string MESSAGE_SCHEDULE_BREED_TITLE = "Confirm Breeding";
 	// end schedule panel messages

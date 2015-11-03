@@ -93,6 +93,10 @@ public class ServerManager : MonoBehaviour {
 	}
 
 	private void ProcessFeedSchedulesApplySchedule(IDictionary<string,object> schedule) {
+		if(schedule[Constants.DB_KEYWORD_IS_COMPLETED].ToString() != Constants.GENERIC_FALSE && 
+		   schedule[Constants.DB_KEYWORD_IS_COMPLETED].ToString() != Constants.GENERIC_HURRIED)
+			return;
+
 		IDictionary<string,object> chicken = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID].ToString());
 		IDictionary<string,object> feeds = DatabaseManager.Instance.LoadFeeds(schedule[Constants.DB_KEYWORD_FEEDS_ID].ToString());
 
@@ -115,7 +119,7 @@ public class ServerManager : MonoBehaviour {
 			Constants.DB_KEYWORD_AGILITY_MAX,
 			Constants.DB_KEYWORD_GAMENESS_MAX,
 			Constants.DB_KEYWORD_AGGRESSION_MAX,
-			Constants.CHICKEN_CONDITIONING_DEFAULT_MAX.ToString()
+			Constants.DB_KEYWORD_CONDITIONING_MAX
 		};
 
 		for(int i = 0; i < statsStrings.Length; i++) {
@@ -124,7 +128,7 @@ public class ServerManager : MonoBehaviour {
 			feedsStats[i] = int.Parse (feeds[statsStrings[i]].ToString());
 			chicken[statsStrings[i]] = stats[i] + feedsStats[i] <= statsMax[i] ? stats[i] + feedsStats[i] : statsMax[i];
 		}
-
+		
 		DatabaseManager.Instance.EditChicken(chicken);
 
 		schedule[Constants.DB_KEYWORD_IS_COMPLETED] = Constants.GENERIC_TRUE;
@@ -140,10 +144,12 @@ public class ServerManager : MonoBehaviour {
 				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_FEEDS_SCHEDULE) {
 					if(properties[Constants.DB_KEYWORD_IS_COMPLETED].ToString() == Constants.GENERIC_CANCELED) {
 						// print("Schedule " + change.DocumentId + " has been canceled! Details below.");
-						foreach(KeyValuePair<string,object> kv in properties) {
-							// print (kv.Key + ": " + kv.Value);
-						}
 						FlagFeedScheduleAsCanceled(properties);
+					}
+					else if(properties[Constants.DB_KEYWORD_IS_COMPLETED].ToString() == Constants.GENERIC_HURRIED) {
+						// print("Schedule " + change.DocumentId + " has been hurried! Details below.");
+						FlagFeedScheduleAsCanceled(properties);
+						ProcessFeedSchedulesApplySchedule(properties);
 					}
 				}
 			}
@@ -178,7 +184,6 @@ public class ServerManager : MonoBehaviour {
 			i[Constants.DB_KEYWORD_END_TIME] = System.DateTime.Parse(i[Constants.DB_KEYWORD_END_TIME].ToString()).Subtract(ts);
 			DatabaseManager.Instance.EditFeedsSchedule(i);
 		}
-
 	}
 
 	// FEED SCHEDULES END
@@ -281,6 +286,10 @@ public class ServerManager : MonoBehaviour {
 	}
 
 	private void ProcessBreedSchedulesApplySchedule(IDictionary<string,object> schedule) {
+		if(schedule[Constants.DB_KEYWORD_IS_COMPLETED].ToString() != Constants.GENERIC_FALSE && 
+		   schedule[Constants.DB_KEYWORD_IS_COMPLETED].ToString() != Constants.GENERIC_HURRIED)
+			return;
+
 		IDictionary<string,object> chicken1 = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_1].ToString());
 		IDictionary<string,object> chicken2 = DatabaseManager.Instance.LoadChicken(schedule[Constants.DB_KEYWORD_CHICKEN_ID_2].ToString());
 		
@@ -331,7 +340,7 @@ public class ServerManager : MonoBehaviour {
 			Constants.DB_KEYWORD_HP,
 			Constants.DB_KEYWORD_AGILITY,
 			Constants.DB_KEYWORD_GAMENESS,
-			Constants.DB_KEYWORD_AGGRESSION,
+			Constants.DB_KEYWORD_AGGRESSION
 		};
 		string[] statsStringsMax = {
 			Constants.DB_KEYWORD_ATTACK_MAX,
@@ -339,7 +348,7 @@ public class ServerManager : MonoBehaviour {
 			Constants.DB_KEYWORD_HP_MAX,
 			Constants.DB_KEYWORD_AGILITY_MAX,
 			Constants.DB_KEYWORD_GAMENESS_MAX,
-			Constants.DB_KEYWORD_AGGRESSION_MAX,
+			Constants.DB_KEYWORD_AGGRESSION_MAX
 		};
 
 		for(int i = 0; i < statsStrings.Length; i++) {
@@ -351,7 +360,7 @@ public class ServerManager : MonoBehaviour {
 			chickenChild[statsStrings[i]] = (int)((pStats[0,i]/2f + pStats[1,i]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
 			chickenChild[statsStringsMax[i]] = (int)((pMax[0,i] + pMax[1,i]) * conditioningMultiplier);
 		}
-	
+
 		DatabaseManager.Instance.EditChicken(chickenChild);
 		
 		if(chickenChild[Constants.DB_KEYWORD_GENDER].ToString() != Constants.GENDER_FEMALE) {
@@ -372,10 +381,9 @@ public class ServerManager : MonoBehaviour {
 				DatabaseManager.Instance.LoadFightingMove(Constants.FIGHT_MOVE_PECK)[Constants.DB_COUCHBASE_ID].ToString()
 				));
 		}
-		
+
 		schedule[Constants.DB_KEYWORD_IS_COMPLETED] = Constants.GENERIC_TRUE;
 		DatabaseManager.Instance.EditBreedsSchedule(schedule);
-		
 	}
 
 	private IEnumerator ProcessBreedScheduleCanceling() {
@@ -386,10 +394,12 @@ public class ServerManager : MonoBehaviour {
 				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_BREED_SCHEDULE) {
 					if(properties[Constants.DB_KEYWORD_IS_COMPLETED].ToString() == Constants.GENERIC_CANCELED) {
 						// print("Schedule " + change.DocumentId + " has been canceled! Details below.");
-						foreach(KeyValuePair<string,object> kv in properties) {
-							// print (kv.Key + ": " + kv.Value);
-						}
 						FlagBreedScheduleAsCanceled(properties);
+					}
+					else if(properties[Constants.DB_KEYWORD_IS_COMPLETED].ToString() == Constants.GENERIC_HURRIED) {
+						// print("Schedule " + change.DocumentId + " has been hurried! Details below.");
+						FlagBreedScheduleAsCanceled(properties);
+						ProcessBreedSchedulesApplySchedule(properties);
 					}
 				}
 			}
