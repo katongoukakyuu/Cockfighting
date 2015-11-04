@@ -328,42 +328,42 @@ public class DatabaseManager : MonoBehaviour {
 			100, 5, true,
 			0, 0, 20, 0,
 			20, 0, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House1"
+			Constants.PATH_SPRITES_FEEDS + "Basic Small Attack"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic DEF - Small", Constants.DB_TYPE_FEEDS, "Feeds to quickly raise a chicken's defense.",
 			100, 5, true,
 			0, 0, 20, 0,
 			0, 20, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House2"
+			Constants.PATH_SPRITES_FEEDS + "Basic Small Defense"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Basic HP - Small", Constants.DB_TYPE_FEEDS, "Feeds to quickly raise a chicken's HP.",
+			"Basic HP - Small", Constants.DB_TYPE_FEEDS, "Feeds to quickly raise a chicken's health.",
 			100, 5, true,
 			0, 0, 20, 0,
 			0, 0, 20, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House3"
+			Constants.PATH_SPRITES_FEEDS + "Basic Small Health"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic AGI - Small", Constants.DB_TYPE_FEEDS, "Feeds to quickly raise a chicken's agility.",
 			100, 5, true,
 			0, 0, 20, 0,
 			0, 0, 0, 20, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House4"
+			Constants.PATH_SPRITES_FEEDS + "Basic Small Agility"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic GAM - Small", Constants.DB_TYPE_FEEDS, "Feeds to quickly raise a chicken's gameness.",
 			100, 5, true,
 			0, 0, 20, 0,
 			0, 0, 0, 0, 20, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House5"
+			Constants.PATH_SPRITES_FEEDS + "Basic Small Gameness"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic AGG - Small", Constants.DB_TYPE_FEEDS, "Feeds to quickly raise a chicken's aggression.",
 			100, 5, true,
 			0, 0, 20, 0,
 			0, 0, 0, 0, 0, 20, 20,
-			Constants.PATH_SPRITES_STORE + "House6"
+			Constants.PATH_SPRITES_FEEDS + "Basic Small Aggression"
 		));
 
 		// Basic Medium
@@ -372,42 +372,42 @@ public class DatabaseManager : MonoBehaviour {
 			100, 5, true,
 			0, 0, 60, 0,
 			45, 0, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House1"
+			Constants.PATH_SPRITES_FEEDS + "Basic Medium Attack"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic DEF - Medium", Constants.DB_TYPE_FEEDS, "Feeds to moderately raise a chicken's defense.",
 			100, 5, true,
 			0, 0, 60, 0,
 			0, 45, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House2"
+			Constants.PATH_SPRITES_FEEDS + "Basic Medium Defense"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Basic HP - Medium", Constants.DB_TYPE_FEEDS, "Feeds to moderately raise a chicken's HP.",
+			"Basic HP - Medium", Constants.DB_TYPE_FEEDS, "Feeds to moderately raise a chicken's health.",
 			100, 5, true,
 			0, 0, 60, 0,
 			0, 0, 45, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House3"
+			Constants.PATH_SPRITES_FEEDS + "Basic Medium Health"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic AGI - Medium", Constants.DB_TYPE_FEEDS, "Feeds to moderately raise a chicken's agility.",
 			100, 5, true,
 			0, 0, 60, 0,
 			0, 0, 0, 45, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House4"
+			Constants.PATH_SPRITES_FEEDS + "Basic Medium Agility"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic GAM - Medium", Constants.DB_TYPE_FEEDS, "Feeds to moderately raise a chicken's gameness.",
 			100, 5, true,
 			0, 0, 60, 0,
 			0, 0, 0, 0, 45, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House5"
+			Constants.PATH_SPRITES_FEEDS + "Basic Medium Gameness"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic AGG - Medium", Constants.DB_TYPE_FEEDS, "Feeds to moderately raise a chicken's aggression.",
 			100, 5, true,
 			0, 0, 60, 0,
 			0, 0, 0, 0, 0, 45, 20,
-			Constants.PATH_SPRITES_STORE + "House6"
+			Constants.PATH_SPRITES_FEEDS + "Basic Medium Aggression"
 		));
 
 		// Basic Large
@@ -416,42 +416,42 @@ public class DatabaseManager : MonoBehaviour {
 			100, 5, true,
 			0, 0, 120, 0,
 			60, 0, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House1"
+			Constants.PATH_SPRITES_FEEDS + "Basic Large Attack"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic DEF - Large", Constants.DB_TYPE_FEEDS, "Feeds to greatly raise a chicken's defense. Takes time to fully consume",
 			100, 5, true,
 			0, 0, 120, 0,
 			0, 60, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House2"
+			Constants.PATH_SPRITES_FEEDS + "Basic Large Defense"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Basic HP - Large", Constants.DB_TYPE_FEEDS, "Feeds to greatly raise a chicken's HP. Takes time to fully consume",
+			"Basic HP - Large", Constants.DB_TYPE_FEEDS, "Feeds to greatly raise a chicken's health. Takes time to fully consume",
 			100, 5, true,
 			0, 0, 120, 0,
 			0, 0, 60, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House3"
+			Constants.PATH_SPRITES_FEEDS + "Basic Large Health"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic AGI - Large", Constants.DB_TYPE_FEEDS, "Feeds to greatly raise a chicken's agility. Takes time to fully consume",
 			100, 5, true,
 			0, 0, 120, 0,
 			0, 0, 0, 60, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House4"
+			Constants.PATH_SPRITES_FEEDS + "Basic Large Agility"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic GAM - Large", Constants.DB_TYPE_FEEDS, "Feeds to greatly raise a chicken's gameness. Takes time to fully consume",
 			100, 5, true,
 			0, 0, 120, 0,
 			0, 0, 0, 0, 60, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House5"
+			Constants.PATH_SPRITES_FEEDS + "Basic Large Gameness"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Basic AGG - Large", Constants.DB_TYPE_FEEDS, "Feeds to greatly raise a chicken's aggression. Takes time to fully consume",
 			100, 5, true,
 			0, 0, 120, 0,
 			0, 0, 0, 0, 0, 60, 20,
-			Constants.PATH_SPRITES_STORE + "House6"
+			Constants.PATH_SPRITES_FEEDS + "Basic Large Aggression"
 		));
 
 		// Advanced Small
@@ -460,42 +460,42 @@ public class DatabaseManager : MonoBehaviour {
 			200, 10, true,
 			0, 0, 20, 0,
 			40, 0, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House1"
+			Constants.PATH_SPRITES_FEEDS + "Advance Small Attack"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced DEF - Small", Constants.DB_TYPE_FEEDS, "Improved feeds to quickly raise a chicken's defense.",
 			200, 10, true,
 			0, 0, 20, 0,
 			0, 40, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House2"
+			Constants.PATH_SPRITES_FEEDS + "Advance Small Defense"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Advanced HP - Small", Constants.DB_TYPE_FEEDS, "Improved feeds to quickly raise a chicken's HP.",
+			"Advanced HP - Small", Constants.DB_TYPE_FEEDS, "Improved feeds to quickly raise a chicken's health.",
 			200, 10, true,
 			0, 0, 20, 0,
 			0, 0, 40, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House3"
+			Constants.PATH_SPRITES_FEEDS + "Advance Small Health"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced AGI - Small", Constants.DB_TYPE_FEEDS, "Improved feeds to quickly raise a chicken's agility.",
 			200, 10, true,
 			0, 0, 20, 0,
 			0, 0, 0, 40, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House4"
+			Constants.PATH_SPRITES_FEEDS + "Advance Small Agility"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced GAM - Small", Constants.DB_TYPE_FEEDS, "Improved feeds to quickly raise a chicken's gameness.",
 			200, 10, true,
 			0, 0, 20, 0,
 			0, 0, 0, 0, 40, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House5"
+			Constants.PATH_SPRITES_FEEDS + "Advance Small Gameness"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced AGG - Small", Constants.DB_TYPE_FEEDS, "Improved feeds to quickly raise a chicken's aggression.",
 			200, 10, true,
 			0, 0, 20, 0,
 			0, 0, 0, 0, 0, 40, 20,
-			Constants.PATH_SPRITES_STORE + "House6"
+			Constants.PATH_SPRITES_FEEDS + "Advance Small Aggression"
 		));
 
 		// Advanced Medium
@@ -504,42 +504,42 @@ public class DatabaseManager : MonoBehaviour {
 			200, 10, true,
 			0, 0, 60, 0,
 			90, 0, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House1"
+			Constants.PATH_SPRITES_FEEDS + "Advance Medium Attack"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced DEF - Medium", Constants.DB_TYPE_FEEDS, "Improved feeds to moderately raise a chicken's defense.",
 			200, 10, true,
 			0, 0, 60, 0,
 			0, 90, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House2"
+			Constants.PATH_SPRITES_FEEDS + "Advance Medium Defense"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Advanced HP - Medium", Constants.DB_TYPE_FEEDS, "Improved feeds to moderately raise a chicken's HP.",
+			"Advanced HP - Medium", Constants.DB_TYPE_FEEDS, "Improved feeds to moderately raise a chicken's health.",
 			200, 10, true,
 			0, 0, 60, 0,
 			0, 0, 90, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House3"
+			Constants.PATH_SPRITES_FEEDS + "Advance Medium Health"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced AGI - Medium", Constants.DB_TYPE_FEEDS, "Improved feeds to moderately raise a chicken's agility.",
 			200, 10, true,
 			0, 0, 60, 0,
 			0, 0, 0, 90, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House4"
+			Constants.PATH_SPRITES_FEEDS + "Advance Medium Agility"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced GAM - Medium", Constants.DB_TYPE_FEEDS, "Improved feeds to moderately raise a chicken's gameness.",
 			200, 10, true,
 			0, 0, 60, 0,
 			0, 0, 0, 0, 90, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House5"
+			Constants.PATH_SPRITES_FEEDS + "Advance Medium Gameness"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced AGG - Medium", Constants.DB_TYPE_FEEDS, "Improved feeds to moderately raise a chicken's aggression.",
 			200, 10, true,
 			0, 0, 60, 0,
 			0, 0, 0, 0, 0, 90, 20,
-			Constants.PATH_SPRITES_STORE + "House6"
+			Constants.PATH_SPRITES_FEEDS + "Advance Medium Aggression"
 		));
 
 		// Advanced Large
@@ -548,86 +548,172 @@ public class DatabaseManager : MonoBehaviour {
 			200, 10, true,
 			0, 0, 120, 0,
 			120, 0, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House1"
+			Constants.PATH_SPRITES_FEEDS + "Advance Large Attack"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced DEF - Large", Constants.DB_TYPE_FEEDS, "Improved feeds to greatly raise a chicken's defense. Takes time to fully consume",
 			200, 10, true,
 			0, 0, 120, 0,
 			0, 120, 0, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House2"
+			Constants.PATH_SPRITES_FEEDS + "Advance Large Defense"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Advanced HP - Large", Constants.DB_TYPE_FEEDS, "Improved feeds to greatly raise a chicken's HP. Takes time to fully consume",
+			"Advanced HP - Large", Constants.DB_TYPE_FEEDS, "Improved feeds to greatly raise a chicken's health. Takes time to fully consume",
 			200, 10, true,
 			0, 0, 120, 0,
 			0, 0, 120, 0, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House3"
+			Constants.PATH_SPRITES_FEEDS + "Advance Large Health"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced AGI - Large", Constants.DB_TYPE_FEEDS, "Improved feeds to greatly raise a chicken's agility. Takes time to fully consume",
 			200, 10, true,
 			0, 0, 120, 0,
 			0, 0, 0, 120, 0, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House4"
+			Constants.PATH_SPRITES_FEEDS + "Advance Large Agility"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced GAM - Large", Constants.DB_TYPE_FEEDS, "Improved feeds to greatly raise a chicken's gameness. Takes time to fully consume",
 			200, 10, true,
 			0, 0, 120, 0,
 			0, 0, 0, 0, 120, 0, 20,
-			Constants.PATH_SPRITES_STORE + "House5"
+			Constants.PATH_SPRITES_FEEDS + "Advance Large Gameness"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Advanced AGG - Large", Constants.DB_TYPE_FEEDS, "Improved feeds to greatly raise a chicken's aggression. Takes time to fully consume",
 			200, 10, true,
 			0, 0, 120, 0,
 			0, 0, 0, 0, 0, 120, 20,
-			Constants.PATH_SPRITES_STORE + "House6"
+			Constants.PATH_SPRITES_FEEDS + "Advance Large Aggression"
 		));
 
 
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Mini Treats", Constants.DB_TYPE_TREATS, "Treats for mini chickens.",
-			10, 10, true,
-			0, 0, 0, 5,
-			10, -20, 10, -10, 10, 10, 0,
-			"Buildings/Hen House Wood"
+			"Treats ATK", Constants.DB_TYPE_TREATS, "Nutritious treats to boost your chicken's attack.",
+			200, 10, true,
+			0, 0, 1, 0,
+			10, 0, 0, 0, 0, 0, 0,
+			Constants.PATH_SPRITES_TREATS + "Treats Attack"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Uber Treats", Constants.DB_TYPE_TREATS, "Treats for uber chickens.",
-			10, 10, true,
-			1, 1, 1, 1,
-			10, -20, 10, -10, 10, 10, 0,
-			"Buildings/Teepee Cement"
+			"Treats DEF", Constants.DB_TYPE_TREATS, "Nutritious treats to boost your chicken's defense.",
+			200, 10, true,
+			0, 0, 1, 0,
+			0, 10, 0, 0, 0, 0, 0,
+			Constants.PATH_SPRITES_TREATS + "Treats Defense"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Mini Vitamins", Constants.DB_TYPE_VITAMINS, "Vitamins for mini chickens.",
-			10, 10, true,
-			0, 0, 0, 5,
-			10, -20, 10, -10, 10, 10, 0,
-			"Buildings/Teepee Corrugated Steel"
+			"Treats HP", Constants.DB_TYPE_TREATS, "Nutritious treats to boost your chicken's health.",
+			200, 10, true,
+			0, 0, 1, 0,
+			0, 0, 10, 0, 0, 0, 0,
+			Constants.PATH_SPRITES_TREATS + "Treats Health"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Uber Vitamins", Constants.DB_TYPE_VITAMINS, "Vitamins for uber chickens.",
-			10, 10, true,
-			1, 1, 1, 1,
-			10, -20, 10, -10, 10, 10, 0,
-			"Buildings/Teepee Drum"
+			"Treats AGI", Constants.DB_TYPE_TREATS, "Nutritious treats to boost your chicken's agility.",
+			200, 10, true,
+			0, 0, 1, 0,
+			0, 0, 0, 10, 0, 0, 0,
+			Constants.PATH_SPRITES_TREATS + "Treats Agility"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Mini Shots", Constants.DB_TYPE_SHOTS, "Shots for mini chickens.",
-			10, 10, true,
-			0, 0, 0, 5,
-			10, -20, 10, -10, 10, 10, 0,
-			"Buildings/Teepee Tire"
+			"Treats GAM", Constants.DB_TYPE_TREATS, "Nutritious treats to boost your chicken's gameness.",
+			200, 10, true,
+			0, 0, 1, 0,
+			0, 0, 0, 0, 10, 0, 0,
+			Constants.PATH_SPRITES_TREATS + "Treats Gameness"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
-			"Uber Shots", Constants.DB_TYPE_SHOTS, "Shots for uber chickens.",
-			10, 10, true,
-			1, 1, 1, 1,
-			10, -20, 10, -10, 10, 10, 0,
-			"Buildings/Teepee Wood"
+			"Treats AGG", Constants.DB_TYPE_TREATS, "Nutritious treats to boost your chicken's aggression.",
+			200, 10, true,
+			0, 0, 1, 0,
+			0, 0, 0, 0, 0, 10, 0,
+			Constants.PATH_SPRITES_TREATS + "Treats Aggression"
+		));
+
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Vitamins ATK", Constants.DB_TYPE_VITAMINS, "Vitamins to boost your chicken's attack.",
+			1000, 50, true,
+			0, 0, 60, 0,
+			150, 0, 0, 0, 0, 0, 20,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Attack"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Vitamins DEF", Constants.DB_TYPE_VITAMINS, "Vitamins to boost your chicken's defense.",
+			1000, 50, true,
+			0, 0, 60, 0,
+			0, 150, 0, 0, 0, 0, 20,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Defense"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Vitamins HP", Constants.DB_TYPE_VITAMINS, "Vitamins to boost your chicken's health.",
+			1000, 50, true,
+			0, 0, 60, 0,
+			0, 0, 150, 0, 0, 0, 20,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Health"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Vitamins AGI", Constants.DB_TYPE_VITAMINS, "Vitamins to boost your chicken's agility.",
+			1000, 50, true,
+			0, 0, 60, 0,
+			0, 0, 0, 150, 0, 0, 20,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Agility"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Vitamins GAM", Constants.DB_TYPE_VITAMINS, "Vitamins to boost your chicken's gameness.",
+			1000, 50, true,
+			0, 0, 60, 0,
+			0, 0, 0, 0, 150, 0, 20,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Gameness"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Vitamins AGG", Constants.DB_TYPE_VITAMINS, "Vitamins to boost your chicken's aggression.",
+			1000, 50, true,
+			0, 0, 60, 0,
+			0, 0, 0, 0, 0, 150, 20,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Aggression"
+		));
+
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Shots ATK", Constants.DB_TYPE_SHOTS, "Shots to quickly boost your chicken's attack.",
+			2000, 100, true,
+			0, 0, 1, 0,
+			75, 0, 0, 0, 0, 0, 0,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Attack"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Shots DEF", Constants.DB_TYPE_SHOTS, "Shots to quickly boost your chicken's defense.",
+			2000, 100, true,
+			0, 0, 1, 0,
+			0, 75, 0, 0, 0, 0, 0,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Defense"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Shots HP", Constants.DB_TYPE_SHOTS, "Shots to quickly boost your chicken's health.",
+			2000, 100, true,
+			0, 0, 1, 0,
+			0, 0, 75, 0, 0, 0, 0,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Health"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Shots AGI", Constants.DB_TYPE_SHOTS, "Shots to quickly boost your chicken's agility.",
+			2000, 100, true,
+			0, 0, 1, 0,
+			0, 0, 0, 75, 0, 0, 0,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Agility"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Shots GAM", Constants.DB_TYPE_SHOTS, "Shots to quickly boost your chicken's gameness.",
+			2000, 100, true,
+			0, 0, 1, 0,
+			0, 0, 0, 0, 75, 0, 0,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Gameness"
+		));
+		SaveEntry (GameManager.Instance.GenerateItem(
+			"Shots AGG", Constants.DB_TYPE_SHOTS, "Shots to quickly boost your chicken's aggression.",
+			2000, 100, true,
+			0, 0, 1, 0,
+			0, 0, 0, 0, 0, 75, 0,
+			Constants.PATH_SPRITES_VITAMINS + "Vitamins Aggression"
 		));
 
 		SaveEntry (GameManager.Instance.GenerateMatchmakingCategory (

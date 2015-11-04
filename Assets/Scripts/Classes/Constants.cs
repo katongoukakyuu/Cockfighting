@@ -18,6 +18,10 @@ public class Constants : MonoBehaviour {
 
 	public const string PATH_SPRITES = "Sprites/";
 	public const string PATH_SPRITES_STORE = "Store Icons/";
+	public const string PATH_SPRITES_FEEDS = "Feeds Icons/";
+	public const string PATH_SPRITES_TREATS = "Treats Icons/";
+	public const string PATH_SPRITES_VITAMINS = "Vitamins Icons/";
+	public const string PATH_SPRITES_SHOTS = "Shots Icons/";
 	public const string PATH_PREFABS_BUILDINGS = "Prefabs/Buildings/";
 
 	public const string FARM_MANAGER_STATE_FREE_SELECT = "Free Select";
