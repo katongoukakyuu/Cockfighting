@@ -164,6 +164,13 @@ public class DatabaseManager : MonoBehaviour {
 				emit(doc[Constants.DB_KEYWORD_CHICKEN_ID_1], doc[Constants.DB_KEYWORD_CHICKEN_ID_2]);
 		}, "1");
 
+		// conditioning decay schedule
+		View viewConditioningDecaySchedule = db.GetView(Constants.DB_TYPE_CONDITIONING_DECAY_SCHEDULE);
+		viewConditioningDecaySchedule.SetMap ((doc, emit) => {
+			if(doc[Constants.DB_KEYWORD_TYPE].ToString () == Constants.DB_TYPE_CONDITIONING_DECAY_SCHEDULE)
+				emit(doc[Constants.DB_KEYWORD_CHICKEN_ID], null);
+		}, "1");
+
 		// fighting move
 		View viewFightingMove = db.GetView(Constants.DB_TYPE_FIGHTING_MOVE);
 		viewFightingMove.SetMap ((doc, emit) => {
@@ -678,42 +685,42 @@ public class DatabaseManager : MonoBehaviour {
 			2000, 100, true,
 			0, 0, 1, 0,
 			75, 0, 0, 0, 0, 0, 0,
-			Constants.PATH_SPRITES_VITAMINS + "Vitamins Attack"
+			Constants.PATH_SPRITES_SHOTS + "Shots Attack"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Shots DEF", Constants.DB_TYPE_SHOTS, "Shots to quickly boost your chicken's defense.",
 			2000, 100, true,
 			0, 0, 1, 0,
 			0, 75, 0, 0, 0, 0, 0,
-			Constants.PATH_SPRITES_VITAMINS + "Vitamins Defense"
+			Constants.PATH_SPRITES_SHOTS + "Shots Defense"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Shots HP", Constants.DB_TYPE_SHOTS, "Shots to quickly boost your chicken's health.",
 			2000, 100, true,
 			0, 0, 1, 0,
 			0, 0, 75, 0, 0, 0, 0,
-			Constants.PATH_SPRITES_VITAMINS + "Vitamins Health"
+			Constants.PATH_SPRITES_SHOTS + "Shots Health"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Shots AGI", Constants.DB_TYPE_SHOTS, "Shots to quickly boost your chicken's agility.",
 			2000, 100, true,
 			0, 0, 1, 0,
 			0, 0, 0, 75, 0, 0, 0,
-			Constants.PATH_SPRITES_VITAMINS + "Vitamins Agility"
+			Constants.PATH_SPRITES_SHOTS + "Shots Agility"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Shots GAM", Constants.DB_TYPE_SHOTS, "Shots to quickly boost your chicken's gameness.",
 			2000, 100, true,
 			0, 0, 1, 0,
 			0, 0, 0, 0, 75, 0, 0,
-			Constants.PATH_SPRITES_VITAMINS + "Vitamins Gameness"
+			Constants.PATH_SPRITES_SHOTS + "Shots Gameness"
 		));
 		SaveEntry (GameManager.Instance.GenerateItem(
 			"Shots AGG", Constants.DB_TYPE_SHOTS, "Shots to quickly boost your chicken's aggression.",
 			2000, 100, true,
 			0, 0, 1, 0,
 			0, 0, 0, 0, 0, 75, 0,
-			Constants.PATH_SPRITES_VITAMINS + "Vitamins Aggression"
+			Constants.PATH_SPRITES_SHOTS + "Shots Aggression"
 		));
 
 		SaveEntry (GameManager.Instance.GenerateMatchmakingCategory (

@@ -211,13 +211,13 @@ public class ServerManager : MonoBehaviour {
 	                                            ref List<System.DateTime> listEndTimes,
 	                                            ref System.DateTime earliestEndTime,
 	                                            ref int earliestEndTimeIndex) {
-		listSchedules = DatabaseManager.Instance.LoadFeedsSchedule(null);
+		listSchedules = DatabaseManager.Instance.LoadConditioningDecaySchedule(null);
 		listEndTimes.Clear ();
 		earliestEndTime = System.DateTime.MinValue;
 		earliestEndTimeIndex = 0;
 		
 		listSchedules.RemoveAll(i => i[Constants.DB_KEYWORD_IS_COMPLETED].ToString() != Constants.GENERIC_FALSE);
-		
+
 		foreach(IDictionary<string,object> i in listSchedules) {
 			System.DateTime dtTemp = System.DateTime.Parse (i[Constants.DB_KEYWORD_END_TIME].ToString());
 			listEndTimes.Add (dtTemp);
@@ -328,9 +328,9 @@ public class ServerManager : MonoBehaviour {
 
 		/* 
 		 * formula for base stats:
-		 * (parent_1_stat/2 + parent_2_stat/2) * (0.9 to 1.1) * (1 - (1 - hen_conditioning)/2) * 0.01 * (1 - inbreed_penalty)
+		 * (parent_1_stat/2 + parent_2_stat/2) * (90 to 110) * (1 - (1 - hen_conditioning)/2) * 0.01 * (1 - inbreed_penalty)
 		 */
-		float conditioningMultiplier = (1f-(1f-conditioning*0.01f)/2f) * 0.01f;
+		float conditioningMultiplier = (1f-(1f-conditioning/100f)/2f) * 0.01f;
 		float inbreedingMultiplier = (1f - inbreedingPenalty);
 		int[,] pStats = new int[2,6];
 		int[,] pMax = new int[2,6];
@@ -357,7 +357,7 @@ public class ServerManager : MonoBehaviour {
 			pMax[0,i] = int.Parse (chicken1[statsStringsMax[i]].ToString());
 			pMax[1,i] = int.Parse (chicken2[statsStringsMax[i]].ToString());
 
-			chickenChild[statsStrings[i]] = (int)((pStats[0,i]/2f + pStats[1,i]/2f) * Random.Range(0.9f,1.1f) * conditioningMultiplier * inbreedingMultiplier);
+			chickenChild[statsStrings[i]] = (int)((pStats[0,i]/2f + pStats[1,i]/2f) * Random.Range(90f,110f) * conditioningMultiplier * inbreedingMultiplier);
 			chickenChild[statsStringsMax[i]] = (int)((pMax[0,i] + pMax[1,i]) * conditioningMultiplier);
 		}
 

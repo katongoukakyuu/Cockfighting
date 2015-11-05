@@ -10,6 +10,8 @@ public class FarmManager : MonoBehaviour {
 
 	public Text coinText;
 	public Text cashText;
+	public Text farmNameText;
+	public Text chickenCountText;
 	public GameObject chicken;
 	public Animator mainAnim;
 	public Animator ChickenStatAnim;
@@ -50,12 +52,21 @@ public class FarmManager : MonoBehaviour {
 			var changes = e.Changes.ToList();
 			foreach (DocumentChange change in changes) {
 				IDictionary<string,object> properties = DatabaseManager.Instance.GetDatabase().GetDocument(change.DocumentId).Properties;
-				if((properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_ACCOUNT &&
-				   properties[Constants.DB_COUCHBASE_ID].ToString() == PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString()) ||
-				   (properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_CHICKEN &&
-				 	properties[Constants.DB_KEYWORD_USER_ID].ToString() == PlayerManager.Instance.player[Constants.DB_KEYWORD_USER_ID].ToString())) {
+				if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_ACCOUNT &&
+				   properties[Constants.DB_COUCHBASE_ID].ToString() == PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString()) {
 					DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
 					UpdateScreen();
+					return;
+				}
+				else if(properties[Constants.DB_KEYWORD_TYPE].ToString() == Constants.DB_TYPE_CHICKEN &&
+				        properties[Constants.DB_KEYWORD_USER_ID].ToString() == PlayerManager.Instance.player[Constants.DB_KEYWORD_USER_ID].ToString()) {
+					DatabaseManager.Instance.UpdatePlayer(PlayerManager.Instance.player[Constants.DB_COUCHBASE_ID].ToString());
+					if(PlayerManager.Instance.playerChickens.Count != listChickens.Count) {
+						UpdateChickens(true);
+					}
+					else {
+						UpdateChickens(false);
+					}
 					return;
 				}
 			}
@@ -82,42 +93,59 @@ public class FarmManager : MonoBehaviour {
 	public void UpdatePlayer() {
 		UpdateScreen();
 		UpdateBuildingsOwned ();
-		UpdateChickens ();
+		UpdateChickens (true);
 	}
 
 	public void UpdateScreen() {
 		coinText.text = PlayerManager.Instance.player[Constants.DB_KEYWORD_COIN].ToString();
 		cashText.text = PlayerManager.Instance.player[Constants.DB_KEYWORD_CASH].ToString();
+		farmNameText.text = PlayerManager.Instance.player[Constants.DB_KEYWORD_FARM_NAME].ToString();
+		chickenCountText.text = PlayerManager.Instance.playerChickens.Count + "/20";
 	}
 
-	public void UpdateChickens() {
-		foreach(GameObject g in listChickens) {
-			Destroy (g);
+	public void UpdateChickens(bool resetChickens) {
+		UpdateSelectedObject(selectedObject);
+		if(resetChickens) {
+			foreach(GameObject g in listChickens) {
+				Destroy (g);
+			}
+			if(gridOverlay != null) {
+				int xMax = gridOverlay.GetTiles().GetLength(0);
+				int yMax = gridOverlay.GetTiles().GetLength(1);
+				int x = 0;
+				// print ("Grid overlay xy: " + xMax + ", " + yMax);
+				foreach(IDictionary<string,object> i in PlayerManager.Instance.playerChickens) {
+					if(i[Constants.DB_KEYWORD_LIFE_STAGE].ToString() == Constants.LIFE_STAGE_EGG) {
+						continue;
+					}
+					GameObject g;
+					if(x < listBuildings.Count && listBuildings[x] != null) {
+						g = Instantiate (chicken,
+						                 listBuildings[x].transform.position,
+						                 Quaternion.identity) as GameObject;
+					}
+					else {
+						g = Instantiate (chicken,
+						                 gridOverlay.GetTiles()[Random.Range (0,xMax), Random.Range (0,yMax)].transform.position,
+						                 Quaternion.identity) as GameObject;
+					}
+					g.AddComponent<Chicken>();
+					g.GetComponent<Chicken>().chicken = i;
+					listChickens.Add (g);
+					x++;
+				}
+			}
 		}
-		
-		if(gridOverlay != null) {
-			int xMax = gridOverlay.GetTiles().GetLength(0);
-			int yMax = gridOverlay.GetTiles().GetLength(1);
+		else {
 			int x = 0;
-			// print ("Grid overlay xy: " + xMax + ", " + yMax);
 			foreach(IDictionary<string,object> i in PlayerManager.Instance.playerChickens) {
-				GameObject g;
-				if(x < listBuildings.Count && listBuildings[x] != null) {
-					g = Instantiate (chicken,
-					                 listBuildings[x].transform.position,
-					                 Quaternion.identity) as GameObject;
-				}
-				else {
-					g = Instantiate (chicken,
-					                 gridOverlay.GetTiles()[Random.Range (0,xMax), Random.Range (0,yMax)].transform.position,
-					                 Quaternion.identity) as GameObject;
-				}
+				GameObject g = listChickens[x];
 				g.AddComponent<Chicken>();
 				g.GetComponent<Chicken>().chicken = i;
-				listChickens.Add (g);
 				x++;
 			}
 		}
+
 	}
 
 	public void UpdateBuildingsOwned() {
@@ -159,7 +187,7 @@ public class FarmManager : MonoBehaviour {
 	public void UpdateSelectedObject(GameObject g) {
 		// print ("tag is " + g.tag);
 		if (state == Constants.FARM_MANAGER_STATE_FREE_SELECT) {
-			if (g.tag == "Chicken" && state == Constants.FARM_MANAGER_STATE_FREE_SELECT) {
+			if (g != null && g.tag == "Chicken" && state == Constants.FARM_MANAGER_STATE_FREE_SELECT) {
 				selectedObject = g;
 				//mainCameraDummy = Instantiate(Camera.main.gameObject);
 				//mainCameraDummy.SetActive(false);
